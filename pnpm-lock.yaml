@@ -1,6 +1,7 @@
 lockfileVersion: 5.4
 
 specifiers:
+  '@ant-design/cssinjs': 1.18.0-alpha.5
   '@testing-library/jest-dom': ^5.17.0
   '@testing-library/react': ^13.4.0
   '@testing-library/user-event': ^13.5.0
@@ -26,6 +27,7 @@ specifiers:
   web-vitals: ^2.1.4
 
 dependencies:
+  '@ant-design/cssinjs': 1.18.0-alpha.5_biqbaboplfbrettd7655fr4n2y
   '@testing-library/react': 13.4.0_biqbaboplfbrettd7655fr4n2y
   '@testing-library/user-event': 13.5.0
   '@types/jest': 27.5.2
@@ -83,6 +85,23 @@ packages:
 
   /@ant-design/cssinjs/1.17.5_biqbaboplfbrettd7655fr4n2y:
     resolution: {integrity: sha512-Ed2rruHMxZTVYGPec6QBZkrh00Df5K1FAufmBpONai5iGYxoxIkg1sRD8YdCw0NvPRAa4r1nJP5LbwICGHzGiQ==}
+    peerDependencies:
+      react: '>=16.0.0'
+      react-dom: '>=16.0.0'
+    dependencies:
+      '@babel/runtime': 7.23.4
+      '@emotion/hash': 0.8.0
+      '@emotion/unitless': 0.7.5
+      classnames: 2.3.2
+      csstype: 3.1.2
+      rc-util: 5.38.1_biqbaboplfbrettd7655fr4n2y
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+      stylis: 4.3.0
+    dev: false
+
+  /@ant-design/cssinjs/1.18.0-alpha.5_biqbaboplfbrettd7655fr4n2y:
+    resolution: {integrity: sha512-29o1/GtE9dO6dJ2NzuVa0/If2oJKcZcSK5VynRy0/8vvXJX0p2YZUwvkVP5JIHkyIVDPbx5D9Qj7BjEZ7uf1GA==}
     peerDependencies:
       react: '>=16.0.0'
       react-dom: '>=16.0.0'
