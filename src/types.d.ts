@@ -1,11 +1,10 @@
-import { createContext } from 'react';
-
 interface AssetProps {
   uuid: string;
 }
 
 interface SessionContextProps {
   transactionUuid?: string;
+  policyId?: string;
   accesToken?: string;
   refreshToken?: string;
   initialData?: AssetProps[];
@@ -13,7 +12,3 @@ interface SessionContextProps {
   authUrl?: string;
   baseUrl?: string;
 }
-
-const SessionContext = createContext<SessionContextProps>({});
-
-export default SessionContext;

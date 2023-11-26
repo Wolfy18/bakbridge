@@ -17,7 +17,10 @@ const Card: React.FC<PropsWithChildren & CardProps> = ({ children }) => {
           />
         }
       >
-        <Meta title="Europe Street beat" description="www.instagram.com" />
+        <Meta
+          title="Europe Street beat"
+          description="Lorem ipsum dolor sit amet consectetur adipisicing elit. Sit quaerat velit beatae enim dignissimos eum tempore ipsa perferendis suscipit nobis alias aperiam cum similique, totam numquam minus quibusdam nulla dolor."
+        />
         {children}
       </DSCard>
     </>

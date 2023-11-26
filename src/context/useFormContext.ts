@@ -1,5 +1,9 @@
-const useFormContext: () => void = () => {};
+import { createContext, useState } from 'react';
 
-export default {
-  useFormContext,
-};
+interface FormContextProps {
+  setNotification?: typeof useState;
+}
+
+const FormContext = createContext<FormContextProps>({});
+
+export default FormContext;
