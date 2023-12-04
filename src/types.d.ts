@@ -56,13 +56,13 @@ interface AssetProps {
   uuid: string;
   blockchain: string;
   name: string;
-  asset_name: string;
+  asset_name?: string;
   image: string;
-  media_type: string;
-  fingerprint: string;
-  description: string;
-  files: AssetFileProps[];
-  attrs: object;
+  media_type?: string;
+  fingerprint?: string;
+  description?: string;
+  files?: AssetFileProps[];
+  attrs?: object;
   amount: number;
   royalties?: string;
   royalties_rate?: string;
@@ -74,7 +74,7 @@ interface SessionContextProps {
   policyId?: string;
   accesToken?: string;
   refreshToken?: string;
-  initialData?: AssetProps[];
+  initialData?: string;
   testnet?: boolean;
   authUrl?: string;
   baseUrl?: string;

@@ -23,24 +23,25 @@ const SimpleLayout: React.FC<Props & PropsWithChildren> = ({
   };
 
   const contentStyle: React.CSSProperties = {
-    textAlign: 'center',
+    textAlign: 'left',
     minHeight: 120,
     lineHeight: '120px',
-    color: '#fff',
-    backgroundColor: '#108ee9',
+    color: '#a2a2a2',
+    backgroundColor: '#f2f2f2',
   };
 
   const footerStyle: React.CSSProperties = {
     textAlign: 'center',
     color: '#fff',
-    backgroundColor: '#7dbcea',
+    backgroundColor: '#f3f3f3',
   };
 
   return (
-    <Layout>
+    <Layout className="max-w-[600px] m-auto ">
       {enableHeader && <Header style={headerStyle}>Header</Header>}
 
       <Content style={contentStyle}>{children}</Content>
+
       <Footer style={footerStyle}>
         Powered by{' '}
         <Link href="https://bakrypt.io" target="_blank" rel="nofollow">

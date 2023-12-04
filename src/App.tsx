@@ -1,41 +1,26 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './App.css';
-import { SimpleLayout } from 'components/composites/Layout';
+import { Layout } from 'components/composites/Layout';
 import { CollectionForm } from 'components/composites/Form';
 // import { Button, notification, NotificationArgsProps, Space } from 'antd';
-import FormContext from 'context/useFormContext';
-import { Drawer as ConfigDrawer } from 'components/composites/Config';
-import SessionContext from 'context/useSessionContext';
+import FormContext from 'context/FormContext';
+import SessionContext from 'context/SessionContext';
 import { Drawer as TransactionDrawer } from 'components/composites/Transaction';
-// import { FormContextProps } from 'antd/es/form/context';
-
-// type NotificationType = 'success' | 'info' | 'warning' | 'error';
 
 const App: React.FC<SessionContextProps> = (props) => {
-  // const [api, contextHolder] = notification.useNotification();
-
-  // const [alert, setNotification] = useState<NotificationArgsProps>({
-  //   message: null,
-  //   title: null,
-  //   type: 'info',
-  // });
-
-  //   const openNotificationWithIcon = (type: NotificationType) => {
-  //     api[type]({
-  //       message: 'Notification Title',
-  //       description:
-  //         'This is the content of the notification. This is the content of the notification. This is the content of the notification.',
-  //     });
-  //   };
+  const [assetCollection, setAssetCollection] = useState<AssetProps[]>(
+    props.initialData && props.initialData.length
+      ? JSON.parse(props.initialData)
+      : []
+  );
 
   return (
     <SessionContext.Provider value={{ ...props }}>
-      <SimpleLayout>
-        <FormContext.Provider value={{}}>
+      <Layout>
+        <FormContext.Provider value={{ assetCollection, setAssetCollection }}>
           <CollectionForm />
-          <ConfigDrawer />
         </FormContext.Provider>
-      </SimpleLayout>
+      </Layout>
       <TransactionDrawer />
     </SessionContext.Provider>
   );
