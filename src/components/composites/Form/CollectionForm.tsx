@@ -150,17 +150,21 @@ const CollectionForm: React.FC = () => {
         }
         style={{ lineHeight: 'normal' }}
       >
-        <p>Setup custom configurations for this transaction, like royalties!</p>
-        <Divider orientation="left">Royalties</Divider>
-        <Form.Item label="Percentage" name="percentage">
-          <Input name="percentage" />
-        </Form.Item>
-        <Form.Item label="Wallet Address" name="wallet_address">
-          <Input name="wallet_address" />
-        </Form.Item>
-        <Switch checkedChildren="On" unCheckedChildren="Off" />
-        <Divider orientation="left">Process Automatically</Divider>
-        <Switch defaultChecked checkedChildren="On" unCheckedChildren="Off" />
+        <Form layout="vertical">
+          <p>
+            Setup custom configurations for this transaction, like royalties!
+          </p>
+          <Divider orientation="left">Royalties</Divider>
+          <Form.Item label="Percentage" name="percentage">
+            <Input name="percentage" type="number" />
+          </Form.Item>
+          <Form.Item label="Wallet Address" name="wallet_address">
+            <Input name="wallet_address" />
+          </Form.Item>
+          <Switch checkedChildren="On" unCheckedChildren="Off" />
+          <Divider orientation="left">Process Automatically</Divider>
+          <Switch defaultChecked checkedChildren="On" unCheckedChildren="Off" />
+        </Form>
       </Drawer>
     </div>
   );

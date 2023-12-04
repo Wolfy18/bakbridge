@@ -6,7 +6,7 @@ import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 
 const AssetForm: React.FC = () => {
   return (
-    <Form>
+    <Form layout="vertical">
       <Form.Item label="Asset Name" name="asset_name">
         <Input name="asset_name" type="text" />
       </Form.Item>
@@ -111,7 +111,7 @@ const AssetForm: React.FC = () => {
 
 const Asset: React.FC<AssetProps> = (props) => {
   return (
-    <div className="flex justify-center p-4">
+    <div className="flex justify-center">
       <div className="flex-1">
         <Card {...props}>
           <Divider orientation="left">Attributes</Divider>
