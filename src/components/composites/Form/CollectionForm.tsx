@@ -9,6 +9,7 @@ import {
   Switch,
   Input,
   Spin,
+  Form,
 } from 'antd';
 import { Asset } from 'components/composites/Asset';
 import FormContext from 'context/FormContext';
@@ -147,11 +148,17 @@ const CollectionForm: React.FC = () => {
             </Button>
           </Space>
         }
+        style={{ lineHeight: 'normal' }}
       >
+        <p>Setup custom configurations for this transaction, like royalties!</p>
         <Divider orientation="left">Royalties</Divider>
+        <Form.Item label="Percentage" name="percentage">
+          <Input name="percentage" />
+        </Form.Item>
+        <Form.Item label="Wallet Address" name="wallet_address">
+          <Input name="wallet_address" />
+        </Form.Item>
         <Switch checkedChildren="On" unCheckedChildren="Off" />
-        <Input name="percentage" maxLength={64} />
-        <Input name="wallet_address" maxLength={64} />
         <Divider orientation="left">Process Automatically</Divider>
         <Switch defaultChecked checkedChildren="On" unCheckedChildren="Off" />
       </Drawer>
