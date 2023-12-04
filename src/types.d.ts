@@ -53,7 +53,7 @@ interface AssetFileProps {
 }
 
 interface AssetProps {
-  uuid: string;
+  uuid?: string;
   blockchain: string;
   name: string;
   asset_name?: string;

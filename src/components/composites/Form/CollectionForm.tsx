@@ -18,53 +18,51 @@ type TargetKey = React.MouseEvent | React.KeyboardEvent | string;
 
 const CollectionForm: React.FC = () => {
   const { assetCollection, setAssetCollection } = useContext(FormContext);
-
+  console.log(assetCollection, ' <---- when loading');
   const TabPanels: Array<{
     key: string;
     children: JSX.Element;
     label: string;
   }> = assetCollection.map((i: AssetProps, idx: number) => {
     return {
-      key: `${i.uuid}-${idx}`,
+      key: `asset-${idx}`,
       children: <Asset {...i} />,
       label: `Asset #${idx + 1}`,
     };
   });
 
-  const newTabIndex = useRef(0);
-  const [activeKey, setActiveKey] = useState('0');
+  const newTabIndex = useRef(assetCollection.length);
+  const [activeKey, setActiveKey] = useState(`asset-0`);
   const onChange = (key: string) => {
     setActiveKey(key);
   };
 
   const add = () => {
-    const newActiveKey = `newTab${newTabIndex.current++}`;
+    const newActiveKey = `asset-${newTabIndex.current++}`;
     setAssetCollection([
       ...assetCollection,
       {
-        uuid: 'uuuuuid',
         blockchain: 'ada',
-        name: `test added`,
+        name: `test added ${newActiveKey}`,
         image: 'https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png',
         amount: 1,
       },
     ]);
 
-    console.log(assetCollection, ' <==============');
     setActiveKey(newActiveKey);
   };
 
   const remove = (targetKey: TargetKey) => {
     const targetIndex = TabPanels.findIndex((pane) => pane.key === targetKey);
+
+    if (assetCollection.length <= 1) return;
+
     const newPanes = TabPanels.filter((pane) => pane.key !== targetKey);
-    if (newPanes.length && targetKey === activeKey) {
-      const { key } =
-        newPanes[
-          targetIndex === newPanes.length ? targetIndex - 1 : targetIndex
-        ];
-      setActiveKey(key);
-    }
-    setAssetCollection(assetCollection.filter((i) => i.uuid !== targetKey));
+
+    setAssetCollection(assetCollection.filter((i, idx) => idx !== targetIndex));
+    const { key } =
+      newPanes[targetIndex === newPanes.length ? targetIndex - 1 : targetIndex];
+    setActiveKey(key);
   };
 
   const onEdit = (targetKey: TargetKey, action: 'add' | 'remove') => {
