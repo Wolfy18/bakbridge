@@ -14,11 +14,11 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "baseUrl": "src",
+    "paths": {
+      "@": ["src"]
+    }
   },
-  "include": [
-    "src/**/*",
-    "src/**/*.d.tsx",
-    "src/**/*.tsx",
-  ]
+  "include": ["src/**/*", "src/**/*.d.tsx", "src/**/*.tsx"]
 }
