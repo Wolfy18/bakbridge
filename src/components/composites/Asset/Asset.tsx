@@ -2,112 +2,110 @@ import { Carousel, Collapse, Divider, Form, Space, Button, Input } from 'antd';
 import { Card } from 'components/atoms/Card';
 import React from 'react';
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
-import { Form as FormikForm } from 'formik';
+// import { Form as FormikForm } from 'formik';
 
 const AssetForm: React.FC = () => {
   return (
-    <FormikForm>
-      <Form>
-        <Form.Item label="Asset Name" name="asset_name">
-          <Input name="asset_name" type="text" />
-        </Form.Item>
+    <Form>
+      <Form.Item label="Asset Name" name="asset_name">
+        <Input name="asset_name" type="text" />
+      </Form.Item>
 
-        <Form.Item label="Name" name="name">
-          <Input name="name" type="text" />
-        </Form.Item>
+      <Form.Item label="Name" name="name">
+        <Input name="name" type="text" />
+      </Form.Item>
 
-        <Form.Item label="Cover Image" name="image">
-          <Input name="image" type="text" />
-        </Form.Item>
+      <Form.Item label="Cover Image" name="image">
+        <Input name="image" type="text" />
+      </Form.Item>
 
-        <Form.Item label="Description" name="description">
-          <Input.TextArea name="description" />
-        </Form.Item>
+      <Form.Item label="Description" name="description">
+        <Input.TextArea name="description" />
+      </Form.Item>
 
-        <Divider orientation="left">Attributes</Divider>
+      <Divider orientation="left">Attributes</Divider>
 
-        <Form.List name="attributes">
-          {(fields, { add, remove }) => (
-            <>
-              {fields.map(({ key, name, ...restField }) => (
-                <Space
-                  key={key}
-                  style={{ display: 'flex', marginBottom: 8 }}
-                  align="baseline"
+      <Form.List name="attributes">
+        {(fields, { add, remove }) => (
+          <>
+            {fields.map(({ key, name, ...restField }) => (
+              <Space
+                key={key}
+                style={{ display: 'flex', marginBottom: 8 }}
+                align="baseline"
+              >
+                <Form.Item
+                  {...restField}
+                  name={[name, 'first']}
+                  rules={[{ required: true, message: 'Missing first name' }]}
                 >
-                  <Form.Item
-                    {...restField}
-                    name={[name, 'first']}
-                    rules={[{ required: true, message: 'Missing first name' }]}
-                  >
-                    <Input placeholder="First Name" />
-                  </Form.Item>
-                  <Form.Item
-                    {...restField}
-                    name={[name, 'last']}
-                    rules={[{ required: true, message: 'Missing last name' }]}
-                  >
-                    <Input placeholder="Last Name" />
-                  </Form.Item>
-                  <MinusCircleOutlined onClick={() => remove(name)} />
-                </Space>
-              ))}
-              <Form.Item>
-                <Button
-                  type="dashed"
-                  onClick={() => add()}
-                  block
-                  icon={<PlusOutlined />}
+                  <Input placeholder="First Name" />
+                </Form.Item>
+                <Form.Item
+                  {...restField}
+                  name={[name, 'last']}
+                  rules={[{ required: true, message: 'Missing last name' }]}
                 >
-                  Add attribute
-                </Button>
-              </Form.Item>
-            </>
-          )}
-        </Form.List>
+                  <Input placeholder="Last Name" />
+                </Form.Item>
+                <MinusCircleOutlined onClick={() => remove(name)} />
+              </Space>
+            ))}
+            <Form.Item>
+              <Button
+                type="dashed"
+                onClick={() => add()}
+                block
+                icon={<PlusOutlined />}
+              >
+                Add attribute
+              </Button>
+            </Form.Item>
+          </>
+        )}
+      </Form.List>
 
-        <Divider orientation="left">Files</Divider>
-        <Form.List name="files">
-          {(fields, { add, remove }) => (
-            <>
-              {fields.map(({ key, name, ...restField }) => (
-                <Space
-                  key={key}
-                  style={{ display: 'flex', marginBottom: 8 }}
-                  align="baseline"
+      <Divider orientation="left">Files</Divider>
+      <Form.List name="files">
+        {(fields, { add, remove }) => (
+          <>
+            {fields.map(({ key, name, ...restField }) => (
+              <Space
+                key={key}
+                style={{ display: 'flex', marginBottom: 8 }}
+                align="baseline"
+              >
+                <Form.Item
+                  {...restField}
+                  name={[name, 'first']}
+                  rules={[{ required: true, message: 'Missing first name' }]}
                 >
-                  <Form.Item
-                    {...restField}
-                    name={[name, 'first']}
-                    rules={[{ required: true, message: 'Missing first name' }]}
-                  >
-                    <Input placeholder="First Name" />
-                  </Form.Item>
-                  <Form.Item
-                    {...restField}
-                    name={[name, 'last']}
-                    rules={[{ required: true, message: 'Missing last name' }]}
-                  >
-                    <Input placeholder="Last Name" />
-                  </Form.Item>
-                  <MinusCircleOutlined onClick={() => remove(name)} />
-                </Space>
-              ))}
-              <Form.Item>
-                <Button
-                  type="dashed"
-                  onClick={() => add()}
-                  block
-                  icon={<PlusOutlined />}
+                  <Input placeholder="First Name" />
+                </Form.Item>
+                <Form.Item
+                  {...restField}
+                  name={[name, 'last']}
+                  rules={[{ required: true, message: 'Missing last name' }]}
                 >
-                  Add File
-                </Button>
-              </Form.Item>
-            </>
-          )}
-        </Form.List>
-      </Form>
-    </FormikForm>
+                  <Input placeholder="Last Name" />
+                </Form.Item>
+                <MinusCircleOutlined onClick={() => remove(name)} />
+              </Space>
+            ))}
+            <Form.Item>
+              <Button
+                type="dashed"
+                onClick={() => add()}
+                block
+                icon={<PlusOutlined />}
+              >
+                Add File
+              </Button>
+            </Form.Item>
+          </>
+        )}
+      </Form.List>
+    </Form>
   );
 };
 

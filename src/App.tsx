@@ -11,7 +11,14 @@ const App: React.FC<SessionContextProps> = (props) => {
   const [assetCollection, setAssetCollection] = useState<AssetProps[]>(
     props.initialData && props.initialData.length
       ? JSON.parse(props.initialData)
-      : []
+      : [
+          {
+            blockchain: 'ada',
+            name: `Default No initial Data`,
+            image: 'https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png',
+            amount: 1,
+          },
+        ]
   );
 
   return (
