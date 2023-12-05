@@ -7,9 +7,11 @@ const { Header, Footer, Content } = Layout;
 
 interface Props {
   enableHeader?: boolean;
+  enableFooter?: boolean;
 }
 
 const SimpleLayout: React.FC<Props & PropsWithChildren> = ({
+  enableFooter,
   enableHeader,
   children,
 }) => {
@@ -42,12 +44,14 @@ const SimpleLayout: React.FC<Props & PropsWithChildren> = ({
 
       <Content style={contentStyle}>{children}</Content>
 
-      <Footer style={footerStyle}>
-        Powered by{' '}
-        <Link href="https://bakrypt.io" target="_blank" rel="nofollow">
-          bakrypt.io
-        </Link>
-      </Footer>
+      {enableFooter && (
+        <Footer style={footerStyle}>
+          Powered by{' '}
+          <Link href="https://bakrypt.io" target="_blank" rel="nofollow">
+            bakrypt.io
+          </Link>
+        </Footer>
+      )}
     </Layout>
   );
 };
