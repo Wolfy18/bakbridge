@@ -19,7 +19,7 @@ const SimpleLayout: React.FC<Props & PropsWithChildren> = ({
     height: 64,
     paddingInline: 50,
     lineHeight: '64px',
-    backgroundColor: '#7dbcea',
+    backgroundColor: 'transparent',
   };
 
   const contentStyle: React.CSSProperties = {
@@ -27,17 +27,17 @@ const SimpleLayout: React.FC<Props & PropsWithChildren> = ({
     minHeight: 120,
     lineHeight: '120px',
     color: '#a2a2a2',
-    backgroundColor: '#f2f2f2',
+    backgroundColor: 'transparent',
   };
 
   const footerStyle: React.CSSProperties = {
     textAlign: 'center',
-    color: '#fff',
-    backgroundColor: '#f3f3f3',
+    color: '#a6a6a6',
+    backgroundColor: 'transparent',
   };
 
   return (
-    <Layout className="max-w-[600px] m-auto ">
+    <Layout className="max-w-[600px] m-auto bg-transparent">
       {enableHeader && <Header style={headerStyle}>Header</Header>}
 
       <Content style={contentStyle}>{children}</Content>

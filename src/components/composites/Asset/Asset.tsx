@@ -1,4 +1,4 @@
-import { Carousel, Collapse, Divider, Form, Space, Button, Input } from 'antd';
+import { Divider, Form, Space, Button, Input } from 'antd';
 import { Card } from 'components/atoms/Card';
 import React from 'react';
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
@@ -6,7 +6,7 @@ import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 
 const AssetForm: React.FC = () => {
   return (
-    <Form>
+    <Form layout="vertical">
       <Form.Item label="Asset Name" name="asset_name">
         <Input name="asset_name" type="text" />
       </Form.Item>
@@ -111,59 +111,9 @@ const AssetForm: React.FC = () => {
 
 const Asset: React.FC<AssetProps> = (props) => {
   return (
-    <div className="flex justify-center p-4">
+    <div className="flex justify-center flex-col md:flex-row">
       <div className="flex-1">
-        <Card {...props}>
-          <Divider orientation="left">Attributes</Divider>
-          <Collapse
-            size={'small'}
-            items={[
-              {
-                key: '1',
-                label: 'pant',
-                children: <p>Brown</p>,
-              },
-              {
-                key: '2',
-                label: 'jacket',
-                children: <p>Blue</p>,
-              },
-              {
-                key: '3',
-                label: 'Shorts',
-                children: <p>Yellow</p>,
-              },
-            ]}
-          />
-
-          <Divider orientation="left">File Attributes</Divider>
-          <Collapse
-            defaultActiveKey={['1']}
-            size={'small'}
-            items={[
-              {
-                key: '1',
-                label: 'Files',
-                children: (
-                  <Carousel afterChange={(e) => console.log(e)}>
-                    <div>
-                      <h3>1</h3>
-                    </div>
-                    <div>
-                      <h3>2</h3>
-                    </div>
-                    <div>
-                      <h3>3</h3>
-                    </div>
-                    <div>
-                      <h3>4</h3>
-                    </div>
-                  </Carousel>
-                ),
-              },
-            ]}
-          />
-        </Card>
+        <Card {...props}></Card>
       </div>
       <div className="flex-1">
         <AssetForm />
