@@ -8,6 +8,8 @@ const Card: React.FC<PropsWithChildren & AssetProps> = ({
   name,
   description,
   image,
+  attrs,
+  files,
   children,
 }) => {
   return (
@@ -19,55 +21,64 @@ const Card: React.FC<PropsWithChildren & AssetProps> = ({
         className="m-auto"
       >
         <Meta title={name} description={description} />
-        <Divider orientation="left">Attributes</Divider>
-        <Collapse
-          size={'small'}
-          items={[
-            {
-              key: '1',
-              label: 'pant',
-              children: <p>Brown</p>,
-            },
-            {
-              key: '2',
-              label: 'jacket',
-              children: <p>Blue</p>,
-            },
-            {
-              key: '3',
-              label: 'Shorts',
-              children: <p>Yellow</p>,
-            },
-          ]}
-        />
+        {attrs && (
+          <>
+            <Divider orientation="left">Attributes</Divider>
+            <Collapse
+              size={'small'}
+              items={[
+                {
+                  key: '1',
+                  label: 'pant',
+                  children: <p>Brown</p>,
+                },
+                {
+                  key: '2',
+                  label: 'jacket',
+                  children: <p>Blue</p>,
+                },
+                {
+                  key: '3',
+                  label: 'Shorts',
+                  children: <p>Yellow</p>,
+                },
+              ]}
+            />
+          </>
+        )}
 
-        <Divider orientation="left">File Attributes</Divider>
-        <Collapse
-          defaultActiveKey={['1']}
-          size={'small'}
-          items={[
-            {
-              key: '1',
-              label: 'Files',
-              children: (
-                <Carousel afterChange={(e) => console.log(e)}>
-                  <div>
-                    <h3>1</h3>
-                  </div>
-                  <div>
-                    <h3>2</h3>
-                  </div>
-                  <div>
-                    <h3>3</h3>
-                  </div>
-                  <div>
-                    <h3>4</h3>
-                  </div>
-                </Carousel>
-              ),
-            },
-          ]}
-        />
+        {files && (
+          <>
+            <Divider orientation="left">File Attributes</Divider>
+            <Collapse
+              defaultActiveKey={['1']}
+              size={'small'}
+              items={[
+                {
+                  key: '1',
+                  label: 'Files',
+                  children: (
+                    <Carousel afterChange={(e) => console.log(e)}>
+                      <div>
+                        <h3>1</h3>
+                      </div>
+                      <div>
+                        <h3>2</h3>
+                      </div>
+                      <div>
+                        <h3>3</h3>
+                      </div>
+                      <div>
+                        <h3>4</h3>
+                      </div>
+                    </Carousel>
+                  ),
+                },
+              ]}
+            />
+          </>
+        )}
+
         {children}
       </DSCard>
     </>
