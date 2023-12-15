@@ -72,7 +72,7 @@ interface AssetProps {
 interface SessionContextProps {
   transactionUuid?: string;
   policyId?: string;
-  accesToken?: string;
+  accessToken?: string;
   refreshToken?: string;
   initialData?: string;
   testnet?: boolean;
