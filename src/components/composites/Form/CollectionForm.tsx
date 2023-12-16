@@ -1,4 +1,4 @@
-import React, { useState, useRef, useContext } from 'react';
+import React, { useState, useRef } from 'react';
 import { Formik } from 'formik';
 import {
   Divider,
@@ -12,13 +12,13 @@ import {
   Form,
 } from 'antd';
 import { Asset } from 'components/composites/Asset';
-import FormContext from 'context/FormContext';
+import { useFormContext } from 'context/FormContext';
 import { PlusOutlined, LoadingOutlined } from '@ant-design/icons';
 
 type TargetKey = React.MouseEvent | React.KeyboardEvent | string;
 
 const CollectionForm: React.FC = () => {
-  const { assetCollection, setAssetCollection } = useContext(FormContext);
+  const { assetCollection, setAssetCollection } = useFormContext();
   console.log(assetCollection, ' <---- when loading');
   const TabPanels: Array<{
     key: string;
@@ -60,7 +60,11 @@ const CollectionForm: React.FC = () => {
 
     const newPanes = TabPanels.filter((pane) => pane.key !== targetKey);
 
-    setAssetCollection(assetCollection.filter((i, idx) => idx !== targetIndex));
+    setAssetCollection(
+      assetCollection.filter(
+        (i: AssetProps, idx: number) => idx !== targetIndex
+      )
+    );
     const { key } =
       newPanes[targetIndex === newPanes.length ? targetIndex - 1 : targetIndex];
     setActiveKey(key);
