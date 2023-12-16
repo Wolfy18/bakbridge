@@ -1,4 +1,3 @@
-import { useCallback } from 'react';
 import client from './client';
 import { AxiosResponse } from 'axios';
 
@@ -17,21 +16,21 @@ interface useBakClientProps {
   ) => Promise<AxiosResponse<AssetProps[], Error>>;
 }
 
-const getTransaction = useCallback((uuid: string) => {
+const getTransaction = (uuid: string) => {
   return client.get(`transactions/${uuid}/`);
-}, []);
+};
 
-const mintTransaction = useCallback((uuid: string) => {
+const mintTransaction = (uuid: string) => {
   return client.post(`transactions/${uuid}/mint/`);
-}, []);
+};
 
-const refundTransaction = useCallback((uuid: string) => {
+const refundTransaction = (uuid: string) => {
   return client.post(`transactions/${uuid}/refund/`);
-}, []);
+};
 
-const submitRequest = useCallback((data: AssetProps[]) => {
+const submitRequest = (data: AssetProps[]) => {
   return client.post(`assets/`, data);
-}, []);
+};
 
 const useBakClient = (): useBakClientProps => {
   return {
