@@ -8,10 +8,7 @@ import { Drawer as TransactionDrawer } from 'components/composites/Transaction';
 
 const App: React.FC<SessionContextProps> = (props) => {
   return (
-    <SessionProvider
-      {...props}
-      showTransaction={props.showTransaction || false}
-    >
+    <SessionProvider {...props}>
       <Layout>
         <FormProvider initialData={props.initialData}>
           <CollectionForm />

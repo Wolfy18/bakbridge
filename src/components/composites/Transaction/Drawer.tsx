@@ -30,8 +30,12 @@ const Drawer: React.FC = () => {
   useEffect(() => {
     (async () => {
       if (!transactionUuid) return;
-      const tx = await getTransaction(transactionUuid);
-      setTransaction(tx.data);
+      try {
+        const tx = await getTransaction(transactionUuid);
+        setTransaction(tx.data);
+      } catch (error) {
+        alert('unable to load transaction');
+      }
     })();
   }, [transactionUuid]);
 

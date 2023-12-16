@@ -1,14 +1,24 @@
 import axios from 'axios';
+import { useSessionContext } from 'context/SessionContext';
 
-const client = axios.create({
-  baseURL: ``,
-  responseType: 'json',
-  responseEncoding: 'utf8',
-  withCredentials: true,
-  headers: {
-    'Content-Type': 'application/json',
-    'X-WP-Nonce': '',
-  },
-});
+const createClient = () => {
+  const { baseUrl, accessToken } = useSessionContext();
 
-export default client;
+  return axios.create({
+    baseURL: baseUrl,
+    responseType: 'json',
+    responseEncoding: 'utf8',
+    withCredentials: true,
+    headers: {
+      'Content-Type': 'application/json',
+      'X-WP-Nonce': '',
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+};
+
+// const client = createClient();
+
+// export default client;
+
+export default createClient;
