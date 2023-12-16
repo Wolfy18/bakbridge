@@ -1,14 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import {
-  Divider,
-  Button,
-  Drawer as DSDrawer,
-  Space,
-  Switch,
-  Input,
-  Form,
-} from 'antd';
+import { Button, Drawer as DSDrawer, Space } from 'antd';
 import { useSessionContext } from 'context/SessionContext';
+import Invoice from './Invoice';
 import useBakClient from 'client/bakrypt';
 
 const Drawer: React.FC = () => {
@@ -73,39 +66,7 @@ const Drawer: React.FC = () => {
         }
         style={{ lineHeight: 'normal' }}
       >
-        <Form layout="vertical">
-          <Form.Item label="Policy Id" name="policy_id">
-            <Input
-              readOnly
-              name="policy_id"
-              defaultValue={transaction.policy_id}
-            />
-          </Form.Item>
-          <div className="flex justify-between">
-            <Form.Item label="Processing Cost" name="processing_cost">
-              <Input
-                readOnly
-                name="processing_cost"
-                defaultValue={
-                  transaction.status !== 'confirmed'
-                    ? transaction.estimated_cost
-                    : transaction.cost
-                }
-              />
-            </Form.Item>
-            <Form.Item label="Convenience fees" name="fees">
-              <Input
-                readOnly
-                name="fees"
-                defaultValue={transaction.convenience_fee}
-              />
-            </Form.Item>
-          </div>
-
-          <Switch checkedChildren="On" unCheckedChildren="Off" />
-          <Divider orientation="left">Process Automatically</Divider>
-          <Switch defaultChecked checkedChildren="On" unCheckedChildren="Off" />
-        </Form>
+        <Invoice {...transaction} />
       </DSDrawer>
     </div>
   );

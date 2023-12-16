@@ -17,8 +17,6 @@ const createClient = () => {
   });
 };
 
-// const client = createClient();
+const client = createClient();
 
-// export default client;
-
-export default createClient;
+export default client;
