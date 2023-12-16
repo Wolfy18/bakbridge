@@ -9,9 +9,11 @@ import {
   Form,
 } from 'antd';
 import { useSessionContext } from 'context/SessionContext';
+import useBakClient from 'client/bakrypt';
 
 const Drawer: React.FC = () => {
   const { transactionUuid, showTransaction } = useSessionContext();
+  const { refundTransaction, getTransaction, mintTransaction } = useBakClient();
 
   const [transaction, setTransaction] = useState<TransactionProps | undefined>(
     undefined
@@ -20,15 +22,20 @@ const Drawer: React.FC = () => {
     showTransaction ? showTransaction : true
   );
   const onCloseDrawer: () => void = () => {
-    console.log('clsoe drawer!');
+    console.log('close drawer!');
     setOpen(false);
   };
 
+  // fetch transaction information
   useEffect(() => {
-    // fetch transaction information
-
-    setTransaction(undefined);
+    (async () => {
+      if (!transactionUuid) return;
+      const tx = await getTransaction(transactionUuid);
+      setTransaction(tx.data);
+    })();
   }, [transactionUuid]);
+
+  if (!transaction) return <>No transaction has been found</>;
 
   return (
     <div className="">
@@ -41,8 +48,19 @@ const Drawer: React.FC = () => {
         open={open}
         extra={
           <Space>
-            <Button type="default" onClick={onCloseDrawer}>
-              Cancel
+            <Button
+              type="default"
+              className="bg-info text-white"
+              onClick={() => mintTransaction(transaction.uuid)}
+            >
+              Mint Transaction
+            </Button>
+            <Button
+              type="default"
+              className="bg-danger text-white"
+              onClick={() => refundTransaction(transaction.uuid)}
+            >
+              Refund Transaction
             </Button>
             <Button type="default" onClick={onCloseDrawer}>
               OK
@@ -51,47 +69,39 @@ const Drawer: React.FC = () => {
         }
         style={{ lineHeight: 'normal' }}
       >
-        {transaction ? (
-          <Form layout="vertical">
-            <Form.Item label="Policy Id" name="policy_id">
+        <Form layout="vertical">
+          <Form.Item label="Policy Id" name="policy_id">
+            <Input
+              readOnly
+              name="policy_id"
+              defaultValue={transaction.policy_id}
+            />
+          </Form.Item>
+          <div className="flex justify-between">
+            <Form.Item label="Processing Cost" name="processing_cost">
               <Input
                 readOnly
-                name="policy_id"
-                defaultValue={transaction.policy_id}
+                name="processing_cost"
+                defaultValue={
+                  transaction.status !== 'confirmed'
+                    ? transaction.estimated_cost
+                    : transaction.cost
+                }
               />
             </Form.Item>
-            <div className="flex justify-between">
-              <Form.Item label="Processing Cost" name="processing_cost">
-                <Input
-                  readOnly
-                  name="processing_cost"
-                  defaultValue={
-                    transaction.status !== 'confirmed'
-                      ? transaction.estimated_cost
-                      : transaction.cost
-                  }
-                />
-              </Form.Item>
-              <Form.Item label="Convenience fees" name="fees">
-                <Input
-                  readOnly
-                  name="fees"
-                  defaultValue={transaction.convenience_fee}
-                />
-              </Form.Item>
-            </div>
+            <Form.Item label="Convenience fees" name="fees">
+              <Input
+                readOnly
+                name="fees"
+                defaultValue={transaction.convenience_fee}
+              />
+            </Form.Item>
+          </div>
 
-            <Switch checkedChildren="On" unCheckedChildren="Off" />
-            <Divider orientation="left">Process Automatically</Divider>
-            <Switch
-              defaultChecked
-              checkedChildren="On"
-              unCheckedChildren="Off"
-            />
-          </Form>
-        ) : (
-          'No transaction found'
-        )}
+          <Switch checkedChildren="On" unCheckedChildren="Off" />
+          <Divider orientation="left">Process Automatically</Divider>
+          <Switch defaultChecked checkedChildren="On" unCheckedChildren="Off" />
+        </Form>
       </DSDrawer>
     </div>
   );
