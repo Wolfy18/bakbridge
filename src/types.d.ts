@@ -78,4 +78,5 @@ interface SessionContextProps {
   testnet?: boolean;
   authUrl?: string;
   baseUrl?: string;
+  showTransaction?: boolean;
 }

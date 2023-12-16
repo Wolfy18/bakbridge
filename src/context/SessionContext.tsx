@@ -22,6 +22,7 @@ export const SessionProvider: React.FC<
   baseUrl,
   transactionUuid,
   policyId,
+  showTransaction,
   children,
 }) => {
   return (
@@ -33,6 +34,7 @@ export const SessionProvider: React.FC<
         authUrl,
         baseUrl,
         transactionUuid,
+        showTransaction,
         policyId,
       }}
     >

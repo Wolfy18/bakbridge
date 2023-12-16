@@ -1,7 +1,100 @@
-import React, { PropsWithChildren } from 'react';
+import React, { useEffect, useState } from 'react';
+import {
+  Divider,
+  Button,
+  Drawer as DSDrawer,
+  Space,
+  Switch,
+  Input,
+  Form,
+} from 'antd';
+import { useSessionContext } from 'context/SessionContext';
 
-const Drawer: React.FC<PropsWithChildren> = ({ children }) => {
-  return <>{children}</>;
+const Drawer: React.FC = () => {
+  const { transactionUuid, showTransaction } = useSessionContext();
+
+  const [transaction, setTransaction] = useState<TransactionProps | undefined>(
+    undefined
+  );
+  const [open, setOpen] = useState<boolean>(
+    showTransaction ? showTransaction : true
+  );
+  const onCloseDrawer: () => void = () => {
+    console.log('clsoe drawer!');
+    setOpen(false);
+  };
+
+  useEffect(() => {
+    // fetch transaction information
+
+    setTransaction(undefined);
+  }, [transactionUuid]);
+
+  return (
+    <div className="">
+      <DSDrawer
+        title="Invoice Details"
+        placement={'bottom'}
+        getContainer={false}
+        width={500}
+        onClose={onCloseDrawer}
+        open={open}
+        extra={
+          <Space>
+            <Button type="default" onClick={onCloseDrawer}>
+              Cancel
+            </Button>
+            <Button type="default" onClick={onCloseDrawer}>
+              OK
+            </Button>
+          </Space>
+        }
+        style={{ lineHeight: 'normal' }}
+      >
+        {transaction ? (
+          <Form layout="vertical">
+            <Form.Item label="Policy Id" name="policy_id">
+              <Input
+                readOnly
+                name="policy_id"
+                defaultValue={transaction.policy_id}
+              />
+            </Form.Item>
+            <div className="flex justify-between">
+              <Form.Item label="Processing Cost" name="processing_cost">
+                <Input
+                  readOnly
+                  name="processing_cost"
+                  defaultValue={
+                    transaction.status !== 'confirmed'
+                      ? transaction.estimated_cost
+                      : transaction.cost
+                  }
+                />
+              </Form.Item>
+              <Form.Item label="Convenience fees" name="fees">
+                <Input
+                  readOnly
+                  name="fees"
+                  defaultValue={transaction.convenience_fee}
+                />
+              </Form.Item>
+            </div>
+
+            <Switch checkedChildren="On" unCheckedChildren="Off" />
+            <Divider orientation="left">Process Automatically</Divider>
+            <Switch
+              defaultChecked
+              checkedChildren="On"
+              unCheckedChildren="Off"
+            />
+          </Form>
+        ) : (
+          'No transaction found'
+        )}
+      </DSDrawer>
+    </div>
+  );
 };
 
 export default Drawer;
