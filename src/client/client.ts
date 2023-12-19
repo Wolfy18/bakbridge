@@ -5,14 +5,10 @@ const createClient = () => {
   // const { baseUrl, accessToken } = useSessionContext();
 
   return axios.create({
-    baseURL: 'baseUrl',
-    responseType: 'json',
-    responseEncoding: 'utf8',
-    withCredentials: true,
+    baseURL: 'https://bakrypt.io/v1/',
     headers: {
       'Content-Type': 'application/json',
-      'X-WP-Nonce': '',
-      Authorization: `Bearer ${'accessToken'}`,
+      Authorization: `Token ${''}`,
     },
   });
 };

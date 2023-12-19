@@ -39,7 +39,7 @@ const SimpleLayout: React.FC<Props & PropsWithChildren> = ({
   };
 
   return (
-    <Layout className="max-w-[600px] m-auto bg-transparent">
+    <Layout className="max-w-[800px] m-auto bg-transparent">
       {enableHeader && <Header style={headerStyle}>Header</Header>}
 
       <Content style={contentStyle}>{children}</Content>

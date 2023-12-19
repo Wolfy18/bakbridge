@@ -37,28 +37,30 @@ const Drawer: React.FC = () => {
   return (
     <div className="">
       <DSDrawer
-        title="Invoice Details"
-        placement={'bottom'}
+        title="Invoice"
+        placement={'right'}
         getContainer={false}
-        width={500}
+        size="large"
         onClose={onCloseDrawer}
         open={open}
         extra={
           <Space>
             <Button
               type="default"
-              className="bg-info text-white"
-              onClick={() => mintTransaction(transaction.uuid)}
-            >
-              Mint Transaction
-            </Button>
-            <Button
-              type="default"
-              className="bg-danger text-white"
+              className="!border-red-400 text-red-500 hover:bg-red-500 hover:!text-white"
               onClick={() => refundTransaction(transaction.uuid)}
             >
-              Refund Transaction
+              Refund
             </Button>
+
+            <Button
+              type="primary"
+              className="bg-blue-500 text-white"
+              onClick={() => mintTransaction(transaction.uuid)}
+            >
+              Mint
+            </Button>
+
             <Button type="default" onClick={onCloseDrawer}>
               OK
             </Button>

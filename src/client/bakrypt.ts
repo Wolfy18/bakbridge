@@ -17,19 +17,19 @@ interface useBakClientProps {
 }
 
 const getTransaction = (uuid: string) => {
-  return client.get(`transactions/${uuid}/`);
+  return client.get(`/transactions/${uuid}/`);
 };
 
 const mintTransaction = (uuid: string) => {
-  return client.post(`transactions/${uuid}/mint/`);
+  return client.post(`/transactions/${uuid}/mint/`);
 };
 
 const refundTransaction = (uuid: string) => {
-  return client.post(`transactions/${uuid}/refund/`);
+  return client.post(`/transactions/${uuid}/refund/`);
 };
 
 const submitRequest = (data: AssetProps[]) => {
-  return client.post(`assets/`, data);
+  return client.post(`/assets/`, data);
 };
 
 const useBakClient = (): useBakClientProps => {

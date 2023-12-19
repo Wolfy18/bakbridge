@@ -109,8 +109,12 @@ const CollectionForm: React.FC = () => {
             <Divider orientation="left"></Divider>
             <div className="flex justify-between max-h-[50px] items-center">
               <div className="grid grid-cols-2 gap-4">
-                <Button type="default" onClick={add}>
-                  <PlusOutlined /> Add Asset
+                <Button
+                  type="default"
+                  className="flex items-center"
+                  onClick={add}
+                >
+                  <PlusOutlined /> Asset
                 </Button>
                 <Button type="link" onClick={() => setOpen(!open)}>
                   Config
