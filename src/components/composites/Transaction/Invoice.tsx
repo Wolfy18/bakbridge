@@ -1,5 +1,6 @@
 import React from 'react';
 import { Divider, Switch, Input, Form, QRCode, Alert } from 'antd';
+import { ShowPassword } from 'components/atoms/Input';
 
 const Invoice: React.FC<TransactionProps> = ({
   uuid,
@@ -36,23 +37,20 @@ const Invoice: React.FC<TransactionProps> = ({
       </div>
 
       <label>Deposit Address</label>
-      <Alert
-        className="mt-4"
-        message="DO NOT TRANSFER FUNDS FROM AN EXCHANGE!"
-        description="We will send all tokens and change to the payor's address; meaning that the payment must be done from a wallet that you can control and its capable of manage native tokens on Cardano like Nami, Flint, Yoroi, Daedalus or Eternl"
-        type="warning"
-        showIcon
-      />
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-center py-4">
         <QRCode value={deposit_address} status="loading" />
-        <Input
-          readOnly
-          name="deposit_address"
+        <Alert
           className="col-span-2"
-          defaultValue={deposit_address}
+          message="DO NOT TRANSFER FUNDS FROM AN EXCHANGE!"
+          description="We will send all tokens and change to the payor's address; meaning that the payment must be done from a wallet that you can control and its capable of manage native tokens on Cardano like Nami, Flint, Yoroi, Daedalus or Eternl"
+          type="warning"
+          showIcon
         />
       </div>
+      <ShowPassword readOnly name="deposit_address" value={deposit_address} />
+
+      <Divider />
 
       <Form.Item label="Transaction Identifier" name="uuid">
         <Input readOnly name="uuid" defaultValue={uuid} />
