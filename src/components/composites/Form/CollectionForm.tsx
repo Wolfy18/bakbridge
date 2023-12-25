@@ -1,18 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Formik } from 'formik';
-import {
-  Divider,
-  Button,
-  Tabs,
-  Drawer,
-  Space,
-  Switch,
-  Input,
-  Spin,
-  Form,
-} from 'antd';
+import { Divider, Button, Tabs, Drawer, Switch, Input, Spin, Form } from 'antd';
 import { Asset } from 'components/composites/Asset';
-import { useFormContext } from 'context/FormContext';
+import { EmptyAsset, useFormContext } from 'context/FormContext';
 import { PlusOutlined, LoadingOutlined } from '@ant-design/icons';
 import { useSessionContext } from 'context/SessionContext';
 import useBakClient from 'client/bakrypt';
@@ -50,15 +40,7 @@ const CollectionForm: React.FC = () => {
 
   const add = () => {
     const newActiveKey = `asset-${newTabIndex.current++}`;
-    setAssetCollection([
-      ...assetCollection,
-      {
-        blockchain: 'ada',
-        name: `test added ${newActiveKey}`,
-        image: 'https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png',
-        amount: 1,
-      },
-    ]);
+    setAssetCollection([...assetCollection, EmptyAsset]);
 
     setActiveKey(newActiveKey);
   };
@@ -186,13 +168,6 @@ const CollectionForm: React.FC = () => {
         onClose={onCloseConfigDrawer}
         open={open}
         size={'large'}
-        extra={
-          <Space>
-            <Button type="default" onClick={onCloseConfigDrawer}>
-              OK
-            </Button>
-          </Space>
-        }
         style={{ lineHeight: 'normal' }}
       >
         <Form layout="vertical" disabled={!!transaction}>
@@ -219,12 +194,6 @@ const CollectionForm: React.FC = () => {
             checkedChildren="On"
             unCheckedChildren="Off"
           />
-          {/* <Divider orientation="left">Process Automatically</Divider>
-          <Switch
-            defaultChecked={transaction?.is_auto_processing}
-            checkedChildren="On"
-            unCheckedChildren="Off"
-          /> */}
         </Form>
       </Drawer>
     </div>

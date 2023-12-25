@@ -14,6 +14,13 @@ interface FormContextProps {
   setTransaction: (obj: TransactionProps) => void;
 }
 
+export const EmptyAsset = {
+  blockchain: 'ada',
+  name: '',
+  image: 'ipfs://QmbuisJxUnYNbkYjSGLEbvHPzrwLLRNMep5YPRfuMZaWeD',
+  amount: 1,
+};
+
 const FormContext = createContext<FormContextProps | undefined>(undefined);
 
 export const useFormContext = () => {
@@ -28,16 +35,7 @@ export const FormProvider: React.FC<
   PropsWithChildren & { initialData?: string; showTransaction?: boolean }
 > = ({ initialData, showTransaction, children }) => {
   const [assetCollection, setAssetCollection] = useState<AssetProps[]>(
-    initialData && initialData.length
-      ? JSON.parse(initialData)
-      : [
-          {
-            blockchain: 'ada',
-            name: `Default No initial Data`,
-            image: 'https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png',
-            amount: 1,
-          },
-        ]
+    initialData && initialData.length ? JSON.parse(initialData) : [EmptyAsset]
   );
 
   const [openTxDrawer, setOpenTxDrawer] = useState<boolean | undefined>(

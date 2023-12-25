@@ -1,6 +1,7 @@
 import React, { PropsWithChildren } from 'react';
 import { Carousel, Collapse, Divider } from 'antd';
 import { Card as DSCard } from 'antd';
+import File from './File';
 
 const { Meta } = DSCard;
 
@@ -17,7 +18,7 @@ const Card: React.FC<PropsWithChildren & AssetProps> = ({
       <DSCard
         hoverable
         style={{ width: 360 }}
-        cover={<img alt="example" src={image} />}
+        cover={<File url={image} alt={name} />}
         className="m-auto"
       >
         <Meta title={name} description={description} />
