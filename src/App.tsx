@@ -1,7 +1,7 @@
 import React, { PropsWithChildren } from 'react';
 
 import { Layout } from 'components/composites/Layout';
-import { CollectionForm } from 'components/composites/Form';
+import { CollectionForm } from 'components/composites/CollectionForm';
 import { FormProvider } from 'context/FormContext';
 import { SessionProvider } from 'context/SessionContext';
 import { Drawer as TransactionDrawer } from 'components/composites/Transaction';
