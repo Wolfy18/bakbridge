@@ -1,4 +1,4 @@
-import { Image } from 'antd';
+import { Image, Spin } from 'antd';
 import React, { useEffect, useState } from 'react';
 
 const File: React.FC<{ url?: string; alt?: string }> = ({ url, alt }) => {
@@ -36,7 +36,12 @@ const File: React.FC<{ url?: string; alt?: string }> = ({ url, alt }) => {
     return 'Unable to load file';
   };
 
-  if (!type) return <>Loading file....</>;
+  if (!type)
+    return (
+      <Spin tip="Loading" size="large">
+        <div className="content" />
+      </Spin>
+    );
 
   return <>{renderFile()}</>;
 };

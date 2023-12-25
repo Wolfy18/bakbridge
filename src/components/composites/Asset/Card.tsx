@@ -17,7 +17,7 @@ const Card: React.FC<PropsWithChildren & AssetProps> = ({
     <>
       <DSCard
         hoverable
-        style={{ width: 360 }}
+        style={{ width: 360, minHeight: 250 }}
         cover={<File url={image} alt={name} />}
         className="m-auto"
       >
