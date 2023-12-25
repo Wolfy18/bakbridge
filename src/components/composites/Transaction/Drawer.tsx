@@ -1,38 +1,19 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Button, Drawer as DSDrawer, Space } from 'antd';
-import { useSessionContext } from 'context/SessionContext';
 import Invoice from './Invoice';
 import useBakClient from 'client/bakrypt';
+import { useFormContext } from 'context/FormContext';
 
 const Drawer: React.FC = () => {
-  const { transactionUuid, showTransaction } = useSessionContext();
-  const { refundTransaction, getTransaction, mintTransaction } = useBakClient();
+  const { refundTransaction, mintTransaction } = useBakClient();
+  const { openTxDrawer, setOpenTxDrawer, transaction } = useFormContext();
 
-  const [transaction, setTransaction] = useState<TransactionProps | undefined>(
-    undefined
-  );
-  const [open, setOpen] = useState<boolean>(
-    showTransaction ? showTransaction : true
-  );
   const onCloseDrawer: () => void = () => {
     console.log('close drawer!');
-    setOpen(false);
+    setOpenTxDrawer(false);
   };
 
-  // fetch transaction information
-  useEffect(() => {
-    (async () => {
-      if (!transactionUuid) return;
-      try {
-        const tx = await getTransaction(transactionUuid);
-        setTransaction(tx.data);
-      } catch (error) {
-        alert('unable to load transaction');
-      }
-    })();
-  }, [transactionUuid]);
-
-  if (!transaction) return <>No transaction has been found</>;
+  if (!transaction) return <></>;
 
   return (
     <div className="">
@@ -42,7 +23,7 @@ const Drawer: React.FC = () => {
         getContainer={false}
         size="large"
         onClose={onCloseDrawer}
-        open={open}
+        open={openTxDrawer}
         extra={
           <Space>
             <Button

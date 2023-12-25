@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Formik } from 'formik';
 import {
   Divider,
@@ -14,11 +14,21 @@ import {
 import { Asset } from 'components/composites/Asset';
 import { useFormContext } from 'context/FormContext';
 import { PlusOutlined, LoadingOutlined } from '@ant-design/icons';
+import { useSessionContext } from 'context/SessionContext';
+import useBakClient from 'client/bakrypt';
 
 type TargetKey = React.MouseEvent | React.KeyboardEvent | string;
 
 const CollectionForm: React.FC = () => {
-  const { assetCollection, setAssetCollection } = useFormContext();
+  const {
+    assetCollection,
+    setAssetCollection,
+    setOpenTxDrawer,
+    transaction,
+    setTransaction,
+  } = useFormContext();
+  const { getTransaction } = useBakClient();
+  const { transactionUuid } = useSessionContext();
   console.log(assetCollection, ' <---- when loading');
   const TabPanels: Array<{
     key: string;
@@ -84,6 +94,19 @@ const CollectionForm: React.FC = () => {
     setOpen(false);
   };
 
+  // fetch transaction information
+  useEffect(() => {
+    (async () => {
+      if (!transactionUuid) return;
+      try {
+        const tx = await getTransaction(transactionUuid);
+        setTransaction(tx.data);
+      } catch (error) {
+        alert('unable to load transaction');
+      }
+    })();
+  }, [transactionUuid]);
+
   return (
     <div className="relative">
       <Formik
@@ -109,30 +132,48 @@ const CollectionForm: React.FC = () => {
             <Divider orientation="left"></Divider>
             <div className="flex justify-between max-h-[50px] items-center">
               <div className="grid grid-cols-2 gap-4">
-                <Button
-                  type="default"
-                  className="flex items-center"
-                  onClick={add}
-                >
-                  <PlusOutlined /> Asset
-                </Button>
+                {!transactionUuid && (
+                  <Button
+                    type="default"
+                    className="flex items-center"
+                    onClick={add}
+                  >
+                    <PlusOutlined /> Asset
+                  </Button>
+                )}
+
                 <Button type="link" onClick={() => setOpen(!open)}>
                   Config
                 </Button>
               </div>
               <div>
-                <Button type="default" onClick={submitForm}>
-                  <Spin
-                    className={`mr-2 ${!isSubmitting ? 'hidden' : null}`}
-                    indicator={
-                      <LoadingOutlined
-                        style={{ fontSize: 14, marginTop: '-3px' }}
-                        spin
-                      />
-                    }
-                  />
-                  Submit Request
-                </Button>
+                {transactionUuid ? (
+                  <Button type="default" onClick={() => setOpenTxDrawer(true)}>
+                    <Spin
+                      className={`mr-2 ${!isSubmitting ? 'hidden' : null}`}
+                      indicator={
+                        <LoadingOutlined
+                          style={{ fontSize: 14, marginTop: '-3px' }}
+                          spin
+                        />
+                      }
+                    />
+                    Show Invoice
+                  </Button>
+                ) : (
+                  <Button type="default" onClick={submitForm}>
+                    <Spin
+                      className={`mr-2 ${!isSubmitting ? 'hidden' : null}`}
+                      indicator={
+                        <LoadingOutlined
+                          style={{ fontSize: 14, marginTop: '-3px' }}
+                          spin
+                        />
+                      }
+                    />
+                    Submit Request
+                  </Button>
+                )}
               </div>
             </div>
           </div>
@@ -141,16 +182,12 @@ const CollectionForm: React.FC = () => {
 
       <Drawer
         title="Transaction Configuration"
-        placement={'bottom'}
-        getContainer={false}
-        width={500}
+        placement={'right'}
         onClose={onCloseConfigDrawer}
         open={open}
+        size={'large'}
         extra={
           <Space>
-            <Button type="default" onClick={onCloseConfigDrawer}>
-              Cancel
-            </Button>
             <Button type="default" onClick={onCloseConfigDrawer}>
               OK
             </Button>
@@ -158,20 +195,36 @@ const CollectionForm: React.FC = () => {
         }
         style={{ lineHeight: 'normal' }}
       >
-        <Form layout="vertical">
+        <Form layout="vertical" disabled={!!transaction}>
           <p>
             Setup custom configurations for this transaction, like royalties!
           </p>
           <Divider orientation="left">Royalties</Divider>
           <Form.Item label="Percentage" name="percentage">
-            <Input name="percentage" type="number" />
+            <Input
+              name="percentage"
+              type="number"
+              defaultValue={transaction?.royalties_rate}
+            />
           </Form.Item>
           <Form.Item label="Wallet Address" name="wallet_address">
-            <Input name="wallet_address" />
+            <Input
+              name="wallet_address"
+              defaultValue={transaction?.royalties}
+            />
           </Form.Item>
-          <Switch checkedChildren="On" unCheckedChildren="Off" />
-          <Divider orientation="left">Process Automatically</Divider>
-          <Switch defaultChecked checkedChildren="On" unCheckedChildren="Off" />
+          <p>On/Off</p>
+          <Switch
+            defaultChecked={transaction?.has_royalties}
+            checkedChildren="On"
+            unCheckedChildren="Off"
+          />
+          {/* <Divider orientation="left">Process Automatically</Divider>
+          <Switch
+            defaultChecked={transaction?.is_auto_processing}
+            checkedChildren="On"
+            unCheckedChildren="Off"
+          /> */}
         </Form>
       </Drawer>
     </div>

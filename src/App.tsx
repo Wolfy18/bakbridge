@@ -15,10 +15,13 @@ const App: React.FC<PropsWithChildren & SessionContextProps> = (props) => {
     <ConfigProvider componentSize="middle">
       <SessionProvider {...props}>
         <Layout>
-          <FormProvider initialData={props.initialData}>
+          <FormProvider
+            initialData={props.initialData}
+            showTransaction={props.showTransaction}
+          >
             <CollectionForm />
+            <TransactionDrawer />
           </FormProvider>
-          <TransactionDrawer />
         </Layout>
       </SessionProvider>
     </ConfigProvider>

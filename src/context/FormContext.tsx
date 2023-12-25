@@ -8,6 +8,10 @@ import React, {
 interface FormContextProps {
   assetCollection: AssetProps[];
   setAssetCollection: (collection: AssetProps[]) => void;
+  openTxDrawer?: boolean;
+  setOpenTxDrawer: (state: boolean) => void;
+  transaction?: TransactionProps;
+  setTransaction: (obj: TransactionProps) => void;
 }
 
 const FormContext = createContext<FormContextProps | undefined>(undefined);
@@ -21,8 +25,8 @@ export const useFormContext = () => {
 };
 
 export const FormProvider: React.FC<
-  PropsWithChildren & { initialData?: string }
-> = ({ initialData, children }) => {
+  PropsWithChildren & { initialData?: string; showTransaction?: boolean }
+> = ({ initialData, showTransaction, children }) => {
   const [assetCollection, setAssetCollection] = useState<AssetProps[]>(
     initialData && initialData.length
       ? JSON.parse(initialData)
@@ -36,8 +40,25 @@ export const FormProvider: React.FC<
         ]
   );
 
+  const [openTxDrawer, setOpenTxDrawer] = useState<boolean | undefined>(
+    showTransaction
+  );
+
+  const [transaction, setTransaction] = useState<TransactionProps | undefined>(
+    undefined
+  );
+
   return (
-    <FormContext.Provider value={{ assetCollection, setAssetCollection }}>
+    <FormContext.Provider
+      value={{
+        assetCollection,
+        setAssetCollection,
+        openTxDrawer,
+        setOpenTxDrawer,
+        transaction,
+        setTransaction,
+      }}
+    >
       {children}
     </FormContext.Provider>
   );
