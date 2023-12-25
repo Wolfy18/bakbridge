@@ -4,11 +4,11 @@ import Card from './Card';
 
 const Asset: React.FC<AssetProps> = (props) => {
   return (
-    <div className="flex justify-center flex-col md:flex-row">
-      <div className="flex-1">
+    <div className="grid md:grid-cols-2 gap-4">
+      <div className="col-span-1">
         <Card {...props}></Card>
       </div>
-      <div className="flex-1">
+      <div className="col-span-1">
         <AssetForm />
       </div>
     </div>

@@ -39,6 +39,8 @@ interface TransactionProps {
   royalties_minted_on: string;
   royalties_burned: boolean;
   royalties_burned_on: string;
+  royalties_rate: string;
+  royalties: string;
   name: string;
   image: string;
   description: string;

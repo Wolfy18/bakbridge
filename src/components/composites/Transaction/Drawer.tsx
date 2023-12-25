@@ -1,49 +1,47 @@
-import React, { useEffect, useState } from 'react';
-import {
-  Divider,
-  Button,
-  Drawer as DSDrawer,
-  Space,
-  Switch,
-  Input,
-  Form,
-} from 'antd';
-import { useSessionContext } from 'context/SessionContext';
+import React from 'react';
+import { Button, Drawer as DSDrawer, Space } from 'antd';
+import Invoice from './Invoice';
+import useBakClient from 'client/bakrypt';
+import { useFormContext } from 'context/FormContext';
 
 const Drawer: React.FC = () => {
-  const { transactionUuid, showTransaction } = useSessionContext();
+  const { refundTransaction, mintTransaction } = useBakClient();
+  const { openTxDrawer, setOpenTxDrawer, transaction } = useFormContext();
 
-  const [transaction, setTransaction] = useState<TransactionProps | undefined>(
-    undefined
-  );
-  const [open, setOpen] = useState<boolean>(
-    showTransaction ? showTransaction : true
-  );
   const onCloseDrawer: () => void = () => {
-    console.log('clsoe drawer!');
-    setOpen(false);
+    console.log('close drawer!');
+    setOpenTxDrawer(false);
   };
 
-  useEffect(() => {
-    // fetch transaction information
-
-    setTransaction(undefined);
-  }, [transactionUuid]);
+  if (!transaction) return <></>;
 
   return (
     <div className="">
       <DSDrawer
-        title="Invoice Details"
-        placement={'bottom'}
+        title="Invoice"
+        placement={'right'}
         getContainer={false}
-        width={500}
+        size="large"
         onClose={onCloseDrawer}
-        open={open}
+        open={openTxDrawer}
         extra={
           <Space>
-            <Button type="default" onClick={onCloseDrawer}>
-              Cancel
+            <Button
+              type="default"
+              className="!border-red-400 text-red-500 hover:bg-red-500 hover:!text-white"
+              onClick={() => refundTransaction(transaction.uuid)}
+            >
+              Refund
             </Button>
+
+            <Button
+              type="primary"
+              className="bg-blue-500 text-white"
+              onClick={() => mintTransaction(transaction.uuid)}
+            >
+              Mint
+            </Button>
+
             <Button type="default" onClick={onCloseDrawer}>
               OK
             </Button>
@@ -51,47 +49,7 @@ const Drawer: React.FC = () => {
         }
         style={{ lineHeight: 'normal' }}
       >
-        {transaction ? (
-          <Form layout="vertical">
-            <Form.Item label="Policy Id" name="policy_id">
-              <Input
-                readOnly
-                name="policy_id"
-                defaultValue={transaction.policy_id}
-              />
-            </Form.Item>
-            <div className="flex justify-between">
-              <Form.Item label="Processing Cost" name="processing_cost">
-                <Input
-                  readOnly
-                  name="processing_cost"
-                  defaultValue={
-                    transaction.status !== 'confirmed'
-                      ? transaction.estimated_cost
-                      : transaction.cost
-                  }
-                />
-              </Form.Item>
-              <Form.Item label="Convenience fees" name="fees">
-                <Input
-                  readOnly
-                  name="fees"
-                  defaultValue={transaction.convenience_fee}
-                />
-              </Form.Item>
-            </div>
-
-            <Switch checkedChildren="On" unCheckedChildren="Off" />
-            <Divider orientation="left">Process Automatically</Divider>
-            <Switch
-              defaultChecked
-              checkedChildren="On"
-              unCheckedChildren="Off"
-            />
-          </Form>
-        ) : (
-          'No transaction found'
-        )}
+        <Invoice {...transaction} />
       </DSDrawer>
     </div>
   );

@@ -25,6 +25,8 @@ export const SessionProvider: React.FC<
   showTransaction,
   children,
 }) => {
+  console.log(showTransaction, ' <----- showTransaction in session provider');
+
   return (
     <SessionContext.Provider
       value={{
