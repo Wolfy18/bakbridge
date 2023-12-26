@@ -13,7 +13,7 @@ const FileInputPairItem = () => {
   return (
     <div>
       {/* Input for file upload */}
-      <UploadFile callback={handleUploadCallback} />
+      <UploadFile onChange={handleUploadCallback} />
       {/* Hidden input */}
       <Input name="src" type="hidden" value={uploadedValue} />
     </div>

@@ -1,13 +1,16 @@
 import { UploadOutlined } from '@ant-design/icons';
 import { Input, Image, Spin, Upload, UploadProps, message } from 'antd';
-import { RcFile } from 'antd/es/upload';
+import { RcFile, UploadChangeParam } from 'antd/es/upload';
 import React, { useEffect, useState } from 'react';
 
 const UploadFile: React.FC<{
-  callback?: (e: React.FormEvent<HTMLInputElement>) => void;
-}> = ({ callback }) => {
+  onChange?: (e: React.FormEvent<HTMLInputElement>) => void;
+  callback?: (info: UploadChangeParam) => void;
+}> = ({ onChange, callback }) => {
   const props: UploadProps = {
     name: 'file',
+    multiple: false,
+    maxCount: 1,
     // action: 'https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188',
     action: (file: RcFile) => {
       console.log(file);
@@ -23,6 +26,7 @@ const UploadFile: React.FC<{
       }
       if (info.file.status === 'done') {
         message.success(`${info.file.name} file uploaded successfully`);
+        if (callback) callback(info);
       } else if (info.file.status === 'error') {
         message.error(`${info.file.name} file upload failed.`);
       }
@@ -37,7 +41,7 @@ const UploadFile: React.FC<{
         showCount={true}
         addonAfter={<UploadOutlined />}
         onChange={(e: React.FormEvent<HTMLInputElement>) =>
-          callback ? callback(e) : undefined
+          onChange ? onChange(e) : undefined
         }
       />
     </Upload>
