@@ -3,7 +3,9 @@ import { Input, Image, Spin, Upload, UploadProps, message } from 'antd';
 import { RcFile } from 'antd/es/upload';
 import React, { useEffect, useState } from 'react';
 
-const UploadFile: React.FC = () => {
+const UploadFile: React.FC<{
+  callback?: (e: React.FormEvent<HTMLInputElement>) => void;
+}> = ({ callback }) => {
   const props: UploadProps = {
     name: 'file',
     // action: 'https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188',
@@ -34,6 +36,9 @@ const UploadFile: React.FC = () => {
         maxLength={64}
         showCount={true}
         addonAfter={<UploadOutlined />}
+        onChange={(e: React.FormEvent<HTMLInputElement>) =>
+          callback ? callback(e) : undefined
+        }
       />
     </Upload>
   );

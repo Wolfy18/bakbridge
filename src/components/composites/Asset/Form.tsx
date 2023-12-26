@@ -1,7 +1,24 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Divider, Form, Space, Button, Input } from 'antd';
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import { UploadFile } from './File';
+
+const FileInputPairItem = () => {
+  const [uploadedValue, setUploadedValue] = useState('');
+
+  const handleUploadCallback = (e: React.FormEvent<HTMLInputElement>) => {
+    setUploadedValue(e.currentTarget.value);
+  };
+
+  return (
+    <div>
+      {/* Input for file upload */}
+      <UploadFile callback={handleUploadCallback} />
+      {/* Hidden input */}
+      <Input name="src" type="hidden" value={uploadedValue} />
+    </div>
+  );
+};
 
 const AssetForm: React.FC = () => {
   return (
@@ -89,7 +106,7 @@ const AssetForm: React.FC = () => {
                   rules={[{ required: true, message: 'Missing src' }]}
                   className="mb-0"
                 >
-                  <UploadFile />
+                  <FileInputPairItem />
                 </Form.Item>
                 <MinusCircleOutlined onClick={() => remove(name)} />
               </Space>
