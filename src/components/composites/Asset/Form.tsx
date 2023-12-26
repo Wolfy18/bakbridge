@@ -24,11 +24,11 @@ const AssetForm: React.FC = () => {
   return (
     <Form layout="vertical">
       <Form.Item label="Name" name="name" required>
-        <Input name="name" type="text" showCount={true} maxLength={64} />
+        <Input name="name" type="text" maxLength={64} />
       </Form.Item>
 
       <Form.Item label="Asset Name" name="asset_name">
-        <Input name="asset_name" type="text" showCount={true} maxLength={32} />
+        <Input name="asset_name" type="text" maxLength={32} showCount={true} />
       </Form.Item>
 
       <Form.Item label="Number of tokens" name="amount" required>
@@ -56,14 +56,14 @@ const AssetForm: React.FC = () => {
                   name={[name, 'key']}
                   rules={[{ required: true, message: 'Missing key' }]}
                 >
-                  <Input placeholder="Key" />
+                  <Input placeholder="Key" maxLength={64} />
                 </Form.Item>
                 <Form.Item
                   {...restField}
                   name={[name, 'value']}
                   rules={[{ required: true, message: 'Missing value' }]}
                 >
-                  <Input placeholder="Value" />
+                  <Input placeholder="Value" maxLength={64} />
                 </Form.Item>
                 <MinusCircleOutlined onClick={() => remove(name)} />
               </Space>
@@ -98,7 +98,7 @@ const AssetForm: React.FC = () => {
                   rules={[{ required: true, message: 'Missing name' }]}
                   className="mb-0"
                 >
-                  <Input placeholder="Name" />
+                  <Input placeholder="Name" maxLength={64} />
                 </Form.Item>
                 <Form.Item
                   {...restField}
