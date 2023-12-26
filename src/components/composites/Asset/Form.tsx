@@ -1,20 +1,26 @@
+import React from 'react';
 import { Divider, Form, Space, Button, Input } from 'antd';
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
-import React from 'react';
+import { UploadFile } from './File';
 
 const AssetForm: React.FC = () => {
   return (
     <Form layout="vertical">
+      <Form.Item label="Name" name="name" required>
+        <Input name="name" type="text" showCount={true} maxLength={64} />
+      </Form.Item>
+
       <Form.Item label="Asset Name" name="asset_name">
-        <Input name="asset_name" type="text" />
+        <Input name="asset_name" type="text" showCount={true} maxLength={32} />
       </Form.Item>
 
-      <Form.Item label="Name" name="name">
-        <Input name="name" type="text" />
+      <Form.Item label="Number of tokens" name="amount" required>
+        <Input name="amount" type="number" min={1} />
       </Form.Item>
 
-      <Form.Item label="Cover Image" name="image">
-        <Input name="image" type="text" />
+      <Form.Item label="Cover Image" name="image" required>
+        <Input name="image" type="hidden" />
+        <UploadFile />
       </Form.Item>
 
       <Form.Item label="Description" name="description">
@@ -27,24 +33,20 @@ const AssetForm: React.FC = () => {
         {(fields, { add, remove }) => (
           <>
             {fields.map(({ key, name, ...restField }) => (
-              <Space
-                key={key}
-                style={{ display: 'flex', marginBottom: 8 }}
-                align="baseline"
-              >
+              <Space key={key} className="flex mb-2" align="baseline">
                 <Form.Item
                   {...restField}
-                  name={[name, 'first']}
-                  rules={[{ required: true, message: 'Missing first name' }]}
+                  name={[name, 'key']}
+                  rules={[{ required: true, message: 'Missing key' }]}
                 >
-                  <Input placeholder="First Name" />
+                  <Input placeholder="Key" />
                 </Form.Item>
                 <Form.Item
                   {...restField}
-                  name={[name, 'last']}
-                  rules={[{ required: true, message: 'Missing last name' }]}
+                  name={[name, 'value']}
+                  rules={[{ required: true, message: 'Missing value' }]}
                 >
-                  <Input placeholder="Last Name" />
+                  <Input placeholder="Value" />
                 </Form.Item>
                 <MinusCircleOutlined onClick={() => remove(name)} />
               </Space>
@@ -70,22 +72,24 @@ const AssetForm: React.FC = () => {
             {fields.map(({ key, name, ...restField }) => (
               <Space
                 key={key}
-                style={{ display: 'flex', marginBottom: 8 }}
-                align="baseline"
+                className="grid grid-cols-1 md:grid-cols-3 gap-2 items-center mb-8"
+                align="center"
               >
                 <Form.Item
                   {...restField}
-                  name={[name, 'first']}
-                  rules={[{ required: true, message: 'Missing first name' }]}
+                  name={[name, 'name']}
+                  rules={[{ required: true, message: 'Missing name' }]}
+                  className="mb-0"
                 >
-                  <Input placeholder="First Name" />
+                  <Input placeholder="Name" />
                 </Form.Item>
                 <Form.Item
                   {...restField}
-                  name={[name, 'last']}
-                  rules={[{ required: true, message: 'Missing last name' }]}
+                  name={[name, 'src']}
+                  rules={[{ required: true, message: 'Missing src' }]}
+                  className="mb-0"
                 >
-                  <Input placeholder="Last Name" />
+                  <UploadFile />
                 </Form.Item>
                 <MinusCircleOutlined onClick={() => remove(name)} />
               </Space>
