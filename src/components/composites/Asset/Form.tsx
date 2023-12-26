@@ -3,24 +3,61 @@ import { Divider, Form, Space, Button, Input } from 'antd';
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import { UploadFile } from './File';
 
-const FileInputPairItem: React.FC<{ name: string }> = ({ name }) => {
-  const [uploadedValue, setUploadedValue] = useState('');
+function insertLineBreaks(inputText: string) {
+  const maxLineLength = 64;
+  const words = inputText.split(/\s+/); // Split the input into words
 
-  const handleUploadCallback = (e: React.FormEvent<HTMLInputElement>) => {
-    setUploadedValue(e.currentTarget.value);
+  let currentLine = '';
+  let result = '';
+
+  for (let i = 0; i < words.length; i++) {
+    const word = words[i];
+
+    // Check if adding the word to the current line would exceed the limit
+    if (currentLine.length + word.length > maxLineLength) {
+      // If adding the word would exceed the limit, start a new line
+      result += currentLine.trim() + '\n';
+      currentLine = word + ' ';
+    } else {
+      // If adding the word would not exceed the limit, add it to the current line
+      currentLine += word + ' ';
+    }
+  }
+
+  // Add the last line (if any) to the result
+  result += currentLine.trim();
+
+  return result;
+}
+
+const FileInputPairItem: React.FC<{ name: string }> = ({ name }) => {
+  const [uploadedValue, setUploadedValue] = useState<
+    AttachmentProps | undefined
+  >();
+
+  const handleUploadCallback = (file: AttachmentProps) => {
+    setUploadedValue(file);
   };
 
   return (
     <div>
       {/* Input for file upload */}
-      <UploadFile onChange={handleUploadCallback} />
+      <UploadFile callback={handleUploadCallback} />
       {/* Hidden input */}
-      <Input name={name} type="hidden" value={uploadedValue} />
+      <Input name={name} type="hidden" value={uploadedValue?.ipfs} />
     </div>
   );
 };
 
 const AssetForm: React.FC = () => {
+  const [text, setText] = useState('');
+
+  const handleTextAreaChange = (e: React.FormEvent<HTMLInputElement>) => {
+    const inputValue = e.currentTarget.value;
+    const formattedText = insertLineBreaks(inputValue);
+    setText(formattedText);
+  };
+
   return (
     <Form layout="vertical">
       <Form.Item label="Name" name="name" required>
@@ -40,7 +77,13 @@ const AssetForm: React.FC = () => {
       </Form.Item>
 
       <Form.Item label="Description" name="description">
-        <Input.TextArea name="description" />
+        <Input.TextArea
+          name="description"
+          // onChange={(e: React.FormEvent<HTMLInputElement>) => {
+          //   console.log(e);
+          //   // handleTextAreaChange(e)
+          // }}
+        />
       </Form.Item>
 
       <Divider orientation="left">Attributes</Divider>

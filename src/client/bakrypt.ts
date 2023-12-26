@@ -1,35 +1,32 @@
 import client from './client';
-import { AxiosResponse } from 'axios';
 
 interface useBakClientProps {
-  getTransaction: (
-    uuid: string
-  ) => Promise<AxiosResponse<TransactionProps, Error>>;
-  mintTransaction: (
-    uuid: string
-  ) => Promise<AxiosResponse<TransactionProps, Error>>;
-  refundTransaction: (
-    uuid: string
-  ) => Promise<AxiosResponse<TransactionProps, Error>>;
-  submitRequest: (
-    data: AssetProps[]
-  ) => Promise<AxiosResponse<AssetProps[], Error>>;
+  getTransaction: (uuid: string) => Promise<TransactionProps>;
+  mintTransaction: (uuid: string) => Promise<TransactionProps>;
+  refundTransaction: (uuid: string) => Promise<TransactionProps>;
+  submitRequest: (data: AssetProps[]) => Promise<AssetProps[]>;
+  uploadIPFSFile: (data: File) => Promise<AttachmentProps>;
 }
 
-const getTransaction = (uuid: string) => {
-  return client.get(`/transactions/${uuid}/`);
+const getTransaction = async (uuid: string) => {
+  return (await client.get(`/transactions/${uuid}/`)).data;
 };
 
-const mintTransaction = (uuid: string) => {
-  return client.post(`/transactions/${uuid}/mint/`);
+const mintTransaction = async (uuid: string) => {
+  return (await client.post(`/transactions/${uuid}/mint/`)).data;
 };
 
-const refundTransaction = (uuid: string) => {
-  return client.post(`/transactions/${uuid}/refund/`);
+const refundTransaction = async (uuid: string) => {
+  return (await client.post(`/transactions/${uuid}/refund/`)).data;
 };
 
-const submitRequest = (data: AssetProps[]) => {
-  return client.post(`/assets/`, data);
+const submitRequest = async (data: AssetProps[]) => {
+  return (await client.post(`/assets/`, data)).data;
+};
+
+const uploadIPFSFile = async (data: File) => {
+  client.defaults.headers['Content-Type'] = 'multipart/form-data';
+  return (await client.post(`/files/`, { file: data })).data;
 };
 
 const useBakClient = (): useBakClientProps => {
@@ -38,6 +35,7 @@ const useBakClient = (): useBakClientProps => {
     mintTransaction,
     refundTransaction,
     submitRequest,
+    uploadIPFSFile,
   };
 };
 

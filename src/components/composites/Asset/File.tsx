@@ -1,40 +1,32 @@
 import { LoadingOutlined, UploadOutlined } from '@ant-design/icons';
 import { Input, Image, Spin, Upload, UploadProps, message } from 'antd';
-import { RcFile, UploadChangeParam } from 'antd/es/upload';
+import useBakClient from 'client/bakrypt';
 import React, { useEffect, useState } from 'react';
 
 const UploadFile: React.FC<{
-  onChange?: (e: React.FormEvent<HTMLInputElement>) => void;
-  callback?: (info: UploadChangeParam) => void;
-}> = ({ onChange, callback }) => {
+  callback?: (data: AttachmentProps) => void;
+}> = ({ callback }) => {
   const [loading, setLoading] = useState<boolean>(false);
+  const { uploadIPFSFile } = useBakClient();
+  const [uploadedFile, setUploadedFile] = useState<
+    AttachmentProps | undefined
+  >();
 
   const props: UploadProps = {
     name: 'file',
     multiple: false,
     maxCount: 1,
-    // action: 'https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188',
-    action: (file: RcFile) => {
-      console.log(file);
-      return 'https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188';
-    },
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    customRequest: async ({ file, filename }) => {
+      setLoading(true);
 
-    headers: {
-      authorization: 'authorization-text',
-    },
-    onChange(info) {
-      if (info.file.status !== 'uploading') {
-        console.log(info.file, info.fileList);
-        setLoading(true);
-      }
-      if (info.file.status === 'done') {
-        message.success(`${info.file.name} file uploaded successfully`);
-        setLoading(false);
-        if (callback) callback(info);
-      } else if (info.file.status === 'error') {
-        message.error(`${info.file.name} file upload failed.`);
-        setLoading(false);
-      }
+      const data = await uploadIPFSFile(file as File);
+
+      setLoading(false);
+
+      setUploadedFile(data);
+      if (callback) callback(data);
+      message.success(`${filename} file uploaded successfully`);
     },
   };
 
@@ -52,11 +44,9 @@ const UploadFile: React.FC<{
         type="text"
         maxLength={64}
         addonAfter={<UploadOutlined />}
-        onChange={(e: React.FormEvent<HTMLInputElement>) =>
-          onChange ? onChange(e) : undefined
-        }
         suffix={renderSuffix()}
         readOnly
+        value={uploadedFile?.ipfs}
       />
     </Upload>
   );
