@@ -33,6 +33,7 @@ const UploadFile: React.FC<{
         if (callback) callback(info);
       } else if (info.file.status === 'error') {
         message.error(`${info.file.name} file upload failed.`);
+        setLoading(false);
       }
     },
   };
