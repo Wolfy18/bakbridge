@@ -1,11 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Formik } from 'formik';
-import { Divider, Button, Tabs, Drawer, Switch, Input, Spin, Form } from 'antd';
+import { Divider, Button, Tabs, Drawer, Spin } from 'antd';
 import { Asset } from 'components/composites/Asset';
 import { EmptyAsset, useFormContext } from 'context/FormContext';
 import { PlusOutlined, LoadingOutlined } from '@ant-design/icons';
 import { useSessionContext } from 'context/SessionContext';
 import useBakClient from 'client/bakrypt';
+import Config from './Config';
 
 type TargetKey = React.MouseEvent | React.KeyboardEvent | string;
 
@@ -14,7 +15,6 @@ const CollectionForm: React.FC = () => {
     assetCollection,
     setAssetCollection,
     setOpenTxDrawer,
-    transaction,
     setTransaction,
   } = useFormContext();
   const { getTransaction } = useBakClient();
@@ -82,7 +82,7 @@ const CollectionForm: React.FC = () => {
       if (!transactionUuid) return;
       try {
         const tx = await getTransaction(transactionUuid);
-        setTransaction(tx.data);
+        setTransaction(tx);
       } catch (error) {
         alert('unable to load transaction');
       }
@@ -170,31 +170,7 @@ const CollectionForm: React.FC = () => {
         size={'large'}
         style={{ lineHeight: 'normal' }}
       >
-        <Form layout="vertical" disabled={!!transaction}>
-          <p>
-            Setup custom configurations for this transaction, like royalties!
-          </p>
-          <Divider orientation="left">Royalties</Divider>
-          <Form.Item label="Percentage" name="percentage">
-            <Input
-              name="percentage"
-              type="number"
-              defaultValue={transaction?.royalties_rate}
-            />
-          </Form.Item>
-          <Form.Item label="Wallet Address" name="wallet_address">
-            <Input
-              name="wallet_address"
-              defaultValue={transaction?.royalties}
-            />
-          </Form.Item>
-          <p>On/Off</p>
-          <Switch
-            defaultChecked={transaction?.has_royalties}
-            checkedChildren="On"
-            unCheckedChildren="Off"
-          />
-        </Form>
+        <Config />
       </Drawer>
     </div>
   );

@@ -1,5 +1,5 @@
 import React from 'react';
-import AssetForm from './Form';
+import AssetForm from './AssetForm';
 import Card from './Card';
 
 const Asset: React.FC<AssetProps> = (props) => {

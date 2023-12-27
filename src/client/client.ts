@@ -7,7 +7,6 @@ const createClient = () => {
   return axios.create({
     baseURL: 'https://bakrypt.io/v1/',
     headers: {
-      'Content-Type': 'application/json',
       Authorization: `Token ${''}`,
     },
   });
