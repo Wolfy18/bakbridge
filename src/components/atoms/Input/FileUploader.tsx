@@ -47,6 +47,7 @@ const FileUploader: React.FC<{
         suffix={renderSuffix()}
         readOnly
         value={uploadedFile?.ipfs}
+        placeholder="Upload to IPFS"
       />
     </Upload>
   );

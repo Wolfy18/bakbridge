@@ -29,6 +29,7 @@ const AssetForm: React.FC = () => {
   const handleTextAreaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const inputValue = e.currentTarget.value;
     const formattedText = insertLineBreaks(inputValue);
+
     setText(formattedText);
   };
 
@@ -103,16 +104,12 @@ const AssetForm: React.FC = () => {
         {(fields, { add, remove }) => (
           <>
             {fields.map(({ key, name, ...restField }) => (
-              <Space
-                key={key}
-                className="grid grid-cols-1 md:grid-cols-3 gap-2 items-center mb-8"
-                align="center"
-              >
+              <Space key={key} className="mb-8" align="center">
                 <Form.Item
                   {...restField}
                   name={[name, 'name']}
                   rules={[{ required: true, message: 'Missing name' }]}
-                  className="mb-0"
+                  className="mb-0 col-span-2"
                 >
                   <Input placeholder="Name" maxLength={64} />
                 </Form.Item>
@@ -120,7 +117,7 @@ const AssetForm: React.FC = () => {
                   {...restField}
                   name={[name, 'src']}
                   rules={[{ required: true, message: 'Missing src' }]}
-                  className="mb-0"
+                  className="mb-0 col-span-2"
                 >
                   <FileInputPairItem name="src" />
                 </Form.Item>
