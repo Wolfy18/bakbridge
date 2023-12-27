@@ -52,7 +52,7 @@ const FileInputPairItem: React.FC<{ name: string }> = ({ name }) => {
 const AssetForm: React.FC = () => {
   const [text, setText] = useState('');
 
-  const handleTextAreaChange = (e: React.FormEvent<HTMLInputElement>) => {
+  const handleTextAreaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const inputValue = e.currentTarget.value;
     const formattedText = insertLineBreaks(inputValue);
     setText(formattedText);
@@ -79,10 +79,10 @@ const AssetForm: React.FC = () => {
       <Form.Item label="Description" name="description">
         <Input.TextArea
           name="description"
-          // onChange={(e: React.FormEvent<HTMLInputElement>) => {
-          //   console.log(e);
-          //   // handleTextAreaChange(e)
-          // }}
+          onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) =>
+            handleTextAreaChange(event)
+          }
+          value={text}
         />
       </Form.Item>
 
