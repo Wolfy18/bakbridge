@@ -1,7 +1,7 @@
 import React, { PropsWithChildren } from 'react';
 import { Carousel, Collapse, Divider } from 'antd';
 import { Card as DSCard } from 'antd';
-import File from './File';
+import File from '../../atoms/File';
 
 const { Meta } = DSCard;
 

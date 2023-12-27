@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Divider, Form, Space, Button, Input } from 'antd';
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
-import { UploadFile } from './File';
+import { FileUploader } from 'components/atoms/Input';
 
 function insertLineBreaks(inputText: string) {
   const maxLineLength = 64;
@@ -42,7 +42,7 @@ const FileInputPairItem: React.FC<{ name: string }> = ({ name }) => {
   return (
     <div>
       {/* Input for file upload */}
-      <UploadFile callback={handleUploadCallback} />
+      <FileUploader callback={handleUploadCallback} />
       {/* Hidden input */}
       <Input name={name} type="hidden" value={uploadedValue?.ipfs} />
     </div>
