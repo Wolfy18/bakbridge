@@ -1,8 +1,10 @@
+import { AxiosInstance } from 'axios';
+import { createClient } from 'client';
 import React, { createContext, useContext, PropsWithChildren } from 'react';
 
-const SessionContext = createContext<SessionContextProps | undefined>(
-  undefined
-);
+const SessionContext = createContext<
+  (SessionContextProps & { client: AxiosInstance }) | undefined
+>(undefined);
 
 export const useSessionContext = () => {
   const context = useContext(SessionContext);
@@ -16,28 +18,23 @@ export const SessionProvider: React.FC<
   PropsWithChildren & SessionContextProps
 > = ({
   accessToken,
-  refreshToken,
-  testnet,
-  authUrl,
   baseUrl,
   transactionUuid,
   policyId,
   showTransaction,
   children,
 }) => {
-  console.log(showTransaction, ' <----- showTransaction in session provider');
+  const client = createClient({ baseUrl, accessToken });
 
   return (
     <SessionContext.Provider
       value={{
         accessToken,
-        refreshToken,
-        testnet,
-        authUrl,
         baseUrl,
         transactionUuid,
         showTransaction,
         policyId,
+        client,
       }}
     >
       {children}

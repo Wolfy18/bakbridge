@@ -1,4 +1,4 @@
-import { Image, Spin } from 'antd';
+import { Image, Spin, message } from 'antd';
 import React, { useEffect, useState } from 'react';
 
 const File: React.FC<{ url?: string; alt?: string }> = ({ url, alt }) => {
@@ -14,11 +14,11 @@ const File: React.FC<{ url?: string; alt?: string }> = ({ url, alt }) => {
 
         const fileBytesRes = await fetch(fileUrl);
 
-        if (!fileBytesRes.ok) throw 'Unable to load file';
+        if (!fileBytesRes.ok) throw Error;
 
         setType(fileBytesRes.headers.get('content-type'));
       } catch (error) {
-        console.error(error);
+        message.error('Unable to download file');
       }
     })();
   }, [url]);
@@ -33,7 +33,7 @@ const File: React.FC<{ url?: string; alt?: string }> = ({ url, alt }) => {
     if (type?.toLowerCase().trim().includes('audio'))
       return <audio src={fileUrl} controls></audio>;
 
-    return 'Unable to load file';
+    return 'Unable to view file';
   };
 
   if (!type)
