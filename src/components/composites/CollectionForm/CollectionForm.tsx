@@ -19,7 +19,7 @@ const CollectionForm: React.FC = () => {
   } = useFormContext();
   const { getTransaction } = useBakClient();
   const { transactionUuid } = useSessionContext();
-  console.log(assetCollection, ' <---- when loading');
+  console.log(assetCollection, ' <---- the collection form');
   const TabPanels: Array<{
     key: string;
     children: JSX.Element;

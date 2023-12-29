@@ -12,8 +12,10 @@ const props: SessionContextProps = {
   showTransaction: rootElement.dataset.showTransaction === 'true',
   transactionUuid: rootElement.dataset.transactionUuid,
   accessToken: rootElement.dataset.accessToken,
+  refreshToken: rootElement.dataset.refreshToken,
   authUrl: rootElement.dataset.authUrl,
   baseUrl: rootElement.dataset.baseUrl,
+  policyId: rootElement.dataset.policyId,
 };
 
 root.render(
