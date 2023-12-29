@@ -19,14 +19,18 @@ const FileUploader: React.FC<{
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     customRequest: async ({ file, filename }) => {
       setLoading(true);
+      try {
+        const data = await uploadIPFSFile(file as File);
 
-      const data = await uploadIPFSFile(file as File);
+        setUploadedFile(data);
+        if (callback) callback(data);
+        message.success(`${filename} uploaded successfully`);
+      } catch (error) {
+        message.error('Unable to upload file');
+        console.error(error);
+      }
 
       setLoading(false);
-
-      setUploadedFile(data);
-      if (callback) callback(data);
-      message.success(`${filename} uploaded successfully`);
     },
   };
 

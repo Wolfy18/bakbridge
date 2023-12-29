@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Formik } from 'formik';
-import { Divider, Button, Tabs, Drawer, Spin } from 'antd';
+import { Divider, Button, Tabs, Drawer, Spin, message } from 'antd';
 import { Asset } from 'components/composites/Asset';
 import { EmptyAsset, useFormContext } from 'context/FormContext';
 import { PlusOutlined, LoadingOutlined } from '@ant-design/icons';
@@ -84,7 +84,8 @@ const CollectionForm: React.FC = () => {
         const tx = await getTransaction(transactionUuid);
         setTransaction(tx);
       } catch (error) {
-        alert('unable to load transaction');
+        message.error('Unable to load transaction');
+        console.error(error);
       }
     })();
   }, [transactionUuid]);

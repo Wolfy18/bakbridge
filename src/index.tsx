@@ -11,6 +11,9 @@ const props: SessionContextProps = {
   testnet: rootElement.dataset.testnet === 'true',
   showTransaction: rootElement.dataset.showTransaction === 'true',
   transactionUuid: rootElement.dataset.transactionUuid,
+  accessToken: rootElement.dataset.accessToken,
+  authUrl: rootElement.dataset.authUrl,
+  baseUrl: rootElement.dataset.baseUrl,
 };
 
 root.render(
