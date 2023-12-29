@@ -1,5 +1,5 @@
 import React, { PropsWithChildren } from 'react';
-import { Carousel, Collapse, Divider } from 'antd';
+import { Carousel, Collapse, Divider, Skeleton } from 'antd';
 import { Card as DSCard } from 'antd';
 import File from '../../atoms/File';
 
@@ -21,7 +21,12 @@ const Card: React.FC<PropsWithChildren & AssetProps> = ({
         cover={<File url={image} alt={name} />}
         className="m-auto"
       >
-        <Meta title={name} description={description} />
+        {name || description ? (
+          <Meta title={name} description={description} />
+        ) : (
+          <Skeleton />
+        )}
+
         {attrs && (
           <>
             <Divider orientation="left">Attributes</Divider>
