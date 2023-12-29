@@ -1,17 +1,16 @@
-import React, { PropsWithChildren } from 'react';
+import React from 'react';
 import { Carousel, Collapse, Divider, Skeleton } from 'antd';
 import { Card as DSCard } from 'antd';
 import File from '../../atoms/File';
 
 const { Meta } = DSCard;
 
-const Card: React.FC<PropsWithChildren & AssetProps> = ({
+const Card: React.FC<AssetProps> = ({
   name,
   description,
   image,
   attrs,
   files,
-  children,
 }) => {
   return (
     <>
@@ -84,8 +83,6 @@ const Card: React.FC<PropsWithChildren & AssetProps> = ({
             />
           </>
         )}
-
-        {children}
       </DSCard>
     </>
   );
