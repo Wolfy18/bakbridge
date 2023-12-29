@@ -75,10 +75,7 @@ interface SessionContextProps {
   transactionUuid?: string;
   policyId?: string;
   accessToken?: string;
-  refreshToken?: string;
   initialData?: string;
-  testnet?: boolean;
-  authUrl?: string;
   baseUrl?: string;
   showTransaction?: boolean;
 }
