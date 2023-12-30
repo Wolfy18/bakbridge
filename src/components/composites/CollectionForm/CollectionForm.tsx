@@ -28,7 +28,7 @@ const CollectionForm: React.FC = () => {
     return {
       key: `asset-${idx}`,
       children: <Asset {...i} />,
-      label: `Asset #${idx + 1}`,
+      label: i.name ? i.name : `Asset #${idx + 1}`,
     };
   });
 

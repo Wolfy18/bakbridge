@@ -51,7 +51,7 @@ interface TransactionProps {
 interface AssetFileProps {
   name: string;
   src: string;
-  mediaType: string;
+  mediaType?: string;
 }
 
 interface AssetProps {
