@@ -27,7 +27,7 @@ const CollectionForm: React.FC = () => {
   }> = assetCollection.map((i: AssetProps, idx: number) => {
     return {
       key: `asset-${idx}`,
-      children: <Asset {...i} />,
+      children: <Asset {...i} index={idx} />,
       label: i.name ? i.name : `Asset #${idx + 1}`,
     };
   });
