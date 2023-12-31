@@ -16,7 +16,7 @@ interface FormContextProps {
 
 export const EmptyAsset = {
   blockchain: 'ada',
-  name: '',
+  name: 'Asset name',
   image: '',
   description:
     'Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nobis doloremque harum sit soluta in officiis assumenda consequuntur? Molestiae tempora ducimus expedita consectetur. Porro possimus atque perferendis reprehenderit accusamus ipsum nulla!',

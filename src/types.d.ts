@@ -54,6 +54,10 @@ interface AssetFileProps {
   mediaType?: string;
 }
 
+interface Attrs {
+  [key: string]: string | number | boolean | object | [];
+}
+
 interface AssetProps {
   uuid?: string;
   blockchain: string;
@@ -64,7 +68,7 @@ interface AssetProps {
   fingerprint?: string;
   description?: string;
   files?: AssetFileProps[];
-  attrs?: object;
+  attrs?: Attrs;
   amount: number;
   royalties?: string;
   royalties_rate?: string;

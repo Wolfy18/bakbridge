@@ -16,58 +16,24 @@ const Card: React.FC<AssetProps> = ({
 }) => {
   const ref = useRef<CarouselRef | null>(null);
 
-  // const [attrsValue, setAttrsValue] = useState<string>('');
+  const renderAttrs = (attrs: Attrs) => {
+    const numberOfTabs = 1;
+    const indentation = '\t'.repeat(numberOfTabs);
 
-  // const renderValue = (
-  //   value: string | number | [] | object,
-  //   reduced = '',
-  //   key?: string
-  // ) => {
-  //   if (key) {
-  //     reduced += `${key} \n`;
-  //   }
+    // Convert JSON object to JSON-formatted string with custom indentation
+    const jsonString = JSON.stringify(attrs, null, indentation);
 
-  //   if (Array.isArray(value)) {
-  //     for (let index = 0; index < value.length; index++) {
-  //       renderValue(value[index], reduced);
-  //     }
-  //   } else if (typeof value === 'object') {
-  //     for (const [q, entry] of Object.entries(value)) {
-  //       renderValue(entry, reduced, q);
-  //     }
-  //   } else {
-  //     reduced += `\t\t${value}`;
-  //   }
-  // };
-
-  const attrsReducer = (acc: string[], key: string) => {
-    if (!attrs) return acc;
-
-    if (key) {
-      acc.push(key);
-    }
-
-    // if (Array.isArray(value)) {
-    //   for (let index = 0; index < value.length; index++) {
-    //     renderValue(value[index], reduced);
-    //   }
-    // } else if (typeof value === 'object') {
-    //   for (const [q, entry] of Object.entries(value)) {
-    //     renderValue(entry, reduced, q);
-    //   }
-    // } else {
-    //   reduced += `\t\t${value}`;
-    // }
-
-    return acc;
+    return (
+      <pre>
+        {jsonString.split('\n').map((line, index) => (
+          <React.Fragment key={index}>
+            {line}
+            {'\n'}
+          </React.Fragment>
+        ))}
+      </pre>
+    );
   };
-
-  // useEffect(() => {
-  //   if (attrs) {
-  //     const reduced = renderValue(attrs);
-  //     if (reduced) setAttrsValue(reduced);
-  //   }
-  // }, [renderValue, attrs]);
 
   const next = () => {
     ref?.current?.next();
@@ -93,18 +59,7 @@ const Card: React.FC<AssetProps> = ({
         {attrs && (
           <>
             <Divider orientation="left">Attributes</Divider>
-            {
-              <p>
-                {Object.keys(attrs)
-                  .reduce(attrsReducer, [])
-                  .map((line, index) => (
-                    <React.Fragment key={index}>
-                      {line}
-                      <br />
-                    </React.Fragment>
-                  ))}
-              </p>
-            }
+            {renderAttrs(attrs)}
           </>
         )}
 
