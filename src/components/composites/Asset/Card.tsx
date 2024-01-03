@@ -33,7 +33,9 @@ const Card: React.FC<{ index: number }> = ({ index }) => {
   const [{ name, description, image, attrs, files }, setAsset] =
     useState<AssetProps>(assetCollection[index]);
 
-  useEffect(() => setAsset(assetCollection[index]), [assetCollection]);
+  useEffect(() => {
+    setAsset(assetCollection[index]);
+  }, [assetCollection]);
 
   const ref = useRef<CarouselRef | null>(null);
 

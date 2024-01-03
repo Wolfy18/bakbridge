@@ -66,7 +66,7 @@ export const FormProvider: React.FC<
   const [transaction, setTransaction] = useState<TransactionProps | undefined>(
     undefined
   );
-  console.log(assetCollection, ' ,-----');
+
   return (
     <FormContext.Provider
       value={{

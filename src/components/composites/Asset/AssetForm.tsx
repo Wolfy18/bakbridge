@@ -29,6 +29,7 @@ const AssetForm: React.FC<{ index: number }> = ({ index }) => {
 
   const { assetCollection, setAssetCollection } = useFormContext();
 
+  const currentAsset = assetCollection[index];
   const handleTextAreaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const inputValue = e.currentTarget.value;
     const formattedText = insertLineBreaks(inputValue);
@@ -39,19 +40,26 @@ const AssetForm: React.FC<{ index: number }> = ({ index }) => {
   const handleFormChange = (e: React.FormEvent<HTMLFormElement>) => {
     const inputElement = e.target as HTMLInputElement;
     const key = inputElement.name as keyof AssetProps;
-    const currentAsset = assetCollection[index];
 
     // Use square bracket notation to update the property dynamically
     Object.assign(currentAsset, {
-      [key]: inputElement.value,
+      [key]:
+        key !== 'description'
+          ? inputElement.value
+          : insertLineBreaks(inputElement.value).split('\n'),
     });
 
     assetCollection[index] = currentAsset;
-    setAssetCollection(assetCollection);
+
+    setAssetCollection([...assetCollection]);
   };
 
   return (
-    <Form layout="vertical" onChange={(e) => handleFormChange(e)}>
+    <Form
+      layout="vertical"
+      onChange={(e) => handleFormChange(e)}
+      initialValues={{ ...currentAsset }}
+    >
       <Form.Item label="Name" name="name" required>
         <Input name="name" type="text" maxLength={64} />
       </Form.Item>
