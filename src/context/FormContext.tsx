@@ -17,8 +17,11 @@ interface FormContextProps {
 export const EmptyAsset = {
   blockchain: 'ada',
   name: '',
-  image: 'ipfs://QmbuisJxUnYNbkYjSGLEbvHPzrwLLRNMep5YPRfuMZaWeD',
+  image: '',
+  description: '',
   amount: 1,
+  attrs: {},
+  files: [],
 };
 
 const FormContext = createContext<FormContextProps | undefined>(undefined);

@@ -51,7 +51,11 @@ interface TransactionProps {
 interface AssetFileProps {
   name: string;
   src: string;
-  mediaType: string;
+  mediaType?: string;
+}
+
+interface Attrs {
+  [key: string]: string | number | boolean | object | [];
 }
 
 interface AssetProps {
@@ -64,7 +68,7 @@ interface AssetProps {
   fingerprint?: string;
   description?: string;
   files?: AssetFileProps[];
-  attrs?: object;
+  attrs?: Attrs;
   amount: number;
   royalties?: string;
   royalties_rate?: string;

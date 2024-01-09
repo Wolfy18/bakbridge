@@ -7,7 +7,7 @@ const Config: React.FC = () => {
 
   return (
     <Form layout="vertical" disabled={!!transaction}>
-      <p>Setup custom configurations for this transaction, like royalties!</p>
+      <p>Setup custom configurations for this transaction</p>
       <Divider orientation="left">Royalties</Divider>
       <Form.Item label="Percentage %" name="percentage">
         <Input

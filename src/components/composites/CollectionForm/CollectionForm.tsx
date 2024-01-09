@@ -19,7 +19,6 @@ const CollectionForm: React.FC = () => {
   } = useFormContext();
   const { getTransaction } = useBakClient();
   const { transactionUuid } = useSessionContext();
-  console.log(assetCollection, ' <---- the collection form');
   const TabPanels: Array<{
     key: string;
     children: JSX.Element;
@@ -27,8 +26,8 @@ const CollectionForm: React.FC = () => {
   }> = assetCollection.map((i: AssetProps, idx: number) => {
     return {
       key: `asset-${idx}`,
-      children: <Asset {...i} />,
-      label: `Asset #${idx + 1}`,
+      children: <Asset {...i} index={idx} />,
+      label: i.name ? i.name : `Asset #${idx + 1}`,
     };
   });
 

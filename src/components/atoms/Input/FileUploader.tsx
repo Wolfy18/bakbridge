@@ -36,9 +36,9 @@ const FileUploader: React.FC<{
 
   const renderSuffix = () => {
     return loading ? (
-      <Spin indicator={<LoadingOutlined size={8} spin />} />
+      <Spin indicator={<LoadingOutlined size={6} spin />} />
     ) : (
-      ''
+      <UploadOutlined />
     );
   };
 
@@ -47,8 +47,7 @@ const FileUploader: React.FC<{
       <Input
         type="text"
         maxLength={64}
-        addonAfter={<UploadOutlined />}
-        suffix={renderSuffix()}
+        addonAfter={renderSuffix()}
         readOnly
         value={uploadedFile?.ipfs}
         placeholder="Upload to IPFS"

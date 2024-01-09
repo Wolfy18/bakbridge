@@ -57,7 +57,7 @@ dependencies:
     specifier: 5.0.1
     version: 5.0.1(@babel/plugin-syntax-flow@7.23.3)(@babel/plugin-transform-react-jsx@7.23.4)(eslint@8.54.0)(react@18.2.0)(typescript@5.3.3)
   typescript:
-    specifier: ^5.3.3
+    specifier: ^5.3.0
     version: 5.3.3
   web-vitals:
     specifier: ^2.1.4

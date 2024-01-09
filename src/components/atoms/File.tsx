@@ -3,7 +3,9 @@ import React, { useEffect, useState } from 'react';
 
 const File: React.FC<{ url?: string; alt?: string }> = ({ url, alt }) => {
   const [type, setType] = useState<string | undefined | null>();
-  const fileUrl = url?.replace('ipfs://', 'https://gateway.bakrypt.io/ipfs/');
+  const fileUrl = (
+    url || 'ipfs://QmbuisJxUnYNbkYjSGLEbvHPzrwLLRNMep5YPRfuMZaWeD'
+  ).replace('ipfs://', 'https://gateway.bakrypt.io/ipfs/');
 
   useEffect(() => {
     setType(undefined);
@@ -38,8 +40,8 @@ const File: React.FC<{ url?: string; alt?: string }> = ({ url, alt }) => {
 
   if (!type)
     return (
-      <Spin tip="Loading" size="large">
-        <div className="content" />
+      <Spin tip="Loading" size="large" className="h-full flex items-center">
+        <div className="content min-h-[250px]" />
       </Spin>
     );
 

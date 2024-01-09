@@ -3,6 +3,7 @@ import { Divider, Form, Space, Button, Input } from 'antd';
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import { FileUploader } from 'components/atoms/Input';
 import { insertLineBreaks } from 'utils';
+import { useFormContext } from 'context/FormContext';
 
 const FileInputPairItem: React.FC<{ name: string }> = ({ name }) => {
   const [uploadedValue, setUploadedValue] = useState<
@@ -23,9 +24,12 @@ const FileInputPairItem: React.FC<{ name: string }> = ({ name }) => {
   );
 };
 
-const AssetForm: React.FC = () => {
+const AssetForm: React.FC<{ index: number }> = ({ index }) => {
   const [text, setText] = useState('');
 
+  const { assetCollection, setAssetCollection } = useFormContext();
+
+  const currentAsset = assetCollection[index];
   const handleTextAreaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const inputValue = e.currentTarget.value;
     const formattedText = insertLineBreaks(inputValue);
@@ -33,8 +37,29 @@ const AssetForm: React.FC = () => {
     setText(formattedText);
   };
 
+  const handleFormChange = (e: React.FormEvent<HTMLFormElement>) => {
+    const inputElement = e.target as HTMLInputElement;
+    const key = inputElement.name as keyof AssetProps;
+
+    // Use square bracket notation to update the property dynamically
+    Object.assign(currentAsset, {
+      [key]:
+        key !== 'description'
+          ? inputElement.value
+          : insertLineBreaks(inputElement.value).split('\n'),
+    });
+
+    assetCollection[index] = currentAsset;
+
+    setAssetCollection([...assetCollection]);
+  };
+
   return (
-    <Form layout="vertical">
+    <Form
+      layout="vertical"
+      onChange={(e) => handleFormChange(e)}
+      initialValues={{ ...currentAsset }}
+    >
       <Form.Item label="Name" name="name" required>
         <Input name="name" type="text" maxLength={64} />
       </Form.Item>
