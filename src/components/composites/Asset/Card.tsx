@@ -60,14 +60,14 @@ const Card: React.FC<{ index: number }> = ({ index }) => {
           <Skeleton />
         )}
 
-        {attrs && (
+        {attrs && Object.keys(attrs).length > 0 && (
           <>
             <Divider orientation="left">Attributes</Divider>
             {renderAttrs(attrs)}
           </>
         )}
 
-        {files && (
+        {files && files.length > 0 && (
           <>
             <Divider orientation="left">Files</Divider>
             <div className="relative">
