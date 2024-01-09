@@ -89,16 +89,24 @@ const CollectionForm: React.FC = () => {
     })();
   }, [transactionUuid]);
 
+  const { submitRequest } = useBakClient();
+
   return (
     <div className="relative">
       <Formik
-        initialValues={{ name: 'jared' }}
-        onSubmit={(values, actions) => {
+        initialValues={assetCollection}
+        onSubmit={async (values, actions) => {
           console.log('Submitting form......');
-          setTimeout(() => {
-            alert(JSON.stringify(values, null, 2));
-            actions.setSubmitting(false);
-          }, 1000);
+          console.log(values);
+
+          try {
+            await submitRequest(values);
+          } catch (error) {
+            message.error('unable to submit request');
+            console.log(error);
+          }
+
+          actions.setSubmitting(false);
         }}
       >
         {({ submitForm, isSubmitting }) => (

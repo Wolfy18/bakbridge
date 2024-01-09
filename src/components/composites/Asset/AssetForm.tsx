@@ -40,7 +40,7 @@ const AssetForm: React.FC<{ index: number }> = ({ index }) => {
   const handleFormChange = (e: React.FormEvent<HTMLFormElement>) => {
     const inputElement = e.target as HTMLInputElement;
     const key = inputElement.name as keyof AssetProps;
-
+    console.log(inputElement, key, ' <--------------');
     // Use square bracket notation to update the property dynamically
     Object.assign(currentAsset, {
       [key]:
