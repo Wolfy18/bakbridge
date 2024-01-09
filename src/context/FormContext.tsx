@@ -16,30 +16,12 @@ interface FormContextProps {
 
 export const EmptyAsset = {
   blockchain: 'ada',
-  name: 'Asset name',
+  name: '',
   image: '',
-  description:
-    'Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nobis doloremque harum sit soluta in officiis assumenda consequuntur? Molestiae tempora ducimus expedita consectetur. Porro possimus atque perferendis reprehenderit accusamus ipsum nulla!',
+  description: '',
   amount: 1,
-  attrs: {
-    key: 'value',
-    'another option': 'another value',
-    colors: ['red', 'yellow', 'green', { top: 'blue', bottom: 'purple' }],
-  },
-  files: [
-    {
-      src: '',
-      name: 'file 1',
-    },
-    {
-      src: '',
-      name: 'file 2',
-    },
-    {
-      src: '',
-      name: 'file 3',
-    },
-  ],
+  attrs: {},
+  files: [],
 };
 
 const FormContext = createContext<FormContextProps | undefined>(undefined);
