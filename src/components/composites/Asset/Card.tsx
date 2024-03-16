@@ -1,10 +1,9 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef } from 'react';
 import { Carousel, Divider, Skeleton, Button } from 'antd';
 import { Card as DSCard } from 'antd';
 import File from '../../atoms/File';
 import { LeftOutlined, RightOutlined } from '@ant-design/icons';
 import { CarouselRef } from 'antd/es/carousel';
-import { useFormContext } from 'context/FormContext';
 
 const { Meta } = DSCard;
 
@@ -27,16 +26,13 @@ const renderAttrs = (attrs: Attrs) => {
   );
 };
 
-const Card: React.FC<{ index: number }> = ({ index }) => {
-  const { assetCollection } = useFormContext();
-
-  const [{ name, description, image, attrs, files }, setAsset] =
-    useState<AssetProps>(assetCollection[index]);
-
-  useEffect(() => {
-    setAsset(assetCollection[index]);
-  }, [assetCollection]);
-
+const Card: React.FC<AssetProps> = ({
+  name,
+  description,
+  image,
+  attrs,
+  files,
+}) => {
   const ref = useRef<CarouselRef | null>(null);
 
   const next = () => {

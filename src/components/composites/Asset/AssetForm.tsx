@@ -1,17 +1,23 @@
-import React, { useState } from 'react';
-import { Divider, Form, Space, Button, Input } from 'antd';
+import React, { useRef, useState } from 'react';
+import { Divider, Form, Space, Button, Input, InputRef } from 'antd';
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import { FileUploader } from 'components/atoms/Input';
 import { insertLineBreaks } from 'utils';
-import { useFormContext } from 'context/FormContext';
 
 const FileInputPairItem: React.FC<{ name: string }> = ({ name }) => {
-  const [uploadedValue, setUploadedValue] = useState<
-    AttachmentProps | undefined
-  >();
+  const ref = useRef<HTMLInputElement | null>(null);
+  const handleKeyDown = (event: KeyboardEvent) => {
+    console.log('Key pressed:', event.key);
+  };
 
   const handleUploadCallback = (file: AttachmentProps) => {
-    setUploadedValue(file);
+    if (ref.current !== null) {
+      ref.current.removeEventListener('keydown', handleKeyDown);
+      ref.current.addEventListener('keydown', handleKeyDown);
+      ref.current.value = file.ipfs;
+      ref.current.dispatchEvent(new KeyboardEvent('keydown', { key: ' ' }));
+      console.log(ref.current, 'over here!----');
+    }
   };
 
   return (
@@ -19,17 +25,19 @@ const FileInputPairItem: React.FC<{ name: string }> = ({ name }) => {
       {/* Input for file upload */}
       <FileUploader callback={handleUploadCallback} />
       {/* Hidden input */}
-      <Input name={name} type="hidden" value={uploadedValue?.ipfs} />
+      <input name={name} ref={ref} type="text" defaultValue={''} />
     </div>
   );
 };
 
-const AssetForm: React.FC<{ index: number }> = ({ index }) => {
+const AssetForm: React.FC<{
+  asset: AssetProps;
+  setter: (e: AssetProps) => void;
+}> = ({ asset, setter }) => {
   const [text, setText] = useState('');
+  const assetNameRef = useRef<InputRef | null>(null);
+  const [currentAsset, setCurrentAsset] = useState(asset);
 
-  const { assetCollection, setAssetCollection } = useFormContext();
-
-  const currentAsset = assetCollection[index];
   const handleTextAreaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const inputValue = e.currentTarget.value;
     const formattedText = insertLineBreaks(inputValue);
@@ -41,31 +49,48 @@ const AssetForm: React.FC<{ index: number }> = ({ index }) => {
     const inputElement = e.target as HTMLInputElement;
     const key = inputElement.name as keyof AssetProps;
 
+    const assetUpdate = { ...currentAsset };
     // Use square bracket notation to update the property dynamically
-    Object.assign(currentAsset, {
+    Object.assign(assetUpdate, {
       [key]:
         key !== 'description'
           ? inputElement.value
           : insertLineBreaks(inputElement.value).split('\n'),
     });
 
-    assetCollection[index] = currentAsset;
+    // Set asset name if name is set but no asset name
+    if (!assetNameRef.current?.input?.value.length && assetUpdate.name) {
+      Object.assign(assetUpdate, {
+        asset_name: assetUpdate.name.substring(0, 32),
+      });
+    }
 
-    setAssetCollection([...assetCollection]);
+    Object.assign(assetUpdate, {
+      asset_name: assetUpdate.asset_name?.replace(/[^a-zA-Z0-9]/g, ''),
+    });
+
+    setCurrentAsset(assetUpdate);
+    setter(assetUpdate);
   };
 
   return (
     <Form
       layout="vertical"
       onChange={(e) => handleFormChange(e)}
-      initialValues={{ ...currentAsset }}
+      // initialValues={{ ...currentAsset }
     >
       <Form.Item label="Name" name="name" required>
         <Input name="name" type="text" maxLength={64} />
       </Form.Item>
 
       <Form.Item label="Asset Name" name="asset_name">
-        <Input name="asset_name" type="text" maxLength={32} showCount={true} />
+        <Input
+          name="asset_name"
+          ref={assetNameRef}
+          type="text"
+          maxLength={32}
+          showCount={true}
+        />
       </Form.Item>
 
       <Form.Item label="Number of tokens" name="amount" required>
