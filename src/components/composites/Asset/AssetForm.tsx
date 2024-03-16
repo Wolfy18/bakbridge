@@ -34,10 +34,9 @@ const AssetForm: React.FC<{
   asset: AssetProps;
   setter: (e: AssetProps) => void;
 }> = ({ asset, setter }) => {
-  console.info(asset, setter);
   const [text, setText] = useState('');
   const assetNameRef = useRef<InputRef | null>(null);
-  // const [currentAsset, setCurrentAsset] = useState(asset);
+  const [currentAsset, setCurrentAsset] = useState(asset);
 
   const handleTextAreaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const inputValue = e.currentTarget.value;
@@ -46,36 +45,40 @@ const AssetForm: React.FC<{
     setText(formattedText);
   };
 
-  // const handleFormChange = (e: React.FormEvent<HTMLFormElement>) => {
-  //   const inputElement = e.target as HTMLInputElement;
-  //   const key = inputElement.name as keyof AssetProps;
+  const handleFormChange = (e: React.FormEvent<HTMLFormElement>) => {
+    const inputElement = e.target as HTMLInputElement;
+    const key = inputElement.name as keyof AssetProps;
 
-  //   const assetUpdate = { ...currentAsset };
-  //   // Use square bracket notation to update the property dynamically
-  //   Object.assign(assetUpdate, {
-  //     [key]:
-  //       key !== 'description'
-  //         ? inputElement.value
-  //         : insertLineBreaks(inputElement.value).split('\n'),
-  //   });
+    const assetUpdate = { ...currentAsset };
+    // Use square bracket notation to update the property dynamically
+    Object.assign(assetUpdate, {
+      [key]:
+        key !== 'description'
+          ? inputElement.value
+          : insertLineBreaks(inputElement.value).split('\n'),
+    });
 
-  //   // Set asset name if name is set but no asset name
-  //   if (!assetNameRef.current?.input?.value.length && assetUpdate.name) {
-  //     Object.assign(assetUpdate, {
-  //       asset_name: assetUpdate.name.substring(0, 32),
-  //     });
-  //   }
+    // Set asset name if name is set but no asset name
+    if (!assetNameRef.current?.input?.value.length && assetUpdate.name) {
+      Object.assign(assetUpdate, {
+        asset_name: assetUpdate.name.substring(0, 32),
+      });
+    }
 
-  //   Object.assign(assetUpdate, {
-  //     asset_name: assetUpdate.asset_name?.replace(/[^a-zA-Z0-9]/g, ''),
-  //   });
+    Object.assign(assetUpdate, {
+      asset_name: assetUpdate.asset_name?.replace(/[^a-zA-Z0-9]/g, ''),
+    });
 
-  //   setCurrentAsset(assetUpdate);
-  //   setter(assetUpdate);
-  // };
+    setCurrentAsset(assetUpdate);
+    setter(assetUpdate);
+  };
 
   return (
-    <>
+    <Form
+      layout="vertical"
+      onChange={(e) => handleFormChange(e)}
+      // initialValues={{ ...currentAsset }
+    >
       <Form.Item label="Name" name="name" required>
         <Input name="name" type="text" maxLength={64} />
       </Form.Item>
@@ -184,7 +187,7 @@ const AssetForm: React.FC<{
           </>
         )}
       </Form.List>
-    </>
+    </Form>
   );
 };
 

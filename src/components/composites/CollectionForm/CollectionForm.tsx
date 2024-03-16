@@ -1,6 +1,6 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Formik } from 'formik';
-import { Divider, Button, Tabs, Drawer, Spin, message, Form } from 'antd';
+import { Divider, Button, Tabs, Drawer, Spin, message } from 'antd';
 import { Asset } from 'components/composites/Asset';
 import { EmptyAsset, useFormContext } from 'context/FormContext';
 import { PlusOutlined, LoadingOutlined } from '@ant-design/icons';
@@ -26,12 +26,17 @@ const CollectionForm: React.FC = () => {
       children: JSX.Element;
       label: string;
     }>
-  >([]);
+  >([
+    {
+      key: `asset-0`,
+      children: <Asset props={EmptyAsset} idx={0} />,
+      label: `Asset #1`,
+    },
+  ]);
 
   const newTabIndex = useRef(assetCollection.length);
   const [activeKey, setActiveKey] = useState(`asset-0`);
   const onChange = (key: string) => {
-    console.log(key, ' <----- onchange active key');
     setActiveKey(key);
   };
 
@@ -39,8 +44,6 @@ const CollectionForm: React.FC = () => {
     const newActiveKey = `asset-${newTabIndex.current++}`;
     const newcol = [...assetCollection, EmptyAsset];
     setAssetCollection(newcol);
-
-    console.log(newActiveKey, ' <----- add active key');
     setActiveKey(newActiveKey);
   };
 
@@ -49,22 +52,20 @@ const CollectionForm: React.FC = () => {
 
     if (assetCollection.length <= 1) return;
 
-    const newPanes = TabPanels.filter((pane) => pane.key !== targetKey);
     const newcol = assetCollection.filter(
       (i: AssetProps, idx: number) => idx !== targetIndex
     );
 
     setAssetCollection(newcol);
+    const key =
+      newcol.length === targetIndex
+        ? `asset-${targetIndex - 1}`
+        : `asset-${targetIndex}`;
 
-    const { key } =
-      newPanes[targetIndex === newPanes.length ? targetIndex - 1 : targetIndex];
-
-    console.log(key, ' <----- remove active key');
     setActiveKey(key);
   };
 
   const onEdit = (targetKey: TargetKey, action: 'add' | 'remove') => {
-    console.log(targetKey, ' <******* this is the target key');
     if (action === 'add') {
       add();
     } else {
@@ -95,11 +96,15 @@ const CollectionForm: React.FC = () => {
   // Set panels based on the assetCollection.
   // Memoization can be good here
   useEffect(() => {
+    // Update new tabindex
+    newTabIndex.current = assetCollection.length;
+
+    // Update panels
     setTabPanels(
       assetCollection.map((i: AssetProps, idx: number) => {
         return {
           key: `asset-${idx}`,
-          children: <Asset props={i} idx={idx} />,
+          children: <Asset props={{ ...i }} idx={idx} />,
           label: i.asset_name || `Asset #${idx + 1}`,
         };
       })
@@ -125,11 +130,7 @@ const CollectionForm: React.FC = () => {
         }}
       >
         {({ submitForm, isSubmitting }) => (
-          <Form
-            layout="vertical"
-            // onChange={(e) => handleFormChange(e)}
-            // initialValues={{ ...currentAsset }
-          >
+          <>
             <div className="p-4">
               <Tabs
                 hideAdd
@@ -190,7 +191,7 @@ const CollectionForm: React.FC = () => {
                 </div>
               </div>
             </div>
-          </Form>
+          </>
         )}
       </Formik>
 
