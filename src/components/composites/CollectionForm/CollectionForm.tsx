@@ -34,6 +34,18 @@ const CollectionForm: React.FC = () => {
     },
   ]);
 
+  // const TabPanels: Array<{
+  //   key: string;
+  //   children: JSX.Element;
+  //   label: string;
+  // }> = assetCollection.map((i: AssetProps, idx: number) => {
+  //   return {
+  //     key: `asset-${idx}`,
+  //     children: <Asset props={{ ...i }} idx={idx} />,
+  //     label: i.asset_name || `Asset #${idx + 1}`,
+  //   };
+  // });
+
   const newTabIndex = useRef(assetCollection.length);
   const [activeKey, setActiveKey] = useState(`asset-0`);
   const onChange = (key: string) => {
@@ -98,13 +110,14 @@ const CollectionForm: React.FC = () => {
   useEffect(() => {
     // Update new tabindex
     newTabIndex.current = assetCollection.length;
-
+    console.log('changed collection');
     // Update panels
     setTabPanels(
       assetCollection.map((i: AssetProps, idx: number) => {
+        console.log(i.name, i.asset_name, '< ------');
         return {
           key: `asset-${idx}`,
-          children: <Asset props={{ ...i }} idx={idx} />,
+          children: <Asset props={i} idx={idx} />,
           label: i.asset_name || `Asset #${idx + 1}`,
         };
       })
@@ -120,7 +133,23 @@ const CollectionForm: React.FC = () => {
           console.log(values, ' <--- these are the values');
 
           try {
-            await submitRequest(values);
+            // Update collection with assets withe shame name
+            const reducedCollection = assetCollection.reduce(
+              (acc: AssetProps[], i) => {
+                if (!i.asset_name) return acc;
+
+                const dup = acc.filter((j) => j.asset_name === i.asset_name);
+                if (dup.length) {
+                  dup[0].amount += i.amount;
+                } else {
+                  acc.push(i);
+                }
+                return acc;
+              },
+              []
+            );
+
+            await submitRequest(reducedCollection);
           } catch (error) {
             message.error('unable to submit request');
             console.log(error);
@@ -132,6 +161,8 @@ const CollectionForm: React.FC = () => {
         {({ submitForm, isSubmitting }) => (
           <>
             <div className="p-4">
+              <>{console.log(TabPanels, ' <---- tab panels')}</>
+
               <Tabs
                 hideAdd
                 onChange={onChange}

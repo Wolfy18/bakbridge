@@ -77,19 +77,20 @@ const AssetForm: React.FC<{
     <Form
       layout="vertical"
       onChange={(e) => handleFormChange(e)}
-      // initialValues={{ ...currentAsset }
+      initialValues={{ ...currentAsset }}
     >
-      <Form.Item label="Name" name="name" required>
+      <Form.Item label="Token Name" name="name" required>
         <Input name="name" type="text" maxLength={64} />
       </Form.Item>
 
-      <Form.Item label="Asset Name" name="asset_name">
+      <Form.Item label="Index Name" name="asset_name">
         <Input
           name="asset_name"
           ref={assetNameRef}
           type="text"
           maxLength={32}
           showCount={true}
+          placeholder={currentAsset.name}
         />
       </Form.Item>
 

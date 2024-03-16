@@ -9,22 +9,23 @@ const Asset: React.FC<{ props: AssetProps; idx: number }> = ({
   idx,
 }) => {
   const [asset, setAsset] = useState<AssetProps>(props);
-
   const { assetCollection, setAssetCollection } = useFormContext();
 
   useEffect(() => {
     const t = setTimeout(() => {
       const collection = [...assetCollection];
       collection[idx] = asset;
-
       setAssetCollection(collection);
-    }, 300);
+    }, 1000);
 
     return () => {
       clearTimeout(t);
     };
   }, [asset]);
 
+  useEffect(() => {
+    console.log(asset, '< ======');
+  }, [asset]);
   return (
     <div className="grid md:grid-cols-2 gap-6">
       <div className="col-span-1">

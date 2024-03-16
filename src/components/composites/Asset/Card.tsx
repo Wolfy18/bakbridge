@@ -7,25 +7,6 @@ import { CarouselRef } from 'antd/es/carousel';
 
 const { Meta } = DSCard;
 
-const renderAttrs = (attrs: Attrs) => {
-  const numberOfTabs = 1;
-  const indentation = '\t'.repeat(numberOfTabs);
-
-  // Convert JSON object to JSON-formatted string with custom indentation
-  const jsonString = JSON.stringify(attrs, null, indentation);
-
-  return (
-    <pre>
-      {jsonString.split('\n').map((line, index) => (
-        <React.Fragment key={index}>
-          {line}
-          {'\n'}
-        </React.Fragment>
-      ))}
-    </pre>
-  );
-};
-
 const Card: React.FC<AssetProps> = ({
   name,
   description,
@@ -59,7 +40,16 @@ const Card: React.FC<AssetProps> = ({
         {attrs && Object.keys(attrs).length > 0 && (
           <>
             <Divider orientation="left">Attributes</Divider>
-            {renderAttrs(attrs)}
+            <pre>
+              {JSON.stringify(attrs, null, '\t'.repeat(1))
+                .split('\n')
+                .map((line, index) => (
+                  <React.Fragment key={index}>
+                    {line}
+                    {'\n'}
+                  </React.Fragment>
+                ))}
+            </pre>
           </>
         )}
 
