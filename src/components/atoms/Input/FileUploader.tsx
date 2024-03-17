@@ -5,7 +5,8 @@ import useBakClient from 'client/bakrypt';
 
 const FileUploader: React.FC<{
   callback?: (data: AttachmentProps) => void;
-}> = ({ callback }) => {
+  status?: '' | 'error' | 'warning';
+}> = ({ callback, status }) => {
   const [loading, setLoading] = useState<boolean>(false);
   const { uploadIPFSFile } = useBakClient();
   const [uploadedFile, setUploadedFile] = useState<
@@ -51,6 +52,7 @@ const FileUploader: React.FC<{
         readOnly
         value={uploadedFile?.ipfs}
         placeholder="Upload to IPFS"
+        status={status}
       />
     </Upload>
   );

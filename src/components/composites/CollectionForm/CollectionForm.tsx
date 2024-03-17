@@ -7,8 +7,25 @@ import { PlusOutlined, LoadingOutlined } from '@ant-design/icons';
 import { useSessionContext } from 'context/SessionContext';
 import useBakClient from 'client/bakrypt';
 import Config from './Config';
+// import { insertLineBreaks } from 'utils';
+import * as Yup from 'yup';
 
 type TargetKey = React.MouseEvent | React.KeyboardEvent | string;
+
+const collectionSchema = Yup.object().shape({
+  asset: Yup.array().of(
+    Yup.object().shape({
+      blockchain: Yup.string().required().default('ada'),
+      name: Yup.string().required(),
+      asset_name: Yup.string().required(),
+      image: Yup.string(),
+      description: Yup.string(),
+      amount: Yup.number().required(),
+      // files?: AssetFileProps[];
+      // attrs?: Attrs;
+    })
+  ),
+});
 
 const CollectionForm: React.FC = () => {
   const {
@@ -33,18 +50,6 @@ const CollectionForm: React.FC = () => {
       label: `Asset #1`,
     },
   ]);
-
-  // const TabPanels: Array<{
-  //   key: string;
-  //   children: JSX.Element;
-  //   label: string;
-  // }> = assetCollection.map((i: AssetProps, idx: number) => {
-  //   return {
-  //     key: `asset-${idx}`,
-  //     children: <Asset props={{ ...i }} idx={idx} />,
-  //     label: i.asset_name || `Asset #${idx + 1}`,
-  //   };
-  // });
 
   const newTabIndex = useRef(assetCollection.length);
   const [activeKey, setActiveKey] = useState(`asset-0`);
@@ -124,10 +129,56 @@ const CollectionForm: React.FC = () => {
     );
   }, [assetCollection]);
 
+  // const handleFormChange = (
+  //   e: React.FormEvent<HTMLFormElement>,
+  //   errors: FormikErrors<{
+  //     asset: AssetProps[];
+  //   }>,
+  //   touched: FormikTouched<{
+  //     asset: AssetProps[];
+  //   }>
+  // ) => {
+  //   const inputElement = e.target as HTMLInputElement;
+  //   const key = inputElement.name.split('.')[1] as keyof AssetProps;
+  //   console.log(e, ' <--------- ');
+  //   const currentIdx = Number(activeKey.replace(/[^0-9]/g, ''));
+  //   console.log(currentIdx);
+  //   const assetUpdate = { ...assetCollection[currentIdx] };
+  //   // Use square bracket notation to update the property dynamically
+  //   Object.assign(assetUpdate, {
+  //     [key]:
+  //       key !== 'description'
+  //         ? inputElement.value
+  //         : insertLineBreaks(inputElement.value).split('\n'),
+  //   });
+
+  //   // Set asset name if name is set but no asset name
+  //   // if (!assetNameRef.current?.input?.value.length && assetUpdate.name) {
+  //   if (assetUpdate.name) {
+  //     Object.assign(assetUpdate, {
+  //       asset_name: assetUpdate.name.substring(0, 32),
+  //     });
+  //   }
+
+  //   Object.assign(assetUpdate, {
+  //     asset_name: assetUpdate.asset_name?.replace(/[^a-zA-Z0-9]/g, ''),
+  //   });
+
+  //   // Append error status
+  //   console.log(errors, touched);
+
+  //   const newcol = [...assetCollection];
+  //   newcol[currentIdx] = assetUpdate;
+  //   setAssetCollection(newcol);
+  // };
+
   return (
     <div className="relative">
       <Formik
-        initialValues={assetCollection}
+        initialValues={{
+          asset: assetCollection,
+        }}
+        validationSchema={collectionSchema}
         onSubmit={async (values, actions) => {
           console.log('Submitting form......');
           console.log(values, ' <--- these are the values');
@@ -161,8 +212,6 @@ const CollectionForm: React.FC = () => {
         {({ submitForm, isSubmitting }) => (
           <>
             <div className="p-4">
-              <>{console.log(TabPanels, ' <---- tab panels')}</>
-
               <Tabs
                 hideAdd
                 onChange={onChange}
