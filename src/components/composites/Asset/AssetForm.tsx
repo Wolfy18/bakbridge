@@ -1,9 +1,17 @@
 import React, { useRef, useState } from 'react';
-import { Divider, Form as FormAntd, Space, Button, Input } from 'antd';
+import {
+  Divider,
+  Form as FormAntd,
+  Space,
+  Button,
+  Input,
+  InputRef,
+} from 'antd';
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import { FileUploader } from 'components/atoms/Input';
 import { insertLineBreaks } from 'utils';
 import { Field, FieldProps } from 'formik';
+import { useFormContext } from 'context/FormContext';
 
 const FileInputPairItem: React.FC<{
   name: string;
@@ -39,18 +47,48 @@ const AssetForm: React.FC<AssetProps & { index: number }> = ({
   index,
 }) => {
   const [text, setText] = useState('');
-  // const assetNameRef = useRef<InputRef | null>(null);
+  const assetNameRef = useRef<InputRef | null>(null);
+
+  const { assetCollection, setAssetCollection } = useFormContext();
+
   const handleTextAreaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const inputValue = e.currentTarget.value;
     const formattedText = insertLineBreaks(inputValue);
 
     setText(formattedText);
   };
+
+  const handleFormChange = (e: React.FormEvent<HTMLFormElement>) => {
+    const inputElement = e.target as HTMLInputElement;
+    const key = inputElement.name.split('.')[1] as keyof AssetProps;
+
+    const assetUpdate = { ...assetCollection[index] };
+    // Use square bracket notation to update the property dynamically
+    Object.assign(assetUpdate, {
+      [key]:
+        key !== 'description'
+          ? inputElement.value
+          : insertLineBreaks(inputElement.value).split('\n'),
+    });
+
+    // Set asset name if name is set but no asset name
+    if (!assetNameRef.current?.input?.value.length && assetUpdate.name) {
+      Object.assign(assetUpdate, {
+        asset_name: assetUpdate.name.substring(0, 32),
+      });
+    }
+
+    Object.assign(assetUpdate, {
+      asset_name: assetUpdate.asset_name?.replace(/[^a-zA-Z0-9]/g, ''),
+    });
+
+    const newcol = [...assetCollection];
+    newcol[index] = assetUpdate;
+    setAssetCollection(newcol);
+  };
+
   return (
-    <FormAntd
-      layout="vertical"
-      // onChange={(e) => handleFormChange(e, errors, touched)}
-    >
+    <FormAntd layout="vertical" onChange={(e) => handleFormChange(e)}>
       <Field name={`asset[${index}].blockchain`}>
         {({ field, meta }: FieldProps) => (
           <Input

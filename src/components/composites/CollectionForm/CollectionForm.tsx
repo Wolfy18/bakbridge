@@ -129,49 +129,6 @@ const CollectionForm: React.FC = () => {
     );
   }, [assetCollection]);
 
-  // const handleFormChange = (
-  //   e: React.FormEvent<HTMLFormElement>,
-  //   errors: FormikErrors<{
-  //     asset: AssetProps[];
-  //   }>,
-  //   touched: FormikTouched<{
-  //     asset: AssetProps[];
-  //   }>
-  // ) => {
-  //   const inputElement = e.target as HTMLInputElement;
-  //   const key = inputElement.name.split('.')[1] as keyof AssetProps;
-  //   console.log(e, ' <--------- ');
-  //   const currentIdx = Number(activeKey.replace(/[^0-9]/g, ''));
-  //   console.log(currentIdx);
-  //   const assetUpdate = { ...assetCollection[currentIdx] };
-  //   // Use square bracket notation to update the property dynamically
-  //   Object.assign(assetUpdate, {
-  //     [key]:
-  //       key !== 'description'
-  //         ? inputElement.value
-  //         : insertLineBreaks(inputElement.value).split('\n'),
-  //   });
-
-  //   // Set asset name if name is set but no asset name
-  //   // if (!assetNameRef.current?.input?.value.length && assetUpdate.name) {
-  //   if (assetUpdate.name) {
-  //     Object.assign(assetUpdate, {
-  //       asset_name: assetUpdate.name.substring(0, 32),
-  //     });
-  //   }
-
-  //   Object.assign(assetUpdate, {
-  //     asset_name: assetUpdate.asset_name?.replace(/[^a-zA-Z0-9]/g, ''),
-  //   });
-
-  //   // Append error status
-  //   console.log(errors, touched);
-
-  //   const newcol = [...assetCollection];
-  //   newcol[currentIdx] = assetUpdate;
-  //   setAssetCollection(newcol);
-  // };
-
   return (
     <div className="relative">
       <Formik
