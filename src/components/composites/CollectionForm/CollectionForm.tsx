@@ -7,8 +7,25 @@ import { PlusOutlined, LoadingOutlined } from '@ant-design/icons';
 import { useSessionContext } from 'context/SessionContext';
 import useBakClient from 'client/bakrypt';
 import Config from './Config';
+// import { insertLineBreaks } from 'utils';
+import * as Yup from 'yup';
 
 type TargetKey = React.MouseEvent | React.KeyboardEvent | string;
+
+const collectionSchema = Yup.object().shape({
+  asset: Yup.array().of(
+    Yup.object().shape({
+      blockchain: Yup.string().required().default('ada'),
+      name: Yup.string().required(),
+      asset_name: Yup.string().required(),
+      image: Yup.string(),
+      description: Yup.string(),
+      amount: Yup.number().required(),
+      // files?: AssetFileProps[];
+      // attrs?: Attrs;
+    })
+  ),
+});
 
 const CollectionForm: React.FC = () => {
   const {
@@ -98,13 +115,14 @@ const CollectionForm: React.FC = () => {
   useEffect(() => {
     // Update new tabindex
     newTabIndex.current = assetCollection.length;
-
+    console.log('changed collection');
     // Update panels
     setTabPanels(
       assetCollection.map((i: AssetProps, idx: number) => {
+        console.log(i.name, i.asset_name, '< ------');
         return {
           key: `asset-${idx}`,
-          children: <Asset props={{ ...i }} idx={idx} />,
+          children: <Asset props={i} idx={idx} />,
           label: i.asset_name || `Asset #${idx + 1}`,
         };
       })
@@ -114,13 +132,32 @@ const CollectionForm: React.FC = () => {
   return (
     <div className="relative">
       <Formik
-        initialValues={assetCollection}
+        initialValues={{
+          asset: assetCollection,
+        }}
+        validationSchema={collectionSchema}
         onSubmit={async (values, actions) => {
           console.log('Submitting form......');
           console.log(values, ' <--- these are the values');
 
           try {
-            await submitRequest(values);
+            // Update collection with assets withe shame name
+            const reducedCollection = assetCollection.reduce(
+              (acc: AssetProps[], i) => {
+                if (!i.asset_name) return acc;
+
+                const dup = acc.filter((j) => j.asset_name === i.asset_name);
+                if (dup.length) {
+                  dup[0].amount += i.amount;
+                } else {
+                  acc.push(i);
+                }
+                return acc;
+              },
+              []
+            );
+
+            await submitRequest(reducedCollection);
           } catch (error) {
             message.error('unable to submit request');
             console.log(error);

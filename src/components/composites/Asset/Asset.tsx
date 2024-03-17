@@ -1,42 +1,56 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import AssetForm from './AssetForm';
 import Card from './Card';
 import { Badge } from 'antd';
-import { useFormContext } from 'context/FormContext';
 
 const Asset: React.FC<{ props: AssetProps; idx: number }> = ({
-  props,
+  props: {
+    blockchain,
+    name,
+    asset_name,
+    image,
+    amount,
+    description,
+    attrs,
+    files,
+  },
   idx,
 }) => {
-  const [asset, setAsset] = useState<AssetProps>(props);
-
-  const { assetCollection, setAssetCollection } = useFormContext();
-
-  useEffect(() => {
-    const t = setTimeout(() => {
-      const collection = [...assetCollection];
-      collection[idx] = asset;
-
-      setAssetCollection(collection);
-    }, 300);
-
-    return () => {
-      clearTimeout(t);
-    };
-  }, [asset]);
-
   return (
     <div className="grid md:grid-cols-2 gap-6">
       <div className="col-span-1">
         <Badge.Ribbon
-          text={asset.amount > 1 ? 'Fungible Token' : 'NFT'}
-          color={asset.amount > 1 ? 'yellow' : 'blue'}
+          text={amount > 1 ? 'Fungible Token' : 'NFT'}
+          color={amount > 1 ? 'yellow' : 'blue'}
         >
-          <Card {...asset}></Card>
+          <Card
+            {...{
+              blockchain,
+              name,
+              asset_name,
+              image,
+              amount,
+              description,
+              attrs,
+              files,
+            }}
+          ></Card>
         </Badge.Ribbon>
       </div>
       <div className="col-span-1">
-        <AssetForm asset={asset} setter={setAsset} />
+        <AssetForm
+          {...{
+            blockchain,
+            name,
+            asset_name,
+            image,
+            amount,
+            description,
+            attrs,
+            files,
+          }}
+          index={idx}
+        />
       </div>
     </div>
   );

@@ -1,10 +1,22 @@
 import React, { useRef, useState } from 'react';
-import { Divider, Form, Space, Button, Input, InputRef } from 'antd';
+import {
+  Divider,
+  Form as FormAntd,
+  Space,
+  Button,
+  Input,
+  InputRef,
+} from 'antd';
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import { FileUploader } from 'components/atoms/Input';
 import { insertLineBreaks } from 'utils';
+import { Field, FieldProps } from 'formik';
+import { useFormContext } from 'context/FormContext';
 
-const FileInputPairItem: React.FC<{ name: string }> = ({ name }) => {
+const FileInputPairItem: React.FC<{
+  name: string;
+  status?: '' | 'error' | 'warning';
+}> = ({ name, status }) => {
   const ref = useRef<HTMLInputElement | null>(null);
   const handleKeyDown = (event: KeyboardEvent) => {
     console.log('Key pressed:', event.key);
@@ -23,20 +35,21 @@ const FileInputPairItem: React.FC<{ name: string }> = ({ name }) => {
   return (
     <div>
       {/* Input for file upload */}
-      <FileUploader callback={handleUploadCallback} />
+      <FileUploader callback={handleUploadCallback} status={status} />
       {/* Hidden input */}
-      <input name={name} ref={ref} type="text" defaultValue={''} />
+      <input name={name} ref={ref} type="hidden" defaultValue={''} />
     </div>
   );
 };
 
-const AssetForm: React.FC<{
-  asset: AssetProps;
-  setter: (e: AssetProps) => void;
-}> = ({ asset, setter }) => {
+const AssetForm: React.FC<AssetProps & { index: number }> = ({
+  name,
+  index,
+}) => {
   const [text, setText] = useState('');
   const assetNameRef = useRef<InputRef | null>(null);
-  const [currentAsset, setCurrentAsset] = useState(asset);
+
+  const { assetCollection, setAssetCollection } = useFormContext();
 
   const handleTextAreaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const inputValue = e.currentTarget.value;
@@ -47,9 +60,9 @@ const AssetForm: React.FC<{
 
   const handleFormChange = (e: React.FormEvent<HTMLFormElement>) => {
     const inputElement = e.target as HTMLInputElement;
-    const key = inputElement.name as keyof AssetProps;
+    const key = inputElement.name.split('.')[1] as keyof AssetProps;
 
-    const assetUpdate = { ...currentAsset };
+    const assetUpdate = { ...assetCollection[index] };
     // Use square bracket notation to update the property dynamically
     Object.assign(assetUpdate, {
       [key]:
@@ -69,73 +82,115 @@ const AssetForm: React.FC<{
       asset_name: assetUpdate.asset_name?.replace(/[^a-zA-Z0-9]/g, ''),
     });
 
-    setCurrentAsset(assetUpdate);
-    setter(assetUpdate);
+    const newcol = [...assetCollection];
+    newcol[index] = assetUpdate;
+    setAssetCollection(newcol);
   };
 
   return (
-    <Form
-      layout="vertical"
-      onChange={(e) => handleFormChange(e)}
-      // initialValues={{ ...currentAsset }
-    >
-      <Form.Item label="Name" name="name" required>
-        <Input name="name" type="text" maxLength={64} />
-      </Form.Item>
+    <FormAntd layout="vertical" onChange={(e) => handleFormChange(e)}>
+      <Field name={`asset[${index}].blockchain`}>
+        {({ field, meta }: FieldProps) => (
+          <Input
+            {...field}
+            type="hidden"
+            maxLength={64}
+            status={meta.error ? 'error' : undefined}
+          />
+        )}
+      </Field>
 
-      <Form.Item label="Asset Name" name="asset_name">
-        <Input
-          name="asset_name"
-          ref={assetNameRef}
-          type="text"
-          maxLength={32}
-          showCount={true}
-        />
-      </Form.Item>
+      <Field name={`asset[${index}].name`}>
+        {({ field, meta }: FieldProps) => (
+          <FormAntd.Item label="Token Name" name={field.name} required>
+            <Input
+              {...field}
+              type="text"
+              maxLength={64}
+              status={meta.error ? 'error' : undefined}
+            />
+          </FormAntd.Item>
+        )}
+      </Field>
 
-      <Form.Item label="Number of tokens" name="amount" required>
-        <Input name="amount" type="number" min={1} />
-      </Form.Item>
+      <Field name={`asset[${index}].asset_name`}>
+        {({ field, meta }: FieldProps) => (
+          <FormAntd.Item label="Index Name" name={field.name} required>
+            <Input
+              {...field}
+              type="text"
+              maxLength={32}
+              showCount={true}
+              placeholder={name}
+              status={meta.error ? 'error' : undefined}
+            />
+          </FormAntd.Item>
+        )}
+      </Field>
 
-      <Form.Item label="Cover Image" name="image" required>
-        <FileInputPairItem name="image" />
-      </Form.Item>
+      <Field name={`asset[${index}].amount`}>
+        {({ field, meta }: FieldProps) => (
+          <FormAntd.Item label="Number of tokens" {...field} required>
+            <Input
+              {...field}
+              type="number"
+              min={1}
+              status={meta.error ? 'error' : undefined}
+            />
+          </FormAntd.Item>
+        )}
+      </Field>
 
-      <Form.Item label="Description" name="description">
-        <Input.TextArea
-          name="description"
-          onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) =>
-            handleTextAreaChange(event)
-          }
-          value={text}
-        />
-      </Form.Item>
+      <Field name={`asset[${index}].image`}>
+        {({ field, meta }: FieldProps) => (
+          <FormAntd.Item label="Cover Image" {...field} required>
+            <FileInputPairItem
+              {...field}
+              status={meta.error ? 'error' : undefined}
+            />
+          </FormAntd.Item>
+        )}
+      </Field>
 
+      <Field name={`asset[${index}].description`}>
+        {({ field, meta }: FieldProps) => (
+          <FormAntd.Item label="Description" {...field}>
+            <Input.TextArea
+              {...field}
+              onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) =>
+                handleTextAreaChange(event)
+              }
+              value={text}
+              status={meta.error ? 'error' : undefined}
+            />
+          </FormAntd.Item>
+        )}
+      </Field>
       <Divider orientation="left">Attributes</Divider>
 
-      <Form.List name="attributes">
+      <FormAntd.List name="attributes">
         {(fields, { add, remove }) => (
           <>
             {fields.map(({ key, name, ...restField }) => (
               <Space key={key} className="flex mb-2" align="baseline">
-                <Form.Item
+                <FormAntd.Item
                   {...restField}
                   name={[name, 'key']}
                   rules={[{ required: true, message: 'Missing key' }]}
                 >
                   <Input placeholder="Key" maxLength={64} />
-                </Form.Item>
-                <Form.Item
+                </FormAntd.Item>
+                <FormAntd.Item
                   {...restField}
                   name={[name, 'value']}
                   rules={[{ required: true, message: 'Missing value' }]}
                 >
                   <Input placeholder="Value" maxLength={64} />
-                </Form.Item>
+                </FormAntd.Item>
                 <MinusCircleOutlined onClick={() => remove(name)} />
               </Space>
             ))}
-            <Form.Item>
+            <FormAntd.Item>
               <Button
                 type="dashed"
                 onClick={() => add()}
@@ -144,37 +199,37 @@ const AssetForm: React.FC<{
               >
                 Add attribute
               </Button>
-            </Form.Item>
+            </FormAntd.Item>
           </>
         )}
-      </Form.List>
+      </FormAntd.List>
 
       <Divider orientation="left">Files</Divider>
-      <Form.List name="files">
+      <FormAntd.List name="files">
         {(fields, { add, remove }) => (
           <>
             {fields.map(({ key, name, ...restField }) => (
               <Space key={key} className="mb-8" align="center">
-                <Form.Item
+                <FormAntd.Item
                   {...restField}
                   name={[name, 'name']}
                   rules={[{ required: true, message: 'Missing name' }]}
                   className="mb-0 col-span-2"
                 >
                   <Input placeholder="Name" maxLength={64} />
-                </Form.Item>
-                <Form.Item
+                </FormAntd.Item>
+                <FormAntd.Item
                   {...restField}
                   name={[name, 'src']}
                   rules={[{ required: true, message: 'Missing src' }]}
                   className="mb-0 col-span-2"
                 >
                   <FileInputPairItem name="src" />
-                </Form.Item>
+                </FormAntd.Item>
                 <MinusCircleOutlined onClick={() => remove(name)} />
               </Space>
             ))}
-            <Form.Item>
+            <FormAntd.Item>
               <Button
                 type="dashed"
                 onClick={() => add()}
@@ -183,11 +238,11 @@ const AssetForm: React.FC<{
               >
                 Add File
               </Button>
-            </Form.Item>
+            </FormAntd.Item>
           </>
         )}
-      </Form.List>
-    </Form>
+      </FormAntd.List>
+    </FormAntd>
   );
 };
 
