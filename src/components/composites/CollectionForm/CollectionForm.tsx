@@ -37,19 +37,21 @@ const CollectionForm: React.FC = () => {
   const { getTransaction, submitRequest } = useBakClient();
   const { transactionUuid } = useSessionContext();
 
-  const [TabPanels, setTabPanels] = useState<
-    Array<{
-      key: string;
-      children: JSX.Element;
-      label: string;
-    }>
-  >([
-    {
-      key: `asset-0`,
-      children: <Asset props={EmptyAsset} idx={0} />,
-      label: `Asset #1`,
-    },
-  ]);
+  // const [TabPanels, setTabPanels] = useState<
+  //   Array<{
+  //     key: string;
+  //     children: JSX.Element;
+  //     label: string;
+  //   }>
+  // >();
+
+  const TabPanels = assetCollection.map((i: AssetProps, idx: number) => {
+    return {
+      key: `asset-${idx}`,
+      children: <Asset props={i} idx={idx} />,
+      label: i.asset_name || `Asset #${idx + 1}`,
+    };
+  });
 
   const newTabIndex = useRef(assetCollection.length);
   const [activeKey, setActiveKey] = useState(`asset-0`);
@@ -117,16 +119,15 @@ const CollectionForm: React.FC = () => {
     newTabIndex.current = assetCollection.length;
     console.log('changed collection');
     // Update panels
-    setTabPanels(
-      assetCollection.map((i: AssetProps, idx: number) => {
-        console.log(i.name, i.asset_name, '< ------');
-        return {
-          key: `asset-${idx}`,
-          children: <Asset props={i} idx={idx} />,
-          label: i.asset_name || `Asset #${idx + 1}`,
-        };
-      })
-    );
+    // setTabPanels(
+    //   assetCollection.map((i: AssetProps, idx: number) => {
+    //     return {
+    //       key: `asset-${idx}`,
+    //       children: <Asset props={i} idx={idx} />,
+    //       label: i.asset_name || `Asset #${idx + 1}`,
+    //     };
+    //   })
+    // );
   }, [assetCollection]);
 
   return (
