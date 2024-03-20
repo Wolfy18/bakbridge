@@ -20,7 +20,7 @@ const collectionSchema = Yup.object().shape({
       image: Yup.string(),
       description: Yup.string(),
       amount: Yup.number().required(),
-      attrs: Yup.array().of(
+      attributes: Yup.array().of(
         Yup.object().shape({
           key: Yup.string().required(),
           value: Yup.string().required(),
@@ -29,7 +29,7 @@ const collectionSchema = Yup.object().shape({
       files: Yup.array().of(
         Yup.object().shape({
           name: Yup.string().required(),
-          src: Yup.string().required(),
+          src: Yup.string(),
           mediaType: Yup.string(),
         })
       ),
@@ -139,7 +139,7 @@ const CollectionForm: React.FC = () => {
 
           try {
             // Update collection with assets withe shame name
-            const reducedCollection = assetCollection.reduce(
+            const reducedCollection = values.asset.reduce(
               (acc: AssetProps[], i) => {
                 if (!i.asset_name) return acc;
 

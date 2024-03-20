@@ -6,6 +6,10 @@ import { insertLineBreaks } from 'utils';
 import { Field, FieldProps } from 'formik';
 import { useFormContext } from 'context/FormContext';
 
+type NestedObject = {
+  [key: string]: NestedObject | string | (NestedObject | string)[];
+};
+
 const AssetForm: React.FC<AssetProps & { index: number }> = ({
   name,
   index,
@@ -24,18 +28,57 @@ const AssetForm: React.FC<AssetProps & { index: number }> = ({
 
   const handleFormChange = (e: React.FormEvent<HTMLFormElement>) => {
     const inputElement = e.target as HTMLInputElement;
-    console.log(e, ' <---- this is the current element');
-    const key = inputElement.name.split('.')[1] as keyof AssetProps;
+    const properties = inputElement.name.split('.').slice(1);
 
-    const assetUpdate = { ...assetCollection[index] };
+    const recursiveProperties: (
+      props: string[],
+      obj?: NestedObject
+    ) => NestedObject | undefined = (props, obj = {}) => {
+      if (!props.length) return obj;
+      // Take the first element from the props
+      const propertyKey = props.shift();
+
+      if (propertyKey) {
+        // Check if the propertyKey contains brackets indicating a list
+        const match = propertyKey.match(/^(.+)\[(\d+)\]$/);
+        if (match) {
+          // Extract the list propertyKey and index from the match
+          const listKey = match[1];
+          const idx = parseInt(match[2], 10);
+
+          // Initialize the list if it doesn't exist
+          if (!Array.isArray(obj[listKey])) {
+            obj[listKey] = [];
+          }
+
+          // Ensure the list element at the specified index is an object
+          // @ts-expect-error the object can be nested object o string
+          obj[listKey][idx] = obj[listKey][idx] || {};
+
+          // RecursivePropertiesly call the function with the updated props and object
+          // @ts-expect-error The object can be a nested object of string
+          recursiveProperties(props, obj[listKey][idx]);
+        } else {
+          // If it's not a list element, assign the value to the object
+          obj[propertyKey] = inputElement.value;
+        }
+      }
+
+      return obj;
+    };
+
+    const updated = recursiveProperties(properties);
+    // merge objects
+    const assetUpdate = { ...assetCollection[index], ...updated };
+
     // Use square bracket notation to update the property dynamically
-    Object.assign(assetUpdate, {
-      [key]:
-        key !== 'description'
-          ? inputElement.value
-          : insertLineBreaks(inputElement.value).split('\n'),
-    });
-
+    // Object.assign(assetUpdate, {
+    //   [key]:
+    //     key !== 'description'
+    //       ? inputElement.value
+    //       : insertLineBreaks(inputElement.value).split('\n'),
+    // });
+    console.log(assetUpdate, ' <------');
     // Set asset name if name is set but no asset name
     if (!assetNameRef.current?.input?.value.length && assetUpdate.name) {
       Object.assign(assetUpdate, {
@@ -153,12 +196,12 @@ const AssetForm: React.FC<AssetProps & { index: number }> = ({
       </Field>
       <Divider orientation="left">Attributes</Divider>
 
-      <FormDS.List name={`asset[${index}].attrs`}>
+      <FormDS.List name={`asset[${index}].attributes`}>
         {(fields, { add, remove }) => (
           <>
-            {fields.map(({ key, name, ...restField }, idx) => (
+            {fields.map(({ key, name, ...restField }, fileIdx) => (
               <Space key={key} className="flex mb-2" align="baseline">
-                <Field name={`${name}[${idx}].key`}>
+                <Field name={`asset[${index}].attributes[${fileIdx}].key`}>
                   {({ field, meta }: FieldProps) => (
                     <FormDS.Item
                       {...restField}
@@ -175,8 +218,7 @@ const AssetForm: React.FC<AssetProps & { index: number }> = ({
                     </FormDS.Item>
                   )}
                 </Field>
-
-                <Field name={`${name}[${idx}].value`}>
+                <Field name={`asset[${index}].attributes[${fileIdx}].value`}>
                   {({ field, meta }: FieldProps) => (
                     <FormDS.Item
                       {...restField}
