@@ -18,10 +18,10 @@ export const EmptyAsset = {
   blockchain: 'ada',
   name: '',
   image: '',
-  description: '',
   amount: 1,
-  attrs: {},
-  files: [],
+  // description: '',
+  // attrs: {},
+  // files: [],
 };
 
 const FormContext = createContext<FormContextProps | undefined>(undefined);

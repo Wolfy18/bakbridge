@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { Formik } from 'formik';
 import { Divider, Button, Tabs, Drawer, Spin, message } from 'antd';
 import { Asset } from 'components/composites/Asset';
@@ -7,7 +7,6 @@ import { PlusOutlined, LoadingOutlined } from '@ant-design/icons';
 import { useSessionContext } from 'context/SessionContext';
 import useBakClient from 'client/bakrypt';
 import Config from './Config';
-// import { insertLineBreaks } from 'utils';
 import * as Yup from 'yup';
 
 type TargetKey = React.MouseEvent | React.KeyboardEvent | string;
@@ -21,8 +20,19 @@ const collectionSchema = Yup.object().shape({
       image: Yup.string(),
       description: Yup.string(),
       amount: Yup.number().required(),
-      // files?: AssetFileProps[];
-      // attrs?: Attrs;
+      attrs: Yup.array().of(
+        Yup.object().shape({
+          key: Yup.string().required(),
+          value: Yup.string().required(),
+        })
+      ),
+      files: Yup.array().of(
+        Yup.object().shape({
+          name: Yup.string().required(),
+          src: Yup.string().required(),
+          mediaType: Yup.string(),
+        })
+      ),
     })
   ),
 });
@@ -37,21 +47,17 @@ const CollectionForm: React.FC = () => {
   const { getTransaction, submitRequest } = useBakClient();
   const { transactionUuid } = useSessionContext();
 
-  // const [TabPanels, setTabPanels] = useState<
-  //   Array<{
-  //     key: string;
-  //     children: JSX.Element;
-  //     label: string;
-  //   }>
-  // >();
-
-  const TabPanels = assetCollection.map((i: AssetProps, idx: number) => {
-    return {
-      key: `asset-${idx}`,
-      children: <Asset props={i} idx={idx} />,
-      label: i.asset_name || `Asset #${idx + 1}`,
-    };
-  });
+  const TabPanels = useMemo(
+    () =>
+      assetCollection.map((i: AssetProps, idx: number) => {
+        return {
+          key: `asset-${idx}`,
+          children: <Asset props={i} idx={idx} />,
+          label: i.asset_name || `Asset #${idx + 1}`,
+        };
+      }),
+    [assetCollection]
+  );
 
   const newTabIndex = useRef(assetCollection.length);
   const [activeKey, setActiveKey] = useState(`asset-0`);
@@ -117,17 +123,7 @@ const CollectionForm: React.FC = () => {
   useEffect(() => {
     // Update new tabindex
     newTabIndex.current = assetCollection.length;
-    console.log('changed collection');
-    // Update panels
-    // setTabPanels(
-    //   assetCollection.map((i: AssetProps, idx: number) => {
-    //     return {
-    //       key: `asset-${idx}`,
-    //       children: <Asset props={i} idx={idx} />,
-    //       label: i.asset_name || `Asset #${idx + 1}`,
-    //     };
-    //   })
-    // );
+    console.log('Collection changed ---------');
   }, [assetCollection]);
 
   return (
