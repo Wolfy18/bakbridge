@@ -23,7 +23,6 @@ const AssetForm: React.FC<AssetProps & { index: number }> = ({
 }) => {
   const [text, setText] = useState('');
   const { assetCollection, setAssetCollection } = useFormContext();
-
   const handleTextAreaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const inputValue = e.currentTarget.value;
     const formattedText = insertLineBreaks(inputValue);
@@ -65,7 +64,6 @@ const AssetForm: React.FC<AssetProps & { index: number }> = ({
           // @ts-expect-error The object can be a nested object of string
           recursiveProperties(props, obj[listKey][idx]);
         } else {
-          console.log(obj, propertyKey);
           obj[propertyKey] = inputElement.value;
         }
       }
@@ -73,7 +71,7 @@ const AssetForm: React.FC<AssetProps & { index: number }> = ({
       return obj;
     };
 
-    // @ts-expect-error something
+    // @ts-expect-error dynamic keys
     const updatedProperty = recursiveProperties(properties, assetUpdate);
 
     const updated = { ...assetUpdate, ...updatedProperty };
@@ -91,16 +89,13 @@ const AssetForm: React.FC<AssetProps & { index: number }> = ({
       updated['description'] = insertLineBreaks(updated.description);
     }
 
-    // merge objects
-    // console.log(assetUpdate, updated?.description?.split('\n'), ' ,-----');
-    console.log(updated);
     const newcol = [...assetCollection];
     newcol[index] = updated;
     setAssetCollection(newcol);
   };
 
   return (
-    <FormDS layout="vertical" onChangeCapture={(e) => handleFormChange(e)}>
+    <FormDS layout="vertical" onKeyUp={handleFormChange}>
       <Field name={`asset[${index}].blockchain`}>
         {({ field, meta }: FieldProps) => (
           <FormDS.Item
@@ -224,7 +219,7 @@ const AssetForm: React.FC<AssetProps & { index: number }> = ({
                   {({ field, meta }: FieldProps) => (
                     <FormDS.Item
                       {...restField}
-                      name={field.name}
+                      name={[name, field.name]}
                       rules={[{ required: true, message: 'Missing key' }]}
                       help={meta.error}
                       initialValue={
@@ -244,7 +239,7 @@ const AssetForm: React.FC<AssetProps & { index: number }> = ({
                   {({ field, meta }: FieldProps) => (
                     <FormDS.Item
                       {...restField}
-                      name={field.name}
+                      name={[name, field.name]}
                       rules={[{ required: true, message: 'Missing value' }]}
                       help={meta.error}
                       initialValue={
@@ -261,7 +256,22 @@ const AssetForm: React.FC<AssetProps & { index: number }> = ({
                   )}
                 </Field>
 
-                <MinusCircleOutlined onClick={() => remove(name)} />
+                <MinusCircleOutlined
+                  onClick={() => {
+                    remove(name);
+                    const currentAsset = { ...assetCollection[index] };
+
+                    attrs = currentAsset.attrs?.filter(
+                      (obj, idx) => idx !== name
+                    );
+                    currentAsset.attrs = attrs;
+
+                    const newcol = [...assetCollection];
+                    newcol[index] = currentAsset;
+                    console.log(newcol[index]);
+                    setAssetCollection(newcol);
+                  }}
+                />
               </Space>
             ))}
             <FormDS.Item>
@@ -288,7 +298,7 @@ const AssetForm: React.FC<AssetProps & { index: number }> = ({
                   {({ field, meta }: FieldProps) => (
                     <FormDS.Item
                       {...restField}
-                      name={field.name}
+                      name={[name, field.name]}
                       rules={[{ required: true, message: 'Missing name' }]}
                       className="mb-0 col-span-2"
                       help={meta.error}
@@ -309,11 +319,11 @@ const AssetForm: React.FC<AssetProps & { index: number }> = ({
                   {({ field, meta }: FieldProps) => (
                     <FormDS.Item
                       {...restField}
-                      name={field.name}
+                      name={[name, field.name]}
                       rules={[{ required: true, message: 'Missing source' }]}
                       className="mb-0 col-span-2"
                       initialValue={
-                        files && files[fileIdx] ? files[fileIdx].src : null
+                        files && files[fileIdx] ? files[fileIdx].src : undefined
                       }
                       help={meta.error}
                     >
@@ -328,12 +338,12 @@ const AssetForm: React.FC<AssetProps & { index: number }> = ({
                   {({ field, meta }: FieldProps) => (
                     <FormDS.Item
                       {...restField}
-                      name={field.name}
+                      name={[name, field.name]}
                       className="mb-0 col-span-2"
                       initialValue={
                         files && files[fileIdx]
                           ? files[fileIdx].mediaType
-                          : null
+                          : undefined
                       }
                       help={meta.error}
                     >
@@ -347,7 +357,21 @@ const AssetForm: React.FC<AssetProps & { index: number }> = ({
                     </FormDS.Item>
                   )}
                 </Field>
-                <MinusCircleOutlined onClick={() => remove(name)} />
+                <MinusCircleOutlined
+                  onClick={() => {
+                    remove(name);
+                    const currentAsset = { ...assetCollection[index] };
+
+                    files = currentAsset.files?.filter(
+                      (obj, idx) => idx !== name
+                    );
+                    currentAsset.files = files;
+
+                    const newcol = [...assetCollection];
+                    newcol[index] = currentAsset;
+                    setAssetCollection(newcol);
+                  }}
+                />
               </Space>
             ))}
             <FormDS.Item>

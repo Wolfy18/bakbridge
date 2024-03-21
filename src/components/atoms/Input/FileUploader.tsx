@@ -43,7 +43,6 @@ const FileUploader: React.FC<{
       <UploadOutlined />
     );
   };
-  // console.log(name, status, ' <--- file uploader');
   return (
     <Upload {...props} showUploadList={false}>
       <Input

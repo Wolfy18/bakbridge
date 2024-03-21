@@ -30,7 +30,7 @@ const collectionSchema = Yup.object().shape({
         Yup.object().shape({
           name: Yup.string().required(),
           src: Yup.string().required(),
-          mediaType: Yup.string().optional(),
+          mediaType: Yup.string().nullable(),
         })
       ),
     })
