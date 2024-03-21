@@ -42,7 +42,7 @@ const AssetForm: React.FC<AssetProps & { index: number }> = ({
       obj?: NestedObject
     ) => NestedObject | undefined = (props, obj = {}) => {
       if (!props.length) return obj;
-      // Take the first element from the props
+
       const propertyKey = props.shift();
 
       if (propertyKey) {
@@ -61,12 +61,11 @@ const AssetForm: React.FC<AssetProps & { index: number }> = ({
           // @ts-expect-error the object can be nested object o string
           obj[listKey][idx] = obj[listKey][idx] || {};
 
-          // console.log(obj[listKey], ' <-----');
           // RecursivePropertiesly call the function with the updated props and object
           // @ts-expect-error The object can be a nested object of string
           recursiveProperties(props, obj[listKey][idx]);
         } else {
-          // If it's not a list element, assign the value to the object
+          console.log(obj, propertyKey);
           obj[propertyKey] = inputElement.value;
         }
       }
@@ -104,7 +103,11 @@ const AssetForm: React.FC<AssetProps & { index: number }> = ({
     <FormDS layout="vertical" onChangeCapture={(e) => handleFormChange(e)}>
       <Field name={`asset[${index}].blockchain`}>
         {({ field, meta }: FieldProps) => (
-          <FormDS.Item name={field.name} initialValue={blockchain}>
+          <FormDS.Item
+            name={field.name}
+            initialValue={blockchain}
+            className="hidden"
+          >
             <Input
               {...field}
               type="hidden"

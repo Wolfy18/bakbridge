@@ -23,6 +23,26 @@ const Card: React.FC<AssetProps> = ({
   const prev = () => {
     ref?.current?.prev();
   };
+
+  const renderAttrs = () => {
+    const obj = attrs?.reduce((acc, i) => {
+      Object.assign(acc, {
+        [i.key as string]: i.value,
+      });
+
+      return acc;
+    }, {});
+
+    return JSON.stringify(obj, null, '\t'.repeat(1))
+      .split('\n')
+      .map((line, index) => (
+        <React.Fragment key={index}>
+          {line}
+          {'\n'}
+        </React.Fragment>
+      ));
+  };
+
   return (
     <>
       <DSCard
@@ -40,16 +60,7 @@ const Card: React.FC<AssetProps> = ({
         {attrs && attrs.length && (
           <>
             <Divider orientation="left">Attributes</Divider>
-            <pre>
-              {JSON.stringify(attrs, null, '\t'.repeat(1))
-                .split('\n')
-                .map((line, index) => (
-                  <React.Fragment key={index}>
-                    {line}
-                    {'\n'}
-                  </React.Fragment>
-                ))}
-            </pre>
+            <pre>{renderAttrs()}</pre>
           </>
         )}
 
