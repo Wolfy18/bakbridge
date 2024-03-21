@@ -20,9 +20,6 @@ export const EmptyAsset = {
   name: '',
   image: '',
   amount: 1,
-  // description: '',
-  // attrs: [],
-  // files: [],
 };
 
 const FormContext = createContext<FormContextProps | undefined>(undefined);
@@ -45,22 +42,37 @@ export const FormProvider: React.FC<
     // Format intake into form schema
     const formatted: AssetProps[] | undefined = data?.map((obj) => {
       //attrs
-      if (obj.attrs && typeof obj.attrs === 'object') {
-        const attrs = Object.keys(obj.attrs).reduce(
-          (acc: Attrs[], attr: keyof Attrs) => {
-            acc.push({
-              key: attr,
+      if (obj.attrs) {
+        if (typeof obj.attrs === 'object' && !Array.isArray(obj.attrs)) {
+          const attrs = Object.keys(obj.attrs).reduce(
+            (acc: Attrs[], attr: keyof Attrs) => {
+              acc.push({
+                key: attr,
 
-              // @ts-expect-error wip: working on this type error
-              value: obj.attrs ? obj.attrs[attr] : null,
+                // @ts-expect-error wip: working on this type error
+                value: obj.attrs ? obj.attrs[attr] : null,
+              });
+              return acc;
+            },
+            []
+          );
+
+          obj.attrs = attrs;
+        } else if (Array.isArray(obj.attrs)) {
+          const attrs = obj.attrs?.reduce((acc: Attrs[], obj: Attrs) => {
+            Object.keys(obj).map((i) => {
+              acc.push({
+                key: i,
+                value: obj[i],
+              });
             });
             return acc;
-          },
-          []
-        );
+          }, []);
 
-        obj.attrs = attrs;
+          obj.attrs = attrs;
+        }
       }
+
       return obj as AssetProps;
     });
 

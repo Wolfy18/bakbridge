@@ -338,7 +338,7 @@ const AssetForm: React.FC<AssetProps & { index: number }> = ({
                         {...field}
                         placeholder="media/type"
                         maxLength={64}
-                        type="hidden"
+                        type="text"
                         status={meta.error ? 'error' : undefined}
                       />
                     </FormDS.Item>
