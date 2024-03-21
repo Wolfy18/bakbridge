@@ -17,10 +17,10 @@ const collectionSchema = Yup.object().shape({
       blockchain: Yup.string().required().default('ada'),
       name: Yup.string().required(),
       asset_name: Yup.string().required(),
-      image: Yup.string(),
+      image: Yup.string().required(),
       description: Yup.string(),
       amount: Yup.number().required(),
-      attributes: Yup.array().of(
+      attrs: Yup.array().of(
         Yup.object().shape({
           key: Yup.string().required(),
           value: Yup.string().required(),
@@ -29,7 +29,7 @@ const collectionSchema = Yup.object().shape({
       files: Yup.array().of(
         Yup.object().shape({
           name: Yup.string().required(),
-          src: Yup.string(),
+          src: Yup.string().required(),
           mediaType: Yup.string(),
         })
       ),
@@ -47,6 +47,7 @@ const CollectionForm: React.FC = () => {
   const { getTransaction, submitRequest } = useBakClient();
   const { transactionUuid } = useSessionContext();
 
+  // Set panels based on the assetCollection.
   const TabPanels = useMemo(
     () =>
       assetCollection.map((i: AssetProps, idx: number) => {
@@ -118,8 +119,6 @@ const CollectionForm: React.FC = () => {
     })();
   }, [transactionUuid]);
 
-  // Set panels based on the assetCollection.
-  // Memoization can be good here
   useEffect(() => {
     // Update new tabindex
     newTabIndex.current = assetCollection.length;
@@ -136,7 +135,7 @@ const CollectionForm: React.FC = () => {
         onSubmit={async (values, actions) => {
           console.log('Submitting form......');
           console.log(values, ' <--- these are the values');
-
+          console.log(assetCollection, ' <------------');
           try {
             // Update collection with assets withe shame name
             const reducedCollection = values.asset.reduce(
@@ -186,12 +185,11 @@ const CollectionForm: React.FC = () => {
                       <PlusOutlined /> Asset
                     </Button>
                   )}
-
-                  <Button type="link" onClick={() => setOpen(!open)}>
-                    Config
-                  </Button>
                 </div>
                 <div>
+                  <Button type="link" onClick={() => setOpen(!open)}>
+                    Configuration
+                  </Button>
                   {transactionUuid ? (
                     <Button
                       type="default"

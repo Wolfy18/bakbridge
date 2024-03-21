@@ -27,7 +27,7 @@ const File: React.FC<{ url?: string; alt?: string }> = ({ url, alt }) => {
 
   const renderFile = () => {
     if (type?.toLowerCase().trim().includes('image'))
-      return <Image src={fileUrl} alt={alt} />;
+      return <Image src={fileUrl} alt={alt} placeholder={alt} />;
 
     if (type?.toLowerCase().trim().includes('video'))
       return <video src={fileUrl} controls></video>;

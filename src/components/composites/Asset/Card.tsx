@@ -37,7 +37,7 @@ const Card: React.FC<AssetProps> = ({
           <Skeleton />
         )}
 
-        {attrs && Object.keys(attrs).length > 0 && (
+        {attrs && attrs.length && (
           <>
             <Divider orientation="left">Attributes</Divider>
             <pre>

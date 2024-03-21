@@ -68,7 +68,7 @@ interface AssetProps {
   fingerprint?: string;
   description?: string;
   files?: AssetFileProps[];
-  attrs?: Attrs;
+  attrs?: Attrs[];
   amount: number;
   royalties?: string;
   royalties_rate?: string;
