@@ -212,7 +212,7 @@ const AssetForm: React.FC<AssetProps & { index: number }> = ({
       </Field>
       <Divider orientation="left">Attributes</Divider>
 
-      <FormDS.List name={`asset[${index}].attrs`}>
+      <FormDS.List name={`asset[${index}].attrs`} initialValue={attrs}>
         {(fields, { add, remove }) => (
           <>
             {fields.map(({ key, name, ...restField }, fileIdx) => (
@@ -276,7 +276,7 @@ const AssetForm: React.FC<AssetProps & { index: number }> = ({
       </FormDS.List>
 
       <Divider orientation="left">Files</Divider>
-      <FormDS.List name={`asset[${index}].files`}>
+      <FormDS.List name={`asset[${index}].files`} initialValue={files}>
         {(fields, { add, remove }) => (
           <>
             {fields.map(({ key, name, ...restField }, fileIdx) => (

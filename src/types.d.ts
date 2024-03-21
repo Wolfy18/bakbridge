@@ -79,6 +79,10 @@ interface IntakeAssetProps extends AssetProps {
   attrs?: Attrs[] | Attrs;
 }
 
+interface OutputAssetProps extends AssetProps {
+  attrs?: Attrs;
+}
+
 interface SessionContextProps {
   transactionUuid?: string;
   policyId?: string;

@@ -3,7 +3,7 @@ import React, {
   useState,
   useContext,
   PropsWithChildren,
-  useEffect,
+  useMemo,
 } from 'react';
 
 interface FormContextProps {
@@ -38,9 +38,38 @@ export const useFormContext = () => {
 export const FormProvider: React.FC<
   PropsWithChildren & { initialData?: string; showTransaction?: boolean }
 > = ({ initialData, showTransaction, children }) => {
-  const [assetCollection, setAssetCollection] = useState<AssetProps[]>([
-    EmptyAsset,
-  ]);
+  const initCollection = useMemo(() => {
+    let data: IntakeAssetProps[] | undefined;
+    if (initialData && initialData.length) data = JSON.parse(initialData);
+
+    // Format intake into form schema
+    const formatted: AssetProps[] | undefined = data?.map((obj) => {
+      //attrs
+      if (obj.attrs && typeof obj.attrs === 'object') {
+        const attrs = Object.keys(obj.attrs).reduce(
+          (acc: Attrs[], attr: keyof Attrs) => {
+            acc.push({
+              key: attr,
+
+              // @ts-expect-error wip: working on this type error
+              value: obj.attrs ? obj.attrs[attr] : null,
+            });
+            return acc;
+          },
+          []
+        );
+
+        obj.attrs = attrs;
+      }
+      return obj as AssetProps;
+    });
+
+    return formatted;
+  }, [initialData]);
+
+  const [assetCollection, setAssetCollection] = useState<AssetProps[]>(
+    initCollection || [EmptyAsset]
+  );
 
   const [openTxDrawer, setOpenTxDrawer] = useState<boolean | undefined>(
     showTransaction
@@ -49,30 +78,6 @@ export const FormProvider: React.FC<
   const [transaction, setTransaction] = useState<TransactionProps | undefined>(
     undefined
   );
-
-  useEffect(() => {
-    let data: IntakeAssetProps[] | undefined;
-    if (initialData && initialData.length) data = JSON.parse(initialData);
-
-    // Format intake into form schema
-    const formatted: AssetProps[] | undefined = data?.map((obj) => {
-      //attrs
-      if (obj.attrs && typeof obj.attrs === 'object') {
-        const attrs = Object.keys(obj.attrs).reduce((acc: Attrs[], attr) => {
-          acc.push({
-            key: attr,
-            value: obj[attr],
-          });
-          return acc;
-        }, []);
-
-        obj.attrs = attrs;
-      }
-      return obj as AssetProps;
-    });
-
-    if (formatted) setAssetCollection(formatted);
-  }, [initialData]);
 
   return (
     <FormContext.Provider
