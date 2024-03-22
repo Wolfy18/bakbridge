@@ -91,3 +91,7 @@ interface SessionContextProps {
   baseUrl?: string;
   showTransaction?: boolean;
 }
+
+type NestedObject = {
+  [key: string]: NestedObject | string | (NestedObject | string | AssetProps)[];
+};
