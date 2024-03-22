@@ -95,3 +95,5 @@ interface SessionContextProps {
 type NestedObject = {
   [key: string]: NestedObject | string | (NestedObject | string | AssetProps)[];
 };
+
+type TargetKey = React.MouseEvent | React.KeyboardEvent | string;

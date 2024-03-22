@@ -9,8 +9,6 @@ import useBakClient from 'client/bakrypt';
 import Config from './Config';
 import * as Yup from 'yup';
 
-type TargetKey = React.MouseEvent | React.KeyboardEvent | string;
-
 const collectionSchema = Yup.object().shape({
   asset: Yup.array().of(
     Yup.object().shape({
