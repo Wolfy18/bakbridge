@@ -68,11 +68,19 @@ interface AssetProps {
   fingerprint?: string;
   description?: string;
   files?: AssetFileProps[];
-  attrs?: Attrs;
+  attrs?: Attrs[];
   amount: number;
   royalties?: string;
   royalties_rate?: string;
   transaction?: string | TransactionProps;
+}
+
+interface IntakeAssetProps extends AssetProps {
+  attrs?: Attrs[] | Attrs;
+}
+
+interface OutputAssetProps extends AssetProps {
+  attrs?: Attrs;
 }
 
 interface SessionContextProps {

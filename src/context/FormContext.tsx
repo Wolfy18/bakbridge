@@ -3,6 +3,7 @@ import React, {
   useState,
   useContext,
   PropsWithChildren,
+  useMemo,
 } from 'react';
 
 interface FormContextProps {
@@ -18,10 +19,7 @@ export const EmptyAsset = {
   blockchain: 'ada',
   name: '',
   image: '',
-  description: '',
   amount: 1,
-  attrs: {},
-  files: [],
 };
 
 const FormContext = createContext<FormContextProps | undefined>(undefined);
@@ -37,8 +35,52 @@ export const useFormContext = () => {
 export const FormProvider: React.FC<
   PropsWithChildren & { initialData?: string; showTransaction?: boolean }
 > = ({ initialData, showTransaction, children }) => {
+  const initCollection = useMemo(() => {
+    let data: IntakeAssetProps[] | undefined;
+    if (initialData && initialData.length) data = JSON.parse(initialData);
+
+    // Format intake into form schema
+    const formatted: AssetProps[] | undefined = data?.map((obj) => {
+      //attrs
+      if (obj.attrs) {
+        if (typeof obj.attrs === 'object' && !Array.isArray(obj.attrs)) {
+          const attrs = Object.keys(obj.attrs).reduce(
+            (acc: Attrs[], attr: keyof Attrs) => {
+              acc.push({
+                key: attr,
+
+                // @ts-expect-error wip: working on this type error
+                value: obj.attrs ? obj.attrs[attr] : null,
+              });
+              return acc;
+            },
+            []
+          );
+
+          obj.attrs = attrs;
+        } else if (Array.isArray(obj.attrs)) {
+          const attrs = obj.attrs?.reduce((acc: Attrs[], obj: Attrs) => {
+            Object.keys(obj).map((i) => {
+              acc.push({
+                key: i,
+                value: obj[i],
+              });
+            });
+            return acc;
+          }, []);
+
+          obj.attrs = attrs;
+        }
+      }
+
+      return obj as AssetProps;
+    });
+
+    return formatted;
+  }, [initialData]);
+
   const [assetCollection, setAssetCollection] = useState<AssetProps[]>(
-    initialData && initialData.length ? JSON.parse(initialData) : [EmptyAsset]
+    initCollection || [EmptyAsset]
   );
 
   const [openTxDrawer, setOpenTxDrawer] = useState<boolean | undefined>(

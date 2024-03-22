@@ -1,56 +1,28 @@
-import React, { useRef, useState } from 'react';
-import {
-  Divider,
-  Form as FormAntd,
-  Space,
-  Button,
-  Input,
-  InputRef,
-} from 'antd';
+import React, { useState } from 'react';
+import { Divider, Form as FormDS, Space, Button, Input } from 'antd';
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import { FileUploader } from 'components/atoms/Input';
 import { insertLineBreaks } from 'utils';
 import { Field, FieldProps } from 'formik';
 import { useFormContext } from 'context/FormContext';
 
-const FileInputPairItem: React.FC<{
-  name: string;
-  status?: '' | 'error' | 'warning';
-}> = ({ name, status }) => {
-  const ref = useRef<HTMLInputElement | null>(null);
-  const handleKeyDown = (event: KeyboardEvent) => {
-    console.log('Key pressed:', event.key);
-  };
-
-  const handleUploadCallback = (file: AttachmentProps) => {
-    if (ref.current !== null) {
-      ref.current.removeEventListener('keydown', handleKeyDown);
-      ref.current.addEventListener('keydown', handleKeyDown);
-      ref.current.value = file.ipfs;
-      ref.current.dispatchEvent(new KeyboardEvent('keydown', { key: ' ' }));
-      console.log(ref.current, 'over here!----');
-    }
-  };
-
-  return (
-    <div>
-      {/* Input for file upload */}
-      <FileUploader callback={handleUploadCallback} status={status} />
-      {/* Hidden input */}
-      <input name={name} ref={ref} type="hidden" defaultValue={''} />
-    </div>
-  );
+type NestedObject = {
+  [key: string]: NestedObject | string | (NestedObject | string | AssetProps)[];
 };
 
 const AssetForm: React.FC<AssetProps & { index: number }> = ({
+  blockchain,
   name,
+  asset_name,
+  image,
+  amount,
+  description,
+  attrs,
+  files,
   index,
 }) => {
   const [text, setText] = useState('');
-  const assetNameRef = useRef<InputRef | null>(null);
-
   const { assetCollection, setAssetCollection } = useFormContext();
-
   const handleTextAreaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const inputValue = e.currentTarget.value;
     const formattedText = insertLineBreaks(inputValue);
@@ -60,62 +32,115 @@ const AssetForm: React.FC<AssetProps & { index: number }> = ({
 
   const handleFormChange = (e: React.FormEvent<HTMLFormElement>) => {
     const inputElement = e.target as HTMLInputElement;
-    const key = inputElement.name.split('.')[1] as keyof AssetProps;
+    const properties = inputElement.name.split('.').slice(1);
 
     const assetUpdate = { ...assetCollection[index] };
-    // Use square bracket notation to update the property dynamically
-    Object.assign(assetUpdate, {
-      [key]:
-        key !== 'description'
-          ? inputElement.value
-          : insertLineBreaks(inputElement.value).split('\n'),
-    });
 
-    // Set asset name if name is set but no asset name
-    if (!assetNameRef.current?.input?.value.length && assetUpdate.name) {
-      Object.assign(assetUpdate, {
-        asset_name: assetUpdate.name.substring(0, 32),
-      });
+    const recursiveProperties: (
+      props: string[],
+      obj?: NestedObject
+    ) => NestedObject | undefined = (props, obj = {}) => {
+      if (!props.length) return obj;
+
+      const propertyKey = props.shift();
+
+      if (propertyKey) {
+        // Check if the propertyKey contains brackets indicating a list
+        const match = propertyKey.match(/^(.+)\[(\d+)\]$/);
+        if (match) {
+          // Extract the list propertyKey and index from the match
+          const listKey = match[1];
+          const idx = parseInt(match[2], 10);
+          // Initialize the list if it doesn't exist
+          if (!Array.isArray(obj[listKey])) {
+            obj[listKey] = [];
+          }
+
+          // Ensure the list element at the specified index is an object
+          // @ts-expect-error the object can be nested object o string
+          obj[listKey][idx] = obj[listKey][idx] || {};
+
+          // RecursivePropertiesly call the function with the updated props and object
+          // @ts-expect-error The object can be a nested object of string
+          recursiveProperties(props, obj[listKey][idx]);
+        } else {
+          obj[propertyKey] = inputElement.value;
+        }
+      }
+
+      return obj;
+    };
+
+    // @ts-expect-error dynamic keys
+    const updatedProperty = recursiveProperties(properties, assetUpdate);
+
+    const updated = { ...assetUpdate, ...updatedProperty };
+
+    // set asset name if doesn't exists but name does
+    if (!updated.asset_name) {
+      updated['asset_name'] = updated.name.substring(0, 32);
     }
 
-    Object.assign(assetUpdate, {
-      asset_name: assetUpdate.asset_name?.replace(/[^a-zA-Z0-9]/g, ''),
-    });
+    // Only hexadecimal characters are allowed
+    updated['asset_name'] = updated.asset_name.replace(/[^a-zA-Z0-9]/g, '');
+
+    // insert line breaks for description
+    if (updated.description) {
+      updated['description'] = insertLineBreaks(updated.description);
+    }
 
     const newcol = [...assetCollection];
-    newcol[index] = assetUpdate;
+    newcol[index] = updated;
     setAssetCollection(newcol);
   };
 
   return (
-    <FormAntd layout="vertical" onChange={(e) => handleFormChange(e)}>
+    <FormDS layout="vertical" onKeyUp={handleFormChange}>
       <Field name={`asset[${index}].blockchain`}>
         {({ field, meta }: FieldProps) => (
-          <Input
-            {...field}
-            type="hidden"
-            maxLength={64}
-            status={meta.error ? 'error' : undefined}
-          />
+          <FormDS.Item
+            name={field.name}
+            initialValue={blockchain}
+            className="hidden"
+          >
+            <Input
+              {...field}
+              type="hidden"
+              maxLength={64}
+              status={meta.error ? 'error' : undefined}
+            />
+          </FormDS.Item>
         )}
       </Field>
 
       <Field name={`asset[${index}].name`}>
         {({ field, meta }: FieldProps) => (
-          <FormAntd.Item label="Token Name" name={field.name} required>
+          <FormDS.Item
+            label="Token Name"
+            name={field.name}
+            required
+            help={meta.error}
+            initialValue={name}
+          >
             <Input
               {...field}
               type="text"
               maxLength={64}
               status={meta.error ? 'error' : undefined}
             />
-          </FormAntd.Item>
+          </FormDS.Item>
         )}
       </Field>
 
       <Field name={`asset[${index}].asset_name`}>
         {({ field, meta }: FieldProps) => (
-          <FormAntd.Item label="Index Name" name={field.name} required>
+          <FormDS.Item
+            label="Index Name"
+            name={field.name}
+            required
+            help={meta.error}
+            initialValue={asset_name || name}
+          >
             <Input
               {...field}
               type="text"
@@ -124,37 +149,54 @@ const AssetForm: React.FC<AssetProps & { index: number }> = ({
               placeholder={name}
               status={meta.error ? 'error' : undefined}
             />
-          </FormAntd.Item>
+          </FormDS.Item>
         )}
       </Field>
 
       <Field name={`asset[${index}].amount`}>
         {({ field, meta }: FieldProps) => (
-          <FormAntd.Item label="Number of tokens" {...field} required>
+          <FormDS.Item
+            label="Number of tokens"
+            name={field.name}
+            required
+            help={meta.error}
+            initialValue={Number(amount)}
+          >
             <Input
               {...field}
               type="number"
               min={1}
               status={meta.error ? 'error' : undefined}
             />
-          </FormAntd.Item>
+          </FormDS.Item>
         )}
       </Field>
 
       <Field name={`asset[${index}].image`}>
         {({ field, meta }: FieldProps) => (
-          <FormAntd.Item label="Cover Image" {...field} required>
-            <FileInputPairItem
+          <FormDS.Item
+            label="Cover Image"
+            name={field.name}
+            required
+            help={meta.error}
+            initialValue={image}
+          >
+            <FileUploader
               {...field}
               status={meta.error ? 'error' : undefined}
             />
-          </FormAntd.Item>
+          </FormDS.Item>
         )}
       </Field>
 
       <Field name={`asset[${index}].description`}>
         {({ field, meta }: FieldProps) => (
-          <FormAntd.Item label="Description" {...field}>
+          <FormDS.Item
+            label="Description"
+            name={field.name}
+            help={meta.error}
+            initialValue={description}
+          >
             <Input.TextArea
               {...field}
               onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) =>
@@ -163,34 +205,76 @@ const AssetForm: React.FC<AssetProps & { index: number }> = ({
               value={text}
               status={meta.error ? 'error' : undefined}
             />
-          </FormAntd.Item>
+          </FormDS.Item>
         )}
       </Field>
       <Divider orientation="left">Attributes</Divider>
 
-      <FormAntd.List name="attributes">
+      <FormDS.List name={`asset[${index}].attrs`} initialValue={attrs}>
         {(fields, { add, remove }) => (
           <>
-            {fields.map(({ key, name, ...restField }) => (
+            {fields.map(({ key, name, ...restField }, fileIdx) => (
               <Space key={key} className="flex mb-2" align="baseline">
-                <FormAntd.Item
-                  {...restField}
-                  name={[name, 'key']}
-                  rules={[{ required: true, message: 'Missing key' }]}
-                >
-                  <Input placeholder="Key" maxLength={64} />
-                </FormAntd.Item>
-                <FormAntd.Item
-                  {...restField}
-                  name={[name, 'value']}
-                  rules={[{ required: true, message: 'Missing value' }]}
-                >
-                  <Input placeholder="Value" maxLength={64} />
-                </FormAntd.Item>
-                <MinusCircleOutlined onClick={() => remove(name)} />
+                <Field name={`asset[${index}].attrs[${fileIdx}].key`}>
+                  {({ field, meta }: FieldProps) => (
+                    <FormDS.Item
+                      {...restField}
+                      name={[name, field.name]}
+                      rules={[{ required: true, message: 'Missing key' }]}
+                      help={meta.error}
+                      initialValue={
+                        attrs && attrs[fileIdx] ? attrs[fileIdx].key : null
+                      }
+                    >
+                      <Input
+                        placeholder="Key"
+                        {...field}
+                        maxLength={64}
+                        status={meta.error ? 'error' : undefined}
+                      />
+                    </FormDS.Item>
+                  )}
+                </Field>
+                <Field name={`asset[${index}].attrs[${fileIdx}].value`}>
+                  {({ field, meta }: FieldProps) => (
+                    <FormDS.Item
+                      {...restField}
+                      name={[name, field.name]}
+                      rules={[{ required: true, message: 'Missing value' }]}
+                      help={meta.error}
+                      initialValue={
+                        attrs && attrs[fileIdx] ? attrs[fileIdx].value : null
+                      }
+                    >
+                      <Input
+                        {...field}
+                        placeholder="Value"
+                        maxLength={64}
+                        status={meta.error ? 'error' : undefined}
+                      />
+                    </FormDS.Item>
+                  )}
+                </Field>
+
+                <MinusCircleOutlined
+                  onClick={() => {
+                    remove(name);
+                    const currentAsset = { ...assetCollection[index] };
+
+                    attrs = currentAsset.attrs?.filter(
+                      (obj, idx) => idx !== name
+                    );
+                    currentAsset.attrs = attrs;
+
+                    const newcol = [...assetCollection];
+                    newcol[index] = currentAsset;
+                    console.log(newcol[index]);
+                    setAssetCollection(newcol);
+                  }}
+                />
               </Space>
             ))}
-            <FormAntd.Item>
+            <FormDS.Item>
               <Button
                 type="dashed"
                 onClick={() => add()}
@@ -199,37 +283,98 @@ const AssetForm: React.FC<AssetProps & { index: number }> = ({
               >
                 Add attribute
               </Button>
-            </FormAntd.Item>
+            </FormDS.Item>
           </>
         )}
-      </FormAntd.List>
+      </FormDS.List>
 
       <Divider orientation="left">Files</Divider>
-      <FormAntd.List name="files">
+      <FormDS.List name={`asset[${index}].files`} initialValue={files}>
         {(fields, { add, remove }) => (
           <>
-            {fields.map(({ key, name, ...restField }) => (
+            {fields.map(({ key, name, ...restField }, fileIdx) => (
               <Space key={key} className="mb-8" align="center">
-                <FormAntd.Item
-                  {...restField}
-                  name={[name, 'name']}
-                  rules={[{ required: true, message: 'Missing name' }]}
-                  className="mb-0 col-span-2"
-                >
-                  <Input placeholder="Name" maxLength={64} />
-                </FormAntd.Item>
-                <FormAntd.Item
-                  {...restField}
-                  name={[name, 'src']}
-                  rules={[{ required: true, message: 'Missing src' }]}
-                  className="mb-0 col-span-2"
-                >
-                  <FileInputPairItem name="src" />
-                </FormAntd.Item>
-                <MinusCircleOutlined onClick={() => remove(name)} />
+                <Field name={`asset[${index}].files[${fileIdx}].name`}>
+                  {({ field, meta }: FieldProps) => (
+                    <FormDS.Item
+                      {...restField}
+                      name={[name, field.name]}
+                      rules={[{ required: true, message: 'Missing name' }]}
+                      className="mb-0 col-span-2"
+                      help={meta.error}
+                      initialValue={
+                        files && files[fileIdx] ? files[fileIdx].name : null
+                      }
+                    >
+                      <Input
+                        {...field}
+                        placeholder="Name"
+                        maxLength={64}
+                        status={meta.error ? 'error' : undefined}
+                      />
+                    </FormDS.Item>
+                  )}
+                </Field>
+                <Field name={`asset[${index}].files[${fileIdx}].src`}>
+                  {({ field, meta }: FieldProps) => (
+                    <FormDS.Item
+                      {...restField}
+                      name={[name, field.name]}
+                      rules={[{ required: true, message: 'Missing source' }]}
+                      className="mb-0 col-span-2"
+                      initialValue={
+                        files && files[fileIdx] ? files[fileIdx].src : undefined
+                      }
+                      help={meta.error}
+                    >
+                      <FileUploader
+                        {...field}
+                        status={meta.error ? 'error' : undefined}
+                      />
+                    </FormDS.Item>
+                  )}
+                </Field>
+                <Field name={`asset[${index}].files[${fileIdx}].mediaType`}>
+                  {({ field, meta }: FieldProps) => (
+                    <FormDS.Item
+                      {...restField}
+                      name={[name, field.name]}
+                      className="mb-0 col-span-2"
+                      initialValue={
+                        files && files[fileIdx]
+                          ? files[fileIdx].mediaType
+                          : undefined
+                      }
+                      help={meta.error}
+                    >
+                      <Input
+                        {...field}
+                        placeholder="media/type"
+                        maxLength={64}
+                        type="text"
+                        status={meta.error ? 'error' : undefined}
+                      />
+                    </FormDS.Item>
+                  )}
+                </Field>
+                <MinusCircleOutlined
+                  onClick={() => {
+                    remove(name);
+                    const currentAsset = { ...assetCollection[index] };
+
+                    files = currentAsset.files?.filter(
+                      (obj, idx) => idx !== name
+                    );
+                    currentAsset.files = files;
+
+                    const newcol = [...assetCollection];
+                    newcol[index] = currentAsset;
+                    setAssetCollection(newcol);
+                  }}
+                />
               </Space>
             ))}
-            <FormAntd.Item>
+            <FormDS.Item>
               <Button
                 type="dashed"
                 onClick={() => add()}
@@ -238,11 +383,11 @@ const AssetForm: React.FC<AssetProps & { index: number }> = ({
               >
                 Add File
               </Button>
-            </FormAntd.Item>
+            </FormDS.Item>
           </>
         )}
-      </FormAntd.List>
-    </FormAntd>
+      </FormDS.List>
+    </FormDS>
   );
 };
 
