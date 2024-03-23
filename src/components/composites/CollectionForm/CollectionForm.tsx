@@ -182,7 +182,7 @@ const CollectionForm: React.FC = () => {
 
             const req = await submitRequest(formatted);
 
-            if (req[0]) {
+            if (req.length && req[0]) {
               const tx = req[0].transaction;
 
               if (tx && typeof tx === 'object') {
@@ -192,6 +192,8 @@ const CollectionForm: React.FC = () => {
                 const transaction = await getTransaction(tx);
                 setTransaction(transaction);
               }
+
+              setOpenTxDrawer(true);
             }
           } catch (error) {
             message.error('unable to submit request');
