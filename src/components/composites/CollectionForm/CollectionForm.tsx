@@ -49,6 +49,14 @@ const CollectionForm: React.FC = () => {
   const TabPanels = useMemo(
     () =>
       assetCollection.map((i: AssetProps, idx: number) => {
+        // set asset name if doesn't exists but name does
+        if (!i.asset_name) {
+          i['asset_name'] = i.name.substring(0, 32);
+        }
+
+        // Only hexadecimal characters are allowed
+        i['asset_name'] = i.asset_name.replace(/[^a-zA-Z0-9]/g, '');
+
         return {
           key: `asset-${idx}`,
           children: <Asset props={i} idx={idx} />,

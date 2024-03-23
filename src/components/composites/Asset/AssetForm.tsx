@@ -19,6 +19,7 @@ const AssetForm: React.FC<AssetProps & { index: number }> = ({
 }) => {
   const [text, setText] = useState('');
   const { assetCollection, setAssetCollection } = useFormContext();
+  const [form] = FormDS.useForm();
   const handleTextAreaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const inputValue = e.currentTarget.value;
     const formattedText = insertLineBreaks(inputValue);
@@ -27,9 +28,9 @@ const AssetForm: React.FC<AssetProps & { index: number }> = ({
   };
 
   const handleFormChange = (e: React.FormEvent<HTMLFormElement>) => {
+    console.log(e.target, ' <---- target');
     const inputElement = e.target as HTMLInputElement;
     const properties = inputElement.name.split('.').slice(1);
-
     const assetUpdate = { ...assetCollection[index] };
 
     const updatedProperty = recursiveProperties(
@@ -41,13 +42,13 @@ const AssetForm: React.FC<AssetProps & { index: number }> = ({
 
     const updated = { ...assetUpdate, ...updatedProperty };
 
-    // set asset name if doesn't exists but name does
-    if (!updated.asset_name) {
-      updated['asset_name'] = updated.name.substring(0, 32);
-    }
+    // // set asset name if doesn't exists but name does
+    // if (!updated.asset_name) {
+    //   updated['asset_name'] = updated.name.substring(0, 32);
+    // }
 
-    // Only hexadecimal characters are allowed
-    updated['asset_name'] = updated.asset_name.replace(/[^a-zA-Z0-9]/g, '');
+    // // Only hexadecimal characters are allowed
+    // updated['asset_name'] = updated.asset_name.replace(/[^a-zA-Z0-9]/g, '');
 
     // insert line breaks for description
     if (updated.description) {
@@ -60,7 +61,14 @@ const AssetForm: React.FC<AssetProps & { index: number }> = ({
   };
 
   return (
-    <FormDS layout="vertical" onKeyUp={handleFormChange}>
+    <FormDS
+      layout="vertical"
+      onChange={handleFormChange}
+      onFieldsChange={(a, b) => {
+        console.log(a, b);
+      }}
+      form={form}
+    >
       <Field name={`asset[${index}].blockchain`}>
         {({ field, meta }: FieldProps) => (
           <FormDS.Item
@@ -139,18 +147,13 @@ const AssetForm: React.FC<AssetProps & { index: number }> = ({
 
       <Field name={`asset[${index}].image`}>
         {({ field, meta }: FieldProps) => (
-          <FormDS.Item
-            label="Cover Image"
-            name={field.name}
-            required
-            help={meta.error}
+          <FileUploader
+            {...field}
+            status={meta.error ? 'error' : undefined}
             initialValue={image}
-          >
-            <FileUploader
-              {...field}
-              status={meta.error ? 'error' : undefined}
-            />
-          </FormDS.Item>
+            error={meta.error}
+            label="Cover Image"
+          />
         )}
       </Field>
 
@@ -257,6 +260,7 @@ const AssetForm: React.FC<AssetProps & { index: number }> = ({
       <FormDS.List name={`asset[${index}].files`} initialValue={files}>
         {(fields, { add, remove }) => (
           <>
+            {console.log(fields)}
             {fields.map(({ key, name, ...restField }, fileIdx) => (
               <Space key={key} className="mb-8" align="center">
                 <Field name={`asset[${index}].files[${fileIdx}].name`}>
@@ -282,21 +286,17 @@ const AssetForm: React.FC<AssetProps & { index: number }> = ({
                 </Field>
                 <Field name={`asset[${index}].files[${fileIdx}].src`}>
                   {({ field, meta }: FieldProps) => (
-                    <FormDS.Item
-                      {...restField}
+                    <FileUploader
                       name={[name, field.name]}
+                      status={meta.error ? 'error' : undefined}
+                      initialValue={
+                        files && files[fileIdx] ? files[fileIdx].src : null
+                      }
+                      error={meta.error}
                       rules={[{ required: true, message: 'Missing source' }]}
                       className="mb-0 col-span-2"
-                      initialValue={
-                        files && files[fileIdx] ? files[fileIdx].src : undefined
-                      }
-                      help={meta.error}
-                    >
-                      <FileUploader
-                        {...field}
-                        status={meta.error ? 'error' : undefined}
-                      />
-                    </FormDS.Item>
+                      prefixName={`asset[${index}].files_${fileIdx}_`}
+                    />
                   )}
                 </Field>
                 <Field name={`asset[${index}].files[${fileIdx}].mediaType`}>
@@ -308,7 +308,7 @@ const AssetForm: React.FC<AssetProps & { index: number }> = ({
                       initialValue={
                         files && files[fileIdx]
                           ? files[fileIdx].mediaType
-                          : undefined
+                          : null
                       }
                       help={meta.error}
                     >
