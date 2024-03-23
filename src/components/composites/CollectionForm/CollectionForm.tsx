@@ -180,7 +180,19 @@ const CollectionForm: React.FC = () => {
               []
             );
 
-            await submitRequest(formatted);
+            const req = await submitRequest(formatted);
+
+            if (req[0]) {
+              const tx = req[0].transaction;
+
+              if (tx && typeof tx === 'object') {
+                setTransaction(tx);
+              } else if (tx) {
+                // get transaction
+                const transaction = await getTransaction(tx);
+                setTransaction(transaction);
+              }
+            }
           } catch (error) {
             message.error('unable to submit request');
             console.log(error);
