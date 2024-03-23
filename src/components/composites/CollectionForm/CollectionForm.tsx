@@ -140,8 +140,6 @@ const CollectionForm: React.FC = () => {
         validationSchema={collectionSchema}
         onSubmit={async (values, actions) => {
           console.log('Submitting form......');
-          console.log(values, ' <--- these are the values');
-          console.log(assetCollection, ' <------------');
           try {
             // Update collection with assets withe shame name
             const reducedCollection = values.asset.reduce(
@@ -158,8 +156,31 @@ const CollectionForm: React.FC = () => {
               },
               []
             );
+            console.log(reducedCollection);
 
-            await submitRequest(reducedCollection);
+            // update attrs
+            const formatted = reducedCollection.reduce(
+              (acc: OutputAssetProps[], obj: AssetProps) => {
+                const attributes = {};
+
+                if (obj.attrs) {
+                  obj.attrs.forEach((i) => {
+                    Object.assign(attributes, {
+                      [i.key as string]: i.value,
+                    });
+                  });
+                }
+
+                const updated = { ...obj, attrs: { attributes } };
+
+                acc.push(updated);
+
+                return acc;
+              },
+              []
+            );
+
+            await submitRequest(formatted);
           } catch (error) {
             message.error('unable to submit request');
             console.log(error);
