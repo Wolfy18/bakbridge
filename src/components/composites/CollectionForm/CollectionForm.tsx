@@ -203,8 +203,9 @@ const CollectionForm: React.FC = () => {
           actions.setSubmitting(false);
         }}
       >
-        {({ submitForm, isSubmitting }) => (
+        {({ submitForm, isSubmitting, errors }) => (
           <>
+            {console.log(errors)}
             <div className="p-4">
               <Tabs
                 hideAdd

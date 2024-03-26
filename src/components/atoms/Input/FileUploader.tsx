@@ -11,6 +11,7 @@ import {
 } from 'antd';
 import useBakClient from 'client/bakrypt';
 import { Rule } from 'antd/es/form';
+import { useFormikContext } from 'formik';
 
 const FileUploader: React.FC<{
   name: string | (string | number)[];
@@ -37,6 +38,8 @@ const FileUploader: React.FC<{
   const { uploadIPFSFile } = useBakClient();
   const _name = Array.isArray(name) ? String(name[1]) : name;
 
+  const formikProps = useFormikContext();
+
   const props: UploadProps = {
     name: 'file',
     multiple: false,
@@ -47,6 +50,7 @@ const FileUploader: React.FC<{
       try {
         const data = await uploadIPFSFile(file as File);
         form.setFieldValue(prefixName + _name, data.ipfs);
+        formikProps.setFieldValue(prefixName + _name, data.ipfs);
 
         const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
           window.HTMLInputElement.prototype,
