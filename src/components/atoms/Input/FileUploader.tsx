@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { LoadingOutlined, UploadOutlined } from '@ant-design/icons';
 import {
   Input,
@@ -7,6 +7,7 @@ import {
   UploadProps,
   message,
   Form as FormDS,
+  InputRef,
 } from 'antd';
 import useBakClient from 'client/bakrypt';
 import { Rule } from 'antd/es/form';
@@ -30,11 +31,12 @@ const FileUploader: React.FC<{
   label,
   prefixName = '',
 }) => {
+  const inputRef = useRef<InputRef>(null);
   const form = FormDS.useFormInstance();
   const [loading, setLoading] = useState<boolean>(false);
   const { uploadIPFSFile } = useBakClient();
   const _name = Array.isArray(name) ? String(name[1]) : name;
-  console.log(_name, ' <-------- ');
+
   const props: UploadProps = {
     name: 'file',
     multiple: false,
@@ -44,9 +46,18 @@ const FileUploader: React.FC<{
       setLoading(true);
       try {
         const data = await uploadIPFSFile(file as File);
-        console.log(form.getFieldValue(prefixName + _name), ' <---- before');
         form.setFieldValue(prefixName + _name, data.ipfs);
-        console.log(form.getFieldValue(prefixName + _name), ' <---- after');
+
+        const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
+          window.HTMLInputElement.prototype,
+          'value'
+        )?.set;
+
+        nativeInputValueSetter?.call(inputRef.current?.input, data.ipfs);
+
+        const inputEvent = new Event('change', { bubbles: true });
+        inputRef.current?.input?.dispatchEvent(inputEvent);
+
         message.success(`${filename} uploaded successfully`);
       } catch (error) {
         message.error('Unable to upload file');
@@ -75,9 +86,9 @@ const FileUploader: React.FC<{
         rules={rules}
         className={className}
         label={label}
-        // shouldUpdate
       >
         <Input
+          ref={inputRef}
           name={_name}
           type="text"
           readOnly
