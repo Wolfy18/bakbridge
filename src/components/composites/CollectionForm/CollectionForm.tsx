@@ -14,7 +14,7 @@ const collectionSchema = Yup.object().shape({
     Yup.object().shape({
       blockchain: Yup.string().required().default('ada'),
       name: Yup.string().required(),
-      asset_name: Yup.string().required(),
+      asset_name: Yup.string(),
       image: Yup.string().required(),
       description: Yup.string(),
       amount: Yup.number().required(),
@@ -41,6 +41,7 @@ const CollectionForm: React.FC = () => {
     setAssetCollection,
     setOpenTxDrawer,
     setTransaction,
+    transaction,
   } = useFormContext();
   const { getTransaction, submitRequest } = useBakClient();
   const { transactionUuid } = useSessionContext();
@@ -49,18 +50,18 @@ const CollectionForm: React.FC = () => {
   const TabPanels = useMemo(
     () =>
       assetCollection.map((i: AssetProps, idx: number) => {
-        // set asset name if doesn't exists but name does
-        if (!i.asset_name) {
-          i['asset_name'] = i.name.substring(0, 32);
+        if (i.asset_name) {
+          i['asset_name'] = i['asset_name'].replace(/[^a-zA-Z0-9]/g, '');
         }
 
-        // Only hexadecimal characters are allowed
-        i['asset_name'] = i.asset_name.replace(/[^a-zA-Z0-9]/g, '');
+        const tabName =
+          i['asset_name'] ||
+          i.name.substring(0, 32).replace(/[^a-zA-Z0-9]/g, '');
 
         return {
           key: `asset-${idx}`,
           children: <Asset props={i} idx={idx} />,
-          label: i.asset_name || `Asset #${idx + 1}`,
+          label: tabName || `Asset #${idx + 1}`,
         };
       }),
     [assetCollection]
@@ -140,6 +141,7 @@ const CollectionForm: React.FC = () => {
         validationSchema={collectionSchema}
         onSubmit={async (values, actions) => {
           console.log('Submitting form......');
+          console.log(values);
           try {
             // Update collection with assets withe shame name
             const reducedCollection = values.asset.reduce(
@@ -156,7 +158,6 @@ const CollectionForm: React.FC = () => {
               },
               []
             );
-            console.log(reducedCollection);
 
             // update attrs
             const formatted = reducedCollection.reduce(
@@ -171,7 +172,7 @@ const CollectionForm: React.FC = () => {
                   });
                 }
 
-                const updated = { ...obj, attrs: { attributes } };
+                const updated = { ...obj, attrs: { ...attributes } };
 
                 acc.push(updated);
 
@@ -179,7 +180,7 @@ const CollectionForm: React.FC = () => {
               },
               []
             );
-
+            console.log(formatted, '< ----- formatted');
             const req = await submitRequest(formatted);
 
             if (req.length && req[0]) {
@@ -203,9 +204,8 @@ const CollectionForm: React.FC = () => {
           actions.setSubmitting(false);
         }}
       >
-        {({ submitForm, isSubmitting, errors }) => (
+        {({ submitForm, isSubmitting }) => (
           <>
-            {console.log(errors)}
             <div className="p-4">
               <Tabs
                 hideAdd
@@ -218,7 +218,7 @@ const CollectionForm: React.FC = () => {
               <Divider orientation="left"></Divider>
               <div className="flex justify-between max-h-[50px] items-center">
                 <div className="grid grid-cols-2 gap-4">
-                  {!transactionUuid && (
+                  {!transaction && (
                     <Button
                       type="default"
                       className="flex items-center"
@@ -232,7 +232,7 @@ const CollectionForm: React.FC = () => {
                   <Button type="link" onClick={() => setOpen(!open)}>
                     Configuration
                   </Button>
-                  {transactionUuid ? (
+                  {transaction ? (
                     <Button
                       type="default"
                       onClick={() => setOpenTxDrawer(true)}

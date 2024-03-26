@@ -42,14 +42,6 @@ const AssetForm: React.FC<AssetProps & { index: number }> = ({
 
     const updated = { ...assetUpdate, ...updatedProperty };
 
-    // // set asset name if doesn't exists but name does
-    // if (!updated.asset_name) {
-    //   updated['asset_name'] = updated.name.substring(0, 32);
-    // }
-
-    // // Only hexadecimal characters are allowed
-    // updated['asset_name'] = updated.asset_name.replace(/[^a-zA-Z0-9]/g, '');
-
     // insert line breaks for description
     if (updated.description) {
       updated['description'] = insertLineBreaks(updated.description);
@@ -61,14 +53,7 @@ const AssetForm: React.FC<AssetProps & { index: number }> = ({
   };
 
   return (
-    <FormDS
-      layout="vertical"
-      onChange={handleFormChange}
-      onFieldsChange={(a, b) => {
-        console.log(a, b);
-      }}
-      form={form}
-    >
+    <FormDS layout="vertical" onChange={handleFormChange} form={form}>
       <Field name={`asset[${index}].blockchain`}>
         {({ field, meta }: FieldProps) => (
           <FormDS.Item
@@ -110,7 +95,6 @@ const AssetForm: React.FC<AssetProps & { index: number }> = ({
           <FormDS.Item
             label="Index Name"
             name={field.name}
-            required
             help={meta.error}
             initialValue={asset_name || name}
           >
@@ -236,7 +220,6 @@ const AssetForm: React.FC<AssetProps & { index: number }> = ({
 
                     const newcol = [...assetCollection];
                     newcol[index] = currentAsset;
-                    console.log(newcol[index]);
                     setAssetCollection(newcol);
                   }}
                 />
@@ -260,7 +243,6 @@ const AssetForm: React.FC<AssetProps & { index: number }> = ({
       <FormDS.List name={`asset[${index}].files`} initialValue={files}>
         {(fields, { add, remove }) => (
           <>
-            {console.log(fields)}
             {fields.map(({ key, name, ...restField }, fileIdx) => (
               <Space key={key} className="mb-8" align="center">
                 <Field name={`asset[${index}].files[${fileIdx}].name`}>
