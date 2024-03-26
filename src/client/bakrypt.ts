@@ -5,7 +5,7 @@ interface useBakClientProps {
   getTransaction: (uuid: string) => Promise<TransactionProps>;
   mintTransaction: (uuid: string) => Promise<TransactionProps>;
   refundTransaction: (uuid: string) => Promise<TransactionProps>;
-  submitRequest: (data: AssetProps[]) => Promise<AssetProps[]>;
+  submitRequest: (data: OutputAssetProps[]) => Promise<OutputAssetProps[]>;
   uploadIPFSFile: (data: File) => Promise<AttachmentProps>;
 }
 
@@ -34,7 +34,7 @@ const useBakClient = (): useBakClientProps => {
   );
 
   const submitRequest = useCallback(
-    async (data: AssetProps[]) => {
+    async (data: OutputAssetProps[]) => {
       return (await client.post(`/assets/`, data)).data;
     },
     [client]
@@ -43,7 +43,9 @@ const useBakClient = (): useBakClientProps => {
   const uploadIPFSFile = useCallback(
     async (data: File) => {
       client.defaults.headers['Content-Type'] = 'multipart/form-data';
-      return (await client.post(`/files/`, { file: data })).data;
+      const res = (await client.post(`/files/`, { file: data })).data;
+      client.defaults.headers['Content-Type'] = 'application/json';
+      return res;
     },
     [client]
   );

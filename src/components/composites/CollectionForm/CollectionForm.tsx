@@ -9,14 +9,12 @@ import useBakClient from 'client/bakrypt';
 import Config from './Config';
 import * as Yup from 'yup';
 
-type TargetKey = React.MouseEvent | React.KeyboardEvent | string;
-
 const collectionSchema = Yup.object().shape({
   asset: Yup.array().of(
     Yup.object().shape({
       blockchain: Yup.string().required().default('ada'),
       name: Yup.string().required(),
-      asset_name: Yup.string().required(),
+      asset_name: Yup.string(),
       image: Yup.string().required(),
       description: Yup.string(),
       amount: Yup.number().required(),
@@ -43,6 +41,7 @@ const CollectionForm: React.FC = () => {
     setAssetCollection,
     setOpenTxDrawer,
     setTransaction,
+    transaction,
   } = useFormContext();
   const { getTransaction, submitRequest } = useBakClient();
   const { transactionUuid } = useSessionContext();
@@ -51,10 +50,18 @@ const CollectionForm: React.FC = () => {
   const TabPanels = useMemo(
     () =>
       assetCollection.map((i: AssetProps, idx: number) => {
+        if (i.asset_name) {
+          i['asset_name'] = i['asset_name'].replace(/[^a-zA-Z0-9]/g, '');
+        }
+
+        const tabName =
+          i['asset_name'] ||
+          i.name.substring(0, 32).replace(/[^a-zA-Z0-9]/g, '');
+
         return {
           key: `asset-${idx}`,
           children: <Asset props={i} idx={idx} />,
-          label: i.asset_name || `Asset #${idx + 1}`,
+          label: tabName || `Asset #${idx + 1}`,
         };
       }),
     [assetCollection]
@@ -134,8 +141,7 @@ const CollectionForm: React.FC = () => {
         validationSchema={collectionSchema}
         onSubmit={async (values, actions) => {
           console.log('Submitting form......');
-          console.log(values, ' <--- these are the values');
-          console.log(assetCollection, ' <------------');
+          console.log(values);
           try {
             // Update collection with assets withe shame name
             const reducedCollection = values.asset.reduce(
@@ -153,7 +159,43 @@ const CollectionForm: React.FC = () => {
               []
             );
 
-            await submitRequest(reducedCollection);
+            // update attrs
+            const formatted = reducedCollection.reduce(
+              (acc: OutputAssetProps[], obj: AssetProps) => {
+                const attributes = {};
+
+                if (obj.attrs) {
+                  obj.attrs.forEach((i) => {
+                    Object.assign(attributes, {
+                      [i.key as string]: i.value,
+                    });
+                  });
+                }
+
+                const updated = { ...obj, attrs: { ...attributes } };
+
+                acc.push(updated);
+
+                return acc;
+              },
+              []
+            );
+            console.log(formatted, '< ----- formatted');
+            const req = await submitRequest(formatted);
+
+            if (req.length && req[0]) {
+              const tx = req[0].transaction;
+
+              if (tx && typeof tx === 'object') {
+                setTransaction(tx);
+              } else if (tx) {
+                // get transaction
+                const transaction = await getTransaction(tx);
+                setTransaction(transaction);
+              }
+
+              setOpenTxDrawer(true);
+            }
           } catch (error) {
             message.error('unable to submit request');
             console.log(error);
@@ -176,7 +218,7 @@ const CollectionForm: React.FC = () => {
               <Divider orientation="left"></Divider>
               <div className="flex justify-between max-h-[50px] items-center">
                 <div className="grid grid-cols-2 gap-4">
-                  {!transactionUuid && (
+                  {!transaction && (
                     <Button
                       type="default"
                       className="flex items-center"
@@ -190,7 +232,7 @@ const CollectionForm: React.FC = () => {
                   <Button type="link" onClick={() => setOpen(!open)}>
                     Configuration
                   </Button>
-                  {transactionUuid ? (
+                  {transaction ? (
                     <Button
                       type="default"
                       onClick={() => setOpenTxDrawer(true)}

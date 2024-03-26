@@ -1,18 +1,44 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { LoadingOutlined, UploadOutlined } from '@ant-design/icons';
-import { Input, Spin, Upload, UploadProps, message } from 'antd';
+import {
+  Input,
+  Spin,
+  Upload,
+  UploadProps,
+  message,
+  Form as FormDS,
+  InputRef,
+} from 'antd';
 import useBakClient from 'client/bakrypt';
+import { Rule } from 'antd/es/form';
+import { useFormikContext } from 'formik';
 
 const FileUploader: React.FC<{
-  callback?: (data: AttachmentProps) => void;
+  name: string | (string | number)[];
+  initialValue?: string | null;
   status?: '' | 'error' | 'warning';
-  name: string;
-}> = ({ callback, status, name }) => {
+  error?: string;
+  rules?: Rule[];
+  className?: string;
+  label?: string;
+  prefixName?: string;
+}> = ({
+  status,
+  name,
+  initialValue,
+  error,
+  rules,
+  className,
+  label,
+  prefixName = '',
+}) => {
+  const inputRef = useRef<InputRef>(null);
+  const form = FormDS.useFormInstance();
   const [loading, setLoading] = useState<boolean>(false);
   const { uploadIPFSFile } = useBakClient();
-  const [uploadedFile, setUploadedFile] = useState<
-    AttachmentProps | undefined
-  >();
+  const _name = Array.isArray(name) ? String(name[1]) : name;
+
+  const formikProps = useFormikContext();
 
   const props: UploadProps = {
     name: 'file',
@@ -23,9 +49,19 @@ const FileUploader: React.FC<{
       setLoading(true);
       try {
         const data = await uploadIPFSFile(file as File);
+        form.setFieldValue(prefixName + _name, data.ipfs);
+        formikProps.setFieldValue(prefixName + _name, data.ipfs);
 
-        setUploadedFile(data);
-        if (callback) callback(data);
+        const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
+          window.HTMLInputElement.prototype,
+          'value'
+        )?.set;
+
+        nativeInputValueSetter?.call(inputRef.current?.input, data.ipfs);
+
+        const inputEvent = new Event('change', { bubbles: true });
+        inputRef.current?.input?.dispatchEvent(inputEvent);
+
         message.success(`${filename} uploaded successfully`);
       } catch (error) {
         message.error('Unable to upload file');
@@ -43,18 +79,28 @@ const FileUploader: React.FC<{
       <UploadOutlined />
     );
   };
+
   return (
     <Upload {...props} showUploadList={false}>
-      <Input
+      <FormDS.Item
         name={name}
-        type="text"
-        maxLength={64}
-        addonAfter={renderSuffix()}
-        readOnly
-        value={uploadedFile?.ipfs}
-        placeholder="Upload to IPFS"
-        status={status}
-      />
+        required
+        help={error}
+        initialValue={initialValue}
+        rules={rules}
+        className={className}
+        label={label}
+      >
+        <Input
+          ref={inputRef}
+          name={_name}
+          type="text"
+          readOnly
+          addonAfter={renderSuffix()}
+          status={status}
+          placeholder="Upload file"
+        />
+      </FormDS.Item>
     </Upload>
   );
 };

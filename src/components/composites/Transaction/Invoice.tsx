@@ -11,6 +11,7 @@ const Invoice: React.FC<TransactionProps> = ({
   convenience_fee,
   deposit_address,
   status_description,
+  is_auto_processing,
   created_on,
   updated_on,
 }) => {
@@ -85,7 +86,11 @@ const Invoice: React.FC<TransactionProps> = ({
       {!['confirmed', 'canceled'].includes(status) && (
         <>
           <Divider orientation="left">Process Automatically</Divider>
-          <Switch checkedChildren="On" unCheckedChildren="Off" />
+          <Switch
+            checkedChildren="On"
+            unCheckedChildren="Off"
+            checked={is_auto_processing}
+          />
         </>
       )}
     </Form>

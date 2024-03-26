@@ -1,13 +1,13 @@
 interface AttachmentProps {
-  uuid: string;
-  file: string;
-  name: string;
-  filename: string;
-  size: string;
-  mimetype: string;
+  uuid?: string;
+  file?: string;
+  name?: string;
+  filename?: string;
+  size?: string;
+  mimetype?: string;
   ipfs: string;
-  gateway: string;
-  created_on: string;
+  gateway?: string;
+  created_on?: string;
 }
 
 interface TransactionProps {
@@ -91,3 +91,9 @@ interface SessionContextProps {
   baseUrl?: string;
   showTransaction?: boolean;
 }
+
+type NestedObject = {
+  [key: string]: NestedObject | string | (NestedObject | string | AssetProps)[];
+};
+
+type TargetKey = React.MouseEvent | React.KeyboardEvent | string;

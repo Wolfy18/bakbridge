@@ -2,13 +2,9 @@ import React, { useState } from 'react';
 import { Divider, Form as FormDS, Space, Button, Input } from 'antd';
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import { FileUploader } from 'components/atoms/Input';
-import { insertLineBreaks } from 'utils';
+import { insertLineBreaks, recursiveProperties } from 'utils';
 import { Field, FieldProps } from 'formik';
 import { useFormContext } from 'context/FormContext';
-
-type NestedObject = {
-  [key: string]: NestedObject | string | (NestedObject | string | AssetProps)[];
-};
 
 const AssetForm: React.FC<AssetProps & { index: number }> = ({
   blockchain,
@@ -23,6 +19,7 @@ const AssetForm: React.FC<AssetProps & { index: number }> = ({
 }) => {
   const [text, setText] = useState('');
   const { assetCollection, setAssetCollection } = useFormContext();
+  const [form] = FormDS.useForm();
   const handleTextAreaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const inputValue = e.currentTarget.value;
     const formattedText = insertLineBreaks(inputValue);
@@ -31,58 +28,19 @@ const AssetForm: React.FC<AssetProps & { index: number }> = ({
   };
 
   const handleFormChange = (e: React.FormEvent<HTMLFormElement>) => {
+    console.log(e.target, ' <---- target');
     const inputElement = e.target as HTMLInputElement;
     const properties = inputElement.name.split('.').slice(1);
-
     const assetUpdate = { ...assetCollection[index] };
 
-    const recursiveProperties: (
-      props: string[],
-      obj?: NestedObject
-    ) => NestedObject | undefined = (props, obj = {}) => {
-      if (!props.length) return obj;
-
-      const propertyKey = props.shift();
-
-      if (propertyKey) {
-        // Check if the propertyKey contains brackets indicating a list
-        const match = propertyKey.match(/^(.+)\[(\d+)\]$/);
-        if (match) {
-          // Extract the list propertyKey and index from the match
-          const listKey = match[1];
-          const idx = parseInt(match[2], 10);
-          // Initialize the list if it doesn't exist
-          if (!Array.isArray(obj[listKey])) {
-            obj[listKey] = [];
-          }
-
-          // Ensure the list element at the specified index is an object
-          // @ts-expect-error the object can be nested object o string
-          obj[listKey][idx] = obj[listKey][idx] || {};
-
-          // RecursivePropertiesly call the function with the updated props and object
-          // @ts-expect-error The object can be a nested object of string
-          recursiveProperties(props, obj[listKey][idx]);
-        } else {
-          obj[propertyKey] = inputElement.value;
-        }
-      }
-
-      return obj;
-    };
-
-    // @ts-expect-error dynamic keys
-    const updatedProperty = recursiveProperties(properties, assetUpdate);
+    const updatedProperty = recursiveProperties(
+      properties,
+      inputElement.value,
+      // @ts-expect-error dynamic keys
+      assetUpdate as NestedObject
+    );
 
     const updated = { ...assetUpdate, ...updatedProperty };
-
-    // set asset name if doesn't exists but name does
-    if (!updated.asset_name) {
-      updated['asset_name'] = updated.name.substring(0, 32);
-    }
-
-    // Only hexadecimal characters are allowed
-    updated['asset_name'] = updated.asset_name.replace(/[^a-zA-Z0-9]/g, '');
 
     // insert line breaks for description
     if (updated.description) {
@@ -95,7 +53,7 @@ const AssetForm: React.FC<AssetProps & { index: number }> = ({
   };
 
   return (
-    <FormDS layout="vertical" onKeyUp={handleFormChange}>
+    <FormDS layout="vertical" onChange={handleFormChange} form={form}>
       <Field name={`asset[${index}].blockchain`}>
         {({ field, meta }: FieldProps) => (
           <FormDS.Item
@@ -137,7 +95,6 @@ const AssetForm: React.FC<AssetProps & { index: number }> = ({
           <FormDS.Item
             label="Index Name"
             name={field.name}
-            required
             help={meta.error}
             initialValue={asset_name || name}
           >
@@ -174,18 +131,13 @@ const AssetForm: React.FC<AssetProps & { index: number }> = ({
 
       <Field name={`asset[${index}].image`}>
         {({ field, meta }: FieldProps) => (
-          <FormDS.Item
-            label="Cover Image"
-            name={field.name}
-            required
-            help={meta.error}
+          <FileUploader
+            {...field}
+            status={meta.error ? 'error' : undefined}
             initialValue={image}
-          >
-            <FileUploader
-              {...field}
-              status={meta.error ? 'error' : undefined}
-            />
-          </FormDS.Item>
+            error={meta.error}
+            label="Cover Image"
+          />
         )}
       </Field>
 
@@ -268,7 +220,6 @@ const AssetForm: React.FC<AssetProps & { index: number }> = ({
 
                     const newcol = [...assetCollection];
                     newcol[index] = currentAsset;
-                    console.log(newcol[index]);
                     setAssetCollection(newcol);
                   }}
                 />
@@ -317,21 +268,17 @@ const AssetForm: React.FC<AssetProps & { index: number }> = ({
                 </Field>
                 <Field name={`asset[${index}].files[${fileIdx}].src`}>
                   {({ field, meta }: FieldProps) => (
-                    <FormDS.Item
-                      {...restField}
+                    <FileUploader
                       name={[name, field.name]}
+                      status={meta.error ? 'error' : undefined}
+                      initialValue={
+                        files && files[fileIdx] ? files[fileIdx].src : null
+                      }
+                      error={meta.error}
                       rules={[{ required: true, message: 'Missing source' }]}
                       className="mb-0 col-span-2"
-                      initialValue={
-                        files && files[fileIdx] ? files[fileIdx].src : undefined
-                      }
-                      help={meta.error}
-                    >
-                      <FileUploader
-                        {...field}
-                        status={meta.error ? 'error' : undefined}
-                      />
-                    </FormDS.Item>
+                      prefixName={`asset[${index}].files_${fileIdx}_`}
+                    />
                   )}
                 </Field>
                 <Field name={`asset[${index}].files[${fileIdx}].mediaType`}>
@@ -343,7 +290,7 @@ const AssetForm: React.FC<AssetProps & { index: number }> = ({
                       initialValue={
                         files && files[fileIdx]
                           ? files[fileIdx].mediaType
-                          : undefined
+                          : null
                       }
                       help={meta.error}
                     >
