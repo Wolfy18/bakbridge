@@ -144,23 +144,22 @@ const CollectionForm: React.FC = () => {
           console.log(values);
           try {
             // Update collection with assets withe shame name
-            const reducedCollection = values.asset.reduce(
-              (acc: AssetProps[], i) => {
-                if (!i.asset_name) return acc;
+            // const reducedCollection = values.asset.reduce(
+            //   (acc: AssetProps[], i) => {
 
-                const dup = acc.filter((j) => j.asset_name === i.asset_name);
-                if (dup.length) {
-                  dup[0].amount += i.amount;
-                } else {
-                  acc.push(i);
-                }
-                return acc;
-              },
-              []
-            );
+            //     const dup = acc.filter((j) => j.asset_name === i.asset_name);
+            //     if (dup.length) {
+            //       dup[0].amount += i.amount;
+            //     } else {
+            //       acc.push(i);
+            //     }
+            //     return acc;
+            //   },
+            //   []
+            // );
 
             // update attrs
-            const formatted = reducedCollection.reduce(
+            const formatted = values.asset.reduce(
               (acc: OutputAssetProps[], obj: AssetProps) => {
                 const attributes = {};
 

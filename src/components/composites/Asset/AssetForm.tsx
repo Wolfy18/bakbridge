@@ -277,7 +277,6 @@ const AssetForm: React.FC<AssetProps & { index: number }> = ({
                       error={meta.error}
                       rules={[{ required: true, message: 'Missing source' }]}
                       className="mb-0 col-span-2"
-                      prefixName={`asset[${index}].files_${fileIdx}_`}
                     />
                   )}
                 </Field>
