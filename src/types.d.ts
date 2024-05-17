@@ -13,7 +13,18 @@ interface AttachmentProps {
 interface TransactionProps {
   uuid: string;
   blockchain: string;
-  status: string;
+  status:
+    | 'error'
+    | 'royalties'
+    | 'burning'
+    | 'rejected'
+    | 'refund'
+    | 'processing'
+    | 'stand-by'
+    | 'canceled'
+    | 'confirmed'
+    | 'waiting'
+    | 'preauth';
   status_description: string;
   fraud_status: string;
   issuer_address: string;

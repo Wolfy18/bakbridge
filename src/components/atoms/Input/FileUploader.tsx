@@ -21,17 +21,7 @@ const FileUploader: React.FC<{
   rules?: Rule[];
   className?: string;
   label?: string;
-  prefixName?: string;
-}> = ({
-  status,
-  name,
-  initialValue,
-  error,
-  rules,
-  className,
-  label,
-  prefixName = '',
-}) => {
+}> = ({ status, name, initialValue, error, rules, className, label }) => {
   const inputRef = useRef<InputRef>(null);
   const form = FormDS.useFormInstance();
   const [loading, setLoading] = useState<boolean>(false);
@@ -39,6 +29,11 @@ const FileUploader: React.FC<{
   const _name = Array.isArray(name) ? String(name[1]) : name;
 
   const formikProps = useFormikContext();
+
+  const handleInputChange = (e: React.FormEvent<HTMLInputElement>) => {
+    form.setFieldValue(_name, e.currentTarget.value);
+    formikProps.setFieldValue(_name, e.currentTarget.value);
+  };
 
   const props: UploadProps = {
     name: 'file',
@@ -49,8 +44,6 @@ const FileUploader: React.FC<{
       setLoading(true);
       try {
         const data = await uploadIPFSFile(file as File);
-        form.setFieldValue(prefixName + _name, data.ipfs);
-        formikProps.setFieldValue(prefixName + _name, data.ipfs);
 
         const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
           window.HTMLInputElement.prototype,
@@ -76,32 +69,32 @@ const FileUploader: React.FC<{
     return loading ? (
       <Spin indicator={<LoadingOutlined size={6} spin />} />
     ) : (
-      <UploadOutlined />
+      <Upload {...props} showUploadList={false} className="cursor-pointer">
+        <UploadOutlined className="text-md" />
+      </Upload>
     );
   };
 
   return (
-    <Upload {...props} showUploadList={false}>
-      <FormDS.Item
-        name={name}
-        required
-        help={error}
-        initialValue={initialValue}
-        rules={rules}
-        className={className}
-        label={label}
-      >
-        <Input
-          ref={inputRef}
-          name={_name}
-          type="text"
-          readOnly
-          addonAfter={renderSuffix()}
-          status={status}
-          placeholder="Upload file"
-        />
-      </FormDS.Item>
-    </Upload>
+    <FormDS.Item
+      name={name}
+      required
+      help={error}
+      initialValue={initialValue}
+      rules={rules}
+      className={className}
+      label={label}
+    >
+      <Input
+        ref={inputRef}
+        name={_name}
+        type="text"
+        addonAfter={renderSuffix()}
+        status={status}
+        placeholder="Upload file"
+        onChange={handleInputChange}
+      />
+    </FormDS.Item>
   );
 };
 

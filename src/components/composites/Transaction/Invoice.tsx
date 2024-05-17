@@ -1,6 +1,29 @@
-import React from 'react';
-import { Divider, Switch, Input, Form, QRCode, Alert } from 'antd';
+import React, { useEffect } from 'react';
+import { Divider, Input, Form, QRCode, Alert, Tag } from 'antd';
+import {
+  CheckCircleOutlined,
+  ClockCircleOutlined,
+  CloseCircleOutlined,
+  ExclamationCircleOutlined,
+  MinusCircleOutlined,
+  SyncOutlined,
+} from '@ant-design/icons';
 import { ShowPassword } from 'components/atoms/Input';
+import dayjs from 'dayjs';
+
+const icons: { [key: string]: [React.ReactNode, string] } = {
+  confirmed: [<CheckCircleOutlined key={null} />, 'success'],
+  error: [<CloseCircleOutlined key={null} />, 'error'],
+  royalties: [<ExclamationCircleOutlined key={null} />, 'processing'],
+  burning: [<ExclamationCircleOutlined key={null} />, 'processing'],
+  rejected: [<CloseCircleOutlined key={null} />, 'error'],
+  refund: [<ExclamationCircleOutlined key={null} />, 'warning'],
+  processing: [<SyncOutlined spin key={null} />, 'processing'],
+  'stand-by': [<ClockCircleOutlined key={null} />, 'processing'],
+  canceled: [<MinusCircleOutlined key={null} />, 'default'],
+  waiting: [<ClockCircleOutlined key={null} />, 'processing'],
+  preauth: [<ClockCircleOutlined key={null} />, 'default'],
+};
 
 const Invoice: React.FC<TransactionProps> = ({
   uuid,
@@ -11,19 +34,33 @@ const Invoice: React.FC<TransactionProps> = ({
   convenience_fee,
   deposit_address,
   status_description,
-  is_auto_processing,
   created_on,
   updated_on,
 }) => {
+  const expires_on = dayjs(created_on).add(1, 'day');
+  console.log(expires_on, ' <------------- over ehre');
+  useEffect(
+    () => console.log('render...'),
+    [status, status_description, estimated_cost, cost]
+  );
   return (
     <Form layout="vertical">
       <Form.Item label="Policy Id" name="policy_id">
         <Input readOnly name="policy_id" defaultValue={policy_id} />
       </Form.Item>
+      <Form.Item label="Expires on" name="expires_on">
+        <Input
+          readOnly
+          name="expires_on"
+          defaultValue={expires_on.toISOString()}
+        />
+      </Form.Item>
       <div className="grid grid-cols-2 gap-4">
         <Form.Item
           label={`${
-            status !== 'confirmed' ? 'Min. Processing cost' : 'Final cost'
+            status !== 'confirmed'
+              ? 'Minimun ADA to submit transaction'
+              : 'Final cost'
           }`}
           name="processing_cost"
         >
@@ -33,8 +70,33 @@ const Invoice: React.FC<TransactionProps> = ({
             defaultValue={status !== 'confirmed' ? estimated_cost : cost}
           />
         </Form.Item>
-        <Form.Item label="Convenience fees" name="fees">
+        <Form.Item label="[ BAK ] Convenience fees" name="fees">
           <Input readOnly name="fees" defaultValue={convenience_fee} />
+        </Form.Item>
+      </div>
+
+      <h3>Status</h3>
+      <div className="grid grid-cols-3 gap-4 mb-4">
+        <div className="flex">
+          <Tag
+            icon={icons[status][0]}
+            color={icons[status][1]}
+            className="self-center"
+          >
+            {status}
+          </Tag>
+        </div>
+
+        <Form.Item
+          label=""
+          name="status_description"
+          className="col-span-2 mb-0"
+        >
+          <Input
+            readOnly
+            name="status_description"
+            defaultValue={status_description}
+          />
         </Form.Item>
       </div>
 
@@ -43,7 +105,10 @@ const Invoice: React.FC<TransactionProps> = ({
           <label>Deposit Address</label>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-center py-4">
-            <QRCode value={deposit_address} status="loading" />
+            <QRCode
+              value={deposit_address}
+              status={deposit_address ? 'active' : 'loading'}
+            />
             <Alert
               className="col-span-2"
               message="DO NOT TRANSFER FUNDS FROM AN EXCHANGE!"
@@ -62,37 +127,18 @@ const Invoice: React.FC<TransactionProps> = ({
         </>
       )}
 
-      <Form.Item label="Transaction Identifier" name="uuid">
+      <Form.Item label="Transaction identifier" name="uuid">
         <Input readOnly name="uuid" defaultValue={uuid} />
       </Form.Item>
 
       <div className="grid grid-cols-2 gap-4">
-        <Form.Item label="Created" name="created_on">
+        <Form.Item label="Created on" name="created_on">
           <Input readOnly name="created_on" defaultValue={created_on} />
         </Form.Item>
-        <Form.Item label="Updated" name="updated_on">
+        <Form.Item label="Last update" name="updated_on">
           <Input readOnly name="updated_on" defaultValue={updated_on} />
         </Form.Item>
       </div>
-
-      <Form.Item label="Status Description" name="status_description">
-        <Input
-          readOnly
-          name="status_description"
-          defaultValue={status_description}
-        />
-      </Form.Item>
-
-      {!['confirmed', 'canceled'].includes(status) && (
-        <>
-          <Divider orientation="left">Process Automatically</Divider>
-          <Switch
-            checkedChildren="On"
-            unCheckedChildren="Off"
-            checked={is_auto_processing}
-          />
-        </>
-      )}
     </Form>
   );
 };

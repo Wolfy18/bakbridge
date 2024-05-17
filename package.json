@@ -15,6 +15,7 @@
     "@types/react-dom": "^18.2.17",
     "antd": "^5.11.4",
     "axios": "^1.6.2",
+    "dayjs": "^1.11.11",
     "formik": "^2.4.5",
     "html-react-parser": "^5.0.7",
     "react": "^18.2.0",

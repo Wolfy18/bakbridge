@@ -112,19 +112,34 @@ const CollectionForm: React.FC = () => {
     setOpen(false);
   };
 
+  const startFetchingTx = async (transactionUuid: string) => {
+    console.log('fetching ....');
+    try {
+      const tx = await getTransaction(transactionUuid);
+      setTransaction(tx);
+    } catch (error) {
+      message.error('Unable to load transaction');
+      console.error(error);
+    }
+  };
+
   // fetch transaction information
   useEffect(() => {
-    (async () => {
-      if (!transactionUuid) return;
-      try {
-        const tx = await getTransaction(transactionUuid);
-        setTransaction(tx);
-      } catch (error) {
-        message.error('Unable to load transaction');
-        console.error(error);
-      }
-    })();
-  }, [transactionUuid]);
+    console.log(transactionUuid, transaction, '< ----- UUID');
+    if (!transactionUuid && !transaction) return;
+    // startFetchingTx(transactionUuid || transaction!.uuid);
+    const timeout = setTimeout(
+      () => startFetchingTx(transactionUuid || transaction!.uuid),
+      10000
+    );
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [transactionUuid, transaction]);
+
+  useEffect(() => {
+    if (transactionUuid) startFetchingTx(transactionUuid);
+  }, []);
 
   useEffect(() => {
     // Update new tabindex
@@ -144,23 +159,22 @@ const CollectionForm: React.FC = () => {
           console.log(values);
           try {
             // Update collection with assets withe shame name
-            const reducedCollection = values.asset.reduce(
-              (acc: AssetProps[], i) => {
-                if (!i.asset_name) return acc;
+            // const reducedCollection = values.asset.reduce(
+            //   (acc: AssetProps[], i) => {
 
-                const dup = acc.filter((j) => j.asset_name === i.asset_name);
-                if (dup.length) {
-                  dup[0].amount += i.amount;
-                } else {
-                  acc.push(i);
-                }
-                return acc;
-              },
-              []
-            );
+            //     const dup = acc.filter((j) => j.asset_name === i.asset_name);
+            //     if (dup.length) {
+            //       dup[0].amount += i.amount;
+            //     } else {
+            //       acc.push(i);
+            //     }
+            //     return acc;
+            //   },
+            //   []
+            // );
 
             // update attrs
-            const formatted = reducedCollection.reduce(
+            const formatted = values.asset.reduce(
               (acc: OutputAssetProps[], obj: AssetProps) => {
                 const attributes = {};
 
@@ -221,7 +235,7 @@ const CollectionForm: React.FC = () => {
                   {!transaction && (
                     <Button
                       type="default"
-                      className="flex items-center"
+                      className="flex items-center col-span-2"
                       onClick={add}
                     >
                       <PlusOutlined /> Asset
