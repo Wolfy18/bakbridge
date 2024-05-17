@@ -78,7 +78,7 @@ const Drawer: React.FC = () => {
               cancelText="No"
             >
               <Button type="primary" className="bg-blue-500 text-white">
-                Mint
+                Retry Mint
               </Button>
             </Popconfirm>
 
