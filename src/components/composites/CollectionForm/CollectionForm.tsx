@@ -113,7 +113,6 @@ const CollectionForm: React.FC = () => {
   };
 
   const startFetchingTx = async (transactionUuid: string) => {
-    console.log('fetching ....');
     try {
       const tx = await getTransaction(transactionUuid);
       setTransaction(tx);
@@ -125,13 +124,15 @@ const CollectionForm: React.FC = () => {
 
   // fetch transaction information
   useEffect(() => {
-    console.log(transactionUuid, transaction, '< ----- UUID');
     if (!transactionUuid && !transaction) return;
     // startFetchingTx(transactionUuid || transaction!.uuid);
     const timeout = setTimeout(
       () => startFetchingTx(transactionUuid || transaction!.uuid),
       10000
     );
+
+    if (transaction && ['confirmed', 'canceled'].includes(transaction.status))
+      clearTimeout(timeout);
     return () => {
       clearTimeout(timeout);
     };
@@ -144,7 +145,6 @@ const CollectionForm: React.FC = () => {
   useEffect(() => {
     // Update new tabindex
     newTabIndex.current = assetCollection.length;
-    console.log('Collection changed ---------');
   }, [assetCollection]);
 
   return (
@@ -194,7 +194,7 @@ const CollectionForm: React.FC = () => {
               },
               []
             );
-            console.log(formatted, '< ----- formatted');
+
             const req = await submitRequest(formatted);
 
             if (req.length && req[0]) {
@@ -212,7 +212,6 @@ const CollectionForm: React.FC = () => {
             }
           } catch (error) {
             message.error('unable to submit request');
-            console.log(error);
           }
 
           actions.setSubmitting(false);
