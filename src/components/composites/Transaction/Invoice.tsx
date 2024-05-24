@@ -87,22 +87,16 @@ const Invoice: React.FC<TransactionProps> = ({
           defaultValue={expires_on.toISOString()}
         />
       </Form.Item>
-      <div className="grid grid-cols-2 gap-4">
-        <Form.Item
-          label={`${
-            status !== 'confirmed'
-              ? 'Minimun ADA to submit transaction'
-              : 'ADA Spent'
-          }`}
-          name="processing_cost"
-        >
-          <Input readOnly />
-        </Form.Item>
-        <Form.Item label="BAK Convenience fees" name="convenience_fee">
-          <Input readOnly />
-        </Form.Item>
-      </div>
-
+      <Form.Item
+        label={`${
+          status !== 'confirmed'
+            ? 'Minimun ADA to submit transaction'
+            : 'ADA Spent'
+        }`}
+        name="processing_cost"
+      >
+        <Input readOnly />
+      </Form.Item>
       <h3>Status</h3>
       <div className="grid grid-cols-3 gap-4 mb-4">
         <div className="flex">
@@ -154,7 +148,9 @@ const Invoice: React.FC<TransactionProps> = ({
       <Form.Item label="Transaction identifier" name="uuid">
         <Input readOnly name="uuid" />
       </Form.Item>
-
+      <Form.Item label="Convenience fees" name="convenience_fee">
+        <Input readOnly />
+      </Form.Item>
       <div className="grid grid-cols-2 gap-4">
         <Form.Item label="Created on" name="created_on">
           <Input readOnly />

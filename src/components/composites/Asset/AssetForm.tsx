@@ -122,7 +122,7 @@ const AssetForm: React.FC<AssetProps & { index: number }> = ({
             name={field.name}
             required
             help={meta.error}
-            initialValue={Number(amount)}
+            initialValue={amount}
           >
             <Input
               {...field}
