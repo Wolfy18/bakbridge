@@ -38,15 +38,47 @@ const Invoice: React.FC<TransactionProps> = ({
   updated_on,
 }) => {
   const expires_on = dayjs(created_on).add(1, 'day');
-  console.log(expires_on, ' <------------- over ehre');
-  useEffect(
-    () => console.log('render...'),
-    [status, status_description, estimated_cost, cost]
-  );
+
+  const [form] = Form.useForm();
+
+  useEffect(() => {
+    const processing_cost = status !== 'confirmed' ? estimated_cost : cost;
+    form.setFieldsValue({
+      status,
+      status_description,
+      processing_cost,
+      cost,
+      convenience_fee,
+    });
+  }, [
+    status,
+    status_description,
+    estimated_cost,
+    cost,
+    estimated_cost,
+    convenience_fee,
+  ]);
+
   return (
-    <Form layout="vertical">
+    <Form
+      form={form}
+      layout="vertical"
+      initialValues={{
+        ...{
+          uuid,
+          policy_id,
+          status,
+          processing_cost: status !== 'confirmed' ? estimated_cost : cost,
+          convenience_fee,
+          deposit_address,
+          status_description,
+          created_on,
+          updated_on,
+        },
+      }}
+    >
       <Form.Item label="Policy Id" name="policy_id">
-        <Input readOnly name="policy_id" defaultValue={policy_id} />
+        <Input readOnly />
       </Form.Item>
       <Form.Item label="Expires on" name="expires_on">
         <Input
@@ -55,26 +87,16 @@ const Invoice: React.FC<TransactionProps> = ({
           defaultValue={expires_on.toISOString()}
         />
       </Form.Item>
-      <div className="grid grid-cols-2 gap-4">
-        <Form.Item
-          label={`${
-            status !== 'confirmed'
-              ? 'Minimun ADA to submit transaction'
-              : 'Final cost'
-          }`}
-          name="processing_cost"
-        >
-          <Input
-            readOnly
-            name="processing_cost"
-            defaultValue={status !== 'confirmed' ? estimated_cost : cost}
-          />
-        </Form.Item>
-        <Form.Item label="[ BAK ] Convenience fees" name="fees">
-          <Input readOnly name="fees" defaultValue={convenience_fee} />
-        </Form.Item>
-      </div>
-
+      <Form.Item
+        label={`${
+          status !== 'confirmed'
+            ? 'Minimun ADA to submit transaction'
+            : 'ADA Spent'
+        }`}
+        name="processing_cost"
+      >
+        <Input readOnly />
+      </Form.Item>
       <h3>Status</h3>
       <div className="grid grid-cols-3 gap-4 mb-4">
         <div className="flex">
@@ -92,11 +114,7 @@ const Invoice: React.FC<TransactionProps> = ({
           name="status_description"
           className="col-span-2 mb-0"
         >
-          <Input
-            readOnly
-            name="status_description"
-            defaultValue={status_description}
-          />
+          <Input readOnly />
         </Form.Item>
       </div>
 
@@ -128,15 +146,17 @@ const Invoice: React.FC<TransactionProps> = ({
       )}
 
       <Form.Item label="Transaction identifier" name="uuid">
-        <Input readOnly name="uuid" defaultValue={uuid} />
+        <Input readOnly name="uuid" />
       </Form.Item>
-
+      <Form.Item label="Convenience fees" name="convenience_fee">
+        <Input readOnly />
+      </Form.Item>
       <div className="grid grid-cols-2 gap-4">
         <Form.Item label="Created on" name="created_on">
-          <Input readOnly name="created_on" defaultValue={created_on} />
+          <Input readOnly />
         </Form.Item>
         <Form.Item label="Last update" name="updated_on">
-          <Input readOnly name="updated_on" defaultValue={updated_on} />
+          <Input readOnly />
         </Form.Item>
       </div>
     </Form>

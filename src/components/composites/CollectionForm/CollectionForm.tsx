@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { Formik } from 'formik';
-import { Divider, Button, Tabs, Drawer, Spin, message } from 'antd';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { Formik, FormikErrors } from 'formik';
+import { Divider, Button, Tabs, Drawer, Spin, message, Badge } from 'antd';
 import { Asset } from 'components/composites/Asset';
 import { EmptyAsset, useFormContext } from 'context/FormContext';
 import { PlusOutlined, LoadingOutlined } from '@ant-design/icons';
@@ -13,11 +13,11 @@ const collectionSchema = Yup.object().shape({
   asset: Yup.array().of(
     Yup.object().shape({
       blockchain: Yup.string().required().default('ada'),
-      name: Yup.string().required(),
+      name: Yup.string().trim().required().default(null),
       asset_name: Yup.string(),
-      image: Yup.string().required(),
+      image: Yup.string().trim().required().default(null),
       description: Yup.string(),
-      amount: Yup.number().required(),
+      amount: Yup.number().required().default(1),
       attrs: Yup.array().of(
         Yup.object().shape({
           key: Yup.string().required(),
@@ -47,12 +47,19 @@ const CollectionForm: React.FC = () => {
   const { transactionUuid } = useSessionContext();
 
   // Set panels based on the assetCollection.
-  const TabPanels = useMemo(
-    () =>
-      assetCollection.map((i: AssetProps, idx: number) => {
+  const TabPanels = useCallback(
+    (
+      isValid: boolean,
+      errors: FormikErrors<{
+        asset: AssetProps[];
+      }>
+    ) => {
+      return assetCollection.map((i: AssetProps, idx: number) => {
         if (i.asset_name) {
           i['asset_name'] = i['asset_name'].replace(/[^a-zA-Z0-9]/g, '');
         }
+
+        const { asset: assetErrors } = errors;
 
         const tabName =
           i['asset_name'] ||
@@ -61,9 +68,12 @@ const CollectionForm: React.FC = () => {
         return {
           key: `asset-${idx}`,
           children: <Asset props={i} idx={idx} />,
-          label: tabName || `Asset #${idx + 1}`,
+          label: `${tabName}` || `Asset #${idx + 1}`,
+          icon:
+            assetErrors && !!assetErrors[idx] ? <Badge color="red" /> : null,
         };
-      }),
+      });
+    },
     [assetCollection]
   );
 
@@ -81,7 +91,9 @@ const CollectionForm: React.FC = () => {
   };
 
   const remove = (targetKey: TargetKey) => {
-    const targetIndex = TabPanels.findIndex((pane) => pane.key === targetKey);
+    const targetIndex = TabPanels(true, {}).findIndex(
+      (pane) => pane.key === targetKey
+    );
 
     if (assetCollection.length <= 1) return;
 
@@ -113,7 +125,6 @@ const CollectionForm: React.FC = () => {
   };
 
   const startFetchingTx = async (transactionUuid: string) => {
-    console.log('fetching ....');
     try {
       const tx = await getTransaction(transactionUuid);
       setTransaction(tx);
@@ -125,13 +136,15 @@ const CollectionForm: React.FC = () => {
 
   // fetch transaction information
   useEffect(() => {
-    console.log(transactionUuid, transaction, '< ----- UUID');
     if (!transactionUuid && !transaction) return;
     // startFetchingTx(transactionUuid || transaction!.uuid);
     const timeout = setTimeout(
       () => startFetchingTx(transactionUuid || transaction!.uuid),
       10000
     );
+
+    if (transaction && ['confirmed', 'canceled'].includes(transaction.status))
+      clearTimeout(timeout);
     return () => {
       clearTimeout(timeout);
     };
@@ -144,7 +157,6 @@ const CollectionForm: React.FC = () => {
   useEffect(() => {
     // Update new tabindex
     newTabIndex.current = assetCollection.length;
-    console.log('Collection changed ---------');
   }, [assetCollection]);
 
   return (
@@ -194,7 +206,7 @@ const CollectionForm: React.FC = () => {
               },
               []
             );
-            console.log(formatted, '< ----- formatted');
+
             const req = await submitRequest(formatted);
 
             if (req.length && req[0]) {
@@ -212,13 +224,12 @@ const CollectionForm: React.FC = () => {
             }
           } catch (error) {
             message.error('unable to submit request');
-            console.log(error);
           }
 
           actions.setSubmitting(false);
         }}
       >
-        {({ submitForm, isSubmitting }) => (
+        {({ submitForm, isSubmitting, isValid, errors }) => (
           <>
             <div className="p-4">
               <Tabs
@@ -227,7 +238,7 @@ const CollectionForm: React.FC = () => {
                 activeKey={activeKey}
                 type="editable-card"
                 onEdit={onEdit}
-                items={TabPanels}
+                items={TabPanels(isValid, errors)}
               />
               <Divider orientation="left"></Divider>
               <div className="flex justify-between max-h-[50px] items-center">

@@ -10,7 +10,6 @@ import './App.css';
 import { ConfigProvider } from 'antd';
 
 const App: React.FC<PropsWithChildren & SessionContextProps> = (props) => {
-  console.log(props, '< -- from app');
   return (
     <ConfigProvider componentSize="middle">
       <SessionProvider {...props}>

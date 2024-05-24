@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Divider, Form as FormDS, Space, Button, Input } from 'antd';
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import { FileUploader } from 'components/atoms/Input';
@@ -18,7 +18,8 @@ const AssetForm: React.FC<AssetProps & { index: number }> = ({
   index,
 }) => {
   const [text, setText] = useState('');
-  const { assetCollection, setAssetCollection } = useFormContext();
+  const { assetCollection, setAssetCollection, transaction } = useFormContext();
+  const [isSubmitted, setSubmitted] = useState<boolean>(false);
   const [form] = FormDS.useForm();
   const handleTextAreaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const inputValue = e.currentTarget.value;
@@ -28,7 +29,6 @@ const AssetForm: React.FC<AssetProps & { index: number }> = ({
   };
 
   const handleFormChange = (e: React.FormEvent<HTMLFormElement>) => {
-    console.log(e.target, ' <---- target');
     const inputElement = e.target as HTMLInputElement;
     const properties = inputElement.name.split('.').slice(1);
     const assetUpdate = { ...assetCollection[index] };
@@ -52,6 +52,8 @@ const AssetForm: React.FC<AssetProps & { index: number }> = ({
     setAssetCollection(newcol);
   };
 
+  useEffect(() => setSubmitted(!!transaction), [transaction]);
+
   return (
     <FormDS layout="vertical" onChange={handleFormChange} form={form}>
       <Field name={`asset[${index}].blockchain`}>
@@ -66,6 +68,7 @@ const AssetForm: React.FC<AssetProps & { index: number }> = ({
               type="hidden"
               maxLength={64}
               status={meta.error ? 'error' : undefined}
+              disabled={isSubmitted}
             />
           </FormDS.Item>
         )}
@@ -85,6 +88,7 @@ const AssetForm: React.FC<AssetProps & { index: number }> = ({
               type="text"
               maxLength={64}
               status={meta.error ? 'error' : undefined}
+              disabled={isSubmitted}
             />
           </FormDS.Item>
         )}
@@ -105,6 +109,7 @@ const AssetForm: React.FC<AssetProps & { index: number }> = ({
               showCount={true}
               placeholder={name}
               status={meta.error ? 'error' : undefined}
+              disabled={isSubmitted}
             />
           </FormDS.Item>
         )}
@@ -117,13 +122,14 @@ const AssetForm: React.FC<AssetProps & { index: number }> = ({
             name={field.name}
             required
             help={meta.error}
-            initialValue={Number(amount)}
+            initialValue={amount}
           >
             <Input
               {...field}
               type="number"
               min={1}
               status={meta.error ? 'error' : undefined}
+              disabled={isSubmitted}
             />
           </FormDS.Item>
         )}
@@ -156,11 +162,19 @@ const AssetForm: React.FC<AssetProps & { index: number }> = ({
               }
               value={text}
               status={meta.error ? 'error' : undefined}
+              disabled={isSubmitted}
             />
           </FormDS.Item>
         )}
       </Field>
-      <Divider orientation="left">Attributes</Divider>
+
+      {isSubmitted ? (
+        attrs ? (
+          <Divider orientation="left">Attributes</Divider>
+        ) : null
+      ) : (
+        <Divider orientation="left">Attributes</Divider>
+      )}
 
       <FormDS.List name={`asset[${index}].attrs`} initialValue={attrs}>
         {(fields, { add, remove }) => (
@@ -183,6 +197,7 @@ const AssetForm: React.FC<AssetProps & { index: number }> = ({
                         {...field}
                         maxLength={64}
                         status={meta.error ? 'error' : undefined}
+                        disabled={isSubmitted}
                       />
                     </FormDS.Item>
                   )}
@@ -203,6 +218,7 @@ const AssetForm: React.FC<AssetProps & { index: number }> = ({
                         placeholder="Value"
                         maxLength={64}
                         status={meta.error ? 'error' : undefined}
+                        disabled={isSubmitted}
                       />
                     </FormDS.Item>
                   )}
@@ -225,7 +241,7 @@ const AssetForm: React.FC<AssetProps & { index: number }> = ({
                 />
               </Space>
             ))}
-            <FormDS.Item>
+            <FormDS.Item hidden={isSubmitted}>
               <Button
                 type="dashed"
                 onClick={() => add()}
@@ -239,7 +255,14 @@ const AssetForm: React.FC<AssetProps & { index: number }> = ({
         )}
       </FormDS.List>
 
-      <Divider orientation="left">Files</Divider>
+      {isSubmitted ? (
+        files ? (
+          <Divider orientation="left">Files</Divider>
+        ) : null
+      ) : (
+        <Divider orientation="left">Files</Divider>
+      )}
+
       <FormDS.List name={`asset[${index}].files`} initialValue={files}>
         {(fields, { add, remove }) => (
           <>
@@ -262,6 +285,7 @@ const AssetForm: React.FC<AssetProps & { index: number }> = ({
                         placeholder="Name"
                         maxLength={64}
                         status={meta.error ? 'error' : undefined}
+                        disabled={isSubmitted}
                       />
                     </FormDS.Item>
                   )}
@@ -299,6 +323,7 @@ const AssetForm: React.FC<AssetProps & { index: number }> = ({
                         maxLength={64}
                         type="text"
                         status={meta.error ? 'error' : undefined}
+                        disabled={isSubmitted}
                       />
                     </FormDS.Item>
                   )}
@@ -320,7 +345,7 @@ const AssetForm: React.FC<AssetProps & { index: number }> = ({
                 />
               </Space>
             ))}
-            <FormDS.Item>
+            <FormDS.Item hidden={isSubmitted}>
               <Button
                 type="dashed"
                 onClick={() => add()}
