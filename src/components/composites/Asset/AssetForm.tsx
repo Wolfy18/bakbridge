@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Divider, Form as FormDS, Space, Button, Input } from 'antd';
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import { FileUploader } from 'components/atoms/Input';
-import { insertLineBreaks, recursiveProperties } from 'utils';
 import { Field, FieldProps } from 'formik';
 import { useFormContext } from 'context/FormContext';
 
@@ -17,45 +16,13 @@ const AssetForm: React.FC<AssetProps & { index: number }> = ({
   files,
   index,
 }) => {
-  const [text, setText] = useState('');
   const { assetCollection, setAssetCollection, transaction } = useFormContext();
   const [isSubmitted, setSubmitted] = useState<boolean>(false);
-  const [form] = FormDS.useForm();
-  const handleTextAreaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const inputValue = e.currentTarget.value;
-    const formattedText = insertLineBreaks(inputValue);
-
-    setText(formattedText);
-  };
-
-  const handleFormChange = (e: React.FormEvent<HTMLFormElement>) => {
-    const inputElement = e.target as HTMLInputElement;
-    const properties = inputElement.name.split('.').slice(1);
-    const assetUpdate = { ...assetCollection[index] };
-
-    const updatedProperty = recursiveProperties(
-      properties,
-      inputElement.value,
-      // @ts-expect-error dynamic keys
-      assetUpdate as NestedObject
-    );
-
-    const updated = { ...assetUpdate, ...updatedProperty };
-
-    // insert line breaks for description
-    if (updated.description) {
-      updated['description'] = insertLineBreaks(updated.description);
-    }
-
-    const newcol = [...assetCollection];
-    newcol[index] = updated;
-    setAssetCollection(newcol);
-  };
 
   useEffect(() => setSubmitted(!!transaction), [transaction]);
 
   return (
-    <FormDS layout="vertical" onChange={handleFormChange} form={form}>
+    <FormDS layout="vertical">
       <Field name={`asset[${index}].blockchain`}>
         {({ field, meta }: FieldProps) => (
           <FormDS.Item
@@ -65,7 +32,6 @@ const AssetForm: React.FC<AssetProps & { index: number }> = ({
           >
             <Input
               {...field}
-              type="hidden"
               maxLength={64}
               status={meta.error ? 'error' : undefined}
               disabled={isSubmitted}
@@ -157,10 +123,10 @@ const AssetForm: React.FC<AssetProps & { index: number }> = ({
           >
             <Input.TextArea
               {...field}
-              onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) =>
-                handleTextAreaChange(event)
-              }
-              value={text}
+              // onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) =>
+              //   handleTextAreaChange(event)
+              // }
+              // value={text}
               status={meta.error ? 'error' : undefined}
               disabled={isSubmitted}
             />

@@ -158,7 +158,7 @@ const CollectionForm: React.FC = () => {
     // Update new tabindex
     newTabIndex.current = assetCollection.length;
   }, [assetCollection]);
-
+  console.log(assetCollection, '< ------');
   return (
     <div className="relative">
       <Formik
@@ -169,6 +169,7 @@ const CollectionForm: React.FC = () => {
         onSubmit={async (values, actions) => {
           console.log('Submitting form......');
           console.log(values);
+          setAssetCollection(values.asset);
           try {
             // Update collection with assets withe shame name
             // const reducedCollection = values.asset.reduce(
@@ -206,7 +207,6 @@ const CollectionForm: React.FC = () => {
               },
               []
             );
-
             const req = await submitRequest(formatted);
 
             if (req.length && req[0]) {
@@ -274,7 +274,11 @@ const CollectionForm: React.FC = () => {
                       Show Invoice
                     </Button>
                   ) : (
-                    <Button type="default" onClick={submitForm}>
+                    <Button
+                      type="default"
+                      onClick={submitForm}
+                      disabled={!isValid}
+                    >
                       <Spin
                         className={`mr-2 ${!isSubmitting ? 'hidden' : null}`}
                         indicator={
