@@ -31,6 +31,7 @@ const FileUploader: React.FC<{
   const formikProps = useFormikContext();
 
   const handleInputChange = (e: React.FormEvent<HTMLInputElement>) => {
+    if (!form) return;
     form.setFieldValue(_name, e.currentTarget.value);
     formikProps.setFieldValue(_name, e.currentTarget.value);
   };

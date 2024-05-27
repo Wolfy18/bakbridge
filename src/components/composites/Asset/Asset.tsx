@@ -1,56 +1,35 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import AssetForm from './AssetForm';
 import Card from './Card';
 import { Badge } from 'antd';
+import { useFormikContext } from 'formik';
+import { EmptyAsset } from 'context/FormContext';
 
 const Asset: React.FC<{ props: AssetProps; idx: number }> = ({
-  props: {
-    blockchain,
-    name,
-    asset_name,
-    image,
-    amount,
-    description,
-    attrs,
-    files,
-  },
+  props,
   idx,
 }) => {
+  const { values } = useFormikContext<{ asset: AssetProps[] }>();
+
+  const [asset, setAsset] = useState<AssetProps>(EmptyAsset);
+
+  useEffect(() => {
+    if (!values.asset[idx]) return;
+    setAsset(values.asset[idx]);
+  }, [values]);
+
   return (
     <div className="grid md:grid-cols-2 gap-6">
       <div className="col-span-1">
         <Badge.Ribbon
-          text={amount > 1 ? 'Fungible Token' : 'NFT'}
-          color={amount > 1 ? 'yellow' : 'blue'}
+          text={asset.amount > 1 ? 'Fungible Token' : 'NFT'}
+          color={asset.amount > 1 ? 'yellow' : 'blue'}
         >
-          <Card
-            {...{
-              blockchain,
-              name,
-              asset_name,
-              image,
-              amount,
-              description,
-              attrs,
-              files,
-            }}
-          ></Card>
+          <Card {...asset}></Card>
         </Badge.Ribbon>
       </div>
       <div className="col-span-1">
-        <AssetForm
-          {...{
-            blockchain,
-            name,
-            asset_name,
-            image,
-            amount,
-            description,
-            attrs,
-            files,
-          }}
-          index={idx}
-        />
+        <AssetForm {...props} index={idx} />
       </div>
     </div>
   );
