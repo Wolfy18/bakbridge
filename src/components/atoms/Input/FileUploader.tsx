@@ -22,7 +22,17 @@ const FileUploader: React.FC<{
   rules?: Rule[];
   className?: string;
   label?: string;
-}> = ({ status, name, initialValue, error, rules, className, label }) => {
+  disabled?: boolean;
+}> = ({
+  status,
+  name,
+  initialValue,
+  error,
+  rules,
+  className,
+  label,
+  disabled = false,
+}) => {
   const inputRef = useRef<InputRef>(null);
   const form = FormDS.useFormInstance();
   const [loading, setLoading] = useState<boolean>(false);
@@ -74,7 +84,12 @@ const FileUploader: React.FC<{
     return loading ? (
       <Spin indicator={<LoadingOutlined size={6} spin />} />
     ) : (
-      <Upload {...props} showUploadList={false} className="cursor-pointer">
+      <Upload
+        {...props}
+        showUploadList={false}
+        disabled={disabled}
+        className="cursor-pointer"
+      >
         <UploadOutlined className="text-md" />
       </Upload>
     );
@@ -98,6 +113,7 @@ const FileUploader: React.FC<{
         status={status}
         placeholder="Upload file"
         onChange={handleInputChange}
+        disabled={disabled}
       />
     </FormDS.Item>
   );
