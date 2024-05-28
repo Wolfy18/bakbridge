@@ -27,21 +27,38 @@ const AssetForm: React.FC<AssetProps & { index: number }> = ({
     const props = {};
 
     for (const [key, val] of Object.entries(values.asset[index])) {
-      console.log(key, val);
+      let value = val;
+      if (key === 'attrs') {
+        value = val.map((obj: { key: string; value: string }, idx: string) => {
+          return {
+            [`asset[${index}].${key}[${idx}].key`]: obj.key,
+            [`asset[${index}].${key}[${idx}].value`]: obj.value,
+          };
+        });
+      }
+      if (key === 'files') {
+        value = val.map(
+          (
+            obj: { src: string; name: string; mediaType: string },
+            idx: string
+          ) => {
+            return {
+              [`asset[${index}].${key}[${idx}].src`]: obj.src,
+              [`asset[${index}].${key}[${idx}].name`]: obj.name,
+              [`asset[${index}].${key}[${idx}].mediaType`]: obj.mediaType,
+            };
+          }
+        );
+      }
       Object.assign(props, {
-        [`asset[${index}].${key}`]: val,
+        [`asset[${index}].${key}`]: value,
       });
-
-      console.log(form.getFieldValue(`asset[${index}].${key}`));
     }
-
-    console.log(props, '<-- props');
 
     const t = setTimeout(() => {
       form.setFieldsValue(props);
-      console.log(form.getFieldsValue());
       setAssetCollection(values.asset);
-    }, 500);
+    }, 300);
 
     return () => {
       clearTimeout(t);
