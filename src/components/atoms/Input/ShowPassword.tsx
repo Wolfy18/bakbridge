@@ -1,5 +1,5 @@
 import React, { PropsWithChildren, useCallback } from 'react';
-import { Button, InputProps, notification, Input } from 'antd';
+import { Button, InputProps, notification, Input, message } from 'antd';
 
 interface Props extends InputProps {
   copytoclipboard?: boolean | string;
@@ -15,17 +15,13 @@ const ShowPassword: React.FC<PropsWithChildren<Props>> = ({
 
   const toggleVissible = useCallback(() => {
     setPasswordVisible((prevState) => !prevState);
-
     // copytoclipboard the text inside the text field
+
     if (!value || !copytoclipboard) return;
     if (passwordVisible) return;
     navigator.clipboard.writeText(String(value));
-    api.open({
-      message: `Value copied to clipboard`,
-      type: 'info',
-      placement: 'topRight',
-      duration: 6,
-    });
+
+    message.info('Value copied to clipboard', 6);
 
     setTimeout(() => setPasswordVisible(false), 6000);
   }, [passwordVisible, api, copytoclipboard, value]);

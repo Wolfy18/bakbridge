@@ -139,6 +139,7 @@ const Invoice: React.FC<TransactionProps> = ({
             readOnly
             name="deposit_address"
             value={deposit_address}
+            copytoclipboard
           />
 
           <Divider />
