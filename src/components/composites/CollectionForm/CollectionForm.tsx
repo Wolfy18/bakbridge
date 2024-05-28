@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { Formik, FormikErrors } from 'formik';
+import { Formik, FormikErrors, FormikValues } from 'formik';
 import { Divider, Button, Tabs, Drawer, Spin, message, Badge } from 'antd';
 import { Asset } from 'components/composites/Asset';
 import { EmptyAsset, useFormContext } from 'context/FormContext';
@@ -8,6 +8,7 @@ import { useSessionContext } from 'context/SessionContext';
 import useBakClient from 'client/bakrypt';
 import Config from './Config';
 import * as Yup from 'yup';
+import axios from 'axios';
 
 const collectionSchema = Yup.object().shape({
   asset: Yup.array().of(
@@ -46,10 +47,10 @@ const CollectionForm: React.FC = () => {
   const { getTransaction, submitRequest } = useBakClient();
   const { transactionUuid } = useSessionContext();
 
-  // Set panels based on the assetCollection.
+  // Set panels from the assetCollection.
   const TabPanels = useCallback(
     (
-      isValid: boolean,
+      values: FormikValues,
       errors: FormikErrors<{
         asset: AssetProps[];
       }>
@@ -91,12 +92,10 @@ const CollectionForm: React.FC = () => {
   };
 
   const remove = (targetKey: TargetKey) => {
-    const targetIndex = TabPanels(true, {}).findIndex(
-      (pane) => pane.key === targetKey
-    );
+    const panels = TabPanels({ asset: assetCollection }, {});
+    const targetIndex = panels.findIndex((pane) => pane.key === targetKey);
 
     if (assetCollection.length <= 1) return;
-
     const newcol = assetCollection.filter(
       (i: AssetProps, idx: number) => idx !== targetIndex
     );
@@ -118,6 +117,56 @@ const CollectionForm: React.FC = () => {
     }
   };
 
+  const formatFormikData = (values: FormikValues) => {
+    let formatted: OutputAssetProps[] = [];
+
+    try {
+      // Update collection with assets withe shame name
+      // const reducedCollection = values.asset.reduce(
+      //   (acc: AssetProps[], i) => {
+
+      //     const dup = acc.filter((j) => j.asset_name === i.asset_name);
+      //     if (dup.length) {
+      //       dup[0].amount += i.amount;
+      //     } else {
+      //       acc.push(i);
+      //     }
+      //     return acc;
+      //   },
+      //   []
+      // );
+
+      // update attrs
+      formatted = values.asset.reduce(
+        (acc: OutputAssetProps[], obj: AssetProps) => {
+          const attributes = {};
+
+          if (obj.attrs) {
+            obj.attrs.forEach((i) => {
+              Object.assign(attributes, {
+                [i.key as string]: i.value,
+              });
+            });
+          }
+
+          const updated = { ...obj, attrs: { ...attributes } };
+
+          acc.push(updated);
+
+          return acc;
+        },
+        []
+      );
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        message.error(error.response?.data.detail);
+      } else {
+        message.error('unable to format request');
+      }
+    }
+    return formatted;
+  };
+
   // config & transaction drawer
   const [open, setOpen] = useState<boolean>(false);
   const onCloseConfigDrawer = () => {
@@ -129,8 +178,11 @@ const CollectionForm: React.FC = () => {
       const tx = await getTransaction(transactionUuid);
       setTransaction(tx);
     } catch (error) {
-      message.error('Unable to load transaction');
-      console.error(error);
+      if (axios.isAxiosError(error)) {
+        message.error(error.response?.data.detail);
+      } else {
+        message.error('Unable to load transaction');
+      }
     }
   };
 
@@ -158,55 +210,20 @@ const CollectionForm: React.FC = () => {
     // Update new tabindex
     newTabIndex.current = assetCollection.length;
   }, [assetCollection]);
-  console.log(assetCollection, '< ------');
+
   return (
     <div className="relative">
       <Formik
         initialValues={{
           asset: assetCollection,
         }}
+        // validateOnMount
         validationSchema={collectionSchema}
         onSubmit={async (values, actions) => {
-          console.log('Submitting form......');
-          console.log(values);
+          setActiveKey('asset-0');
           setAssetCollection(values.asset);
           try {
-            // Update collection with assets withe shame name
-            // const reducedCollection = values.asset.reduce(
-            //   (acc: AssetProps[], i) => {
-
-            //     const dup = acc.filter((j) => j.asset_name === i.asset_name);
-            //     if (dup.length) {
-            //       dup[0].amount += i.amount;
-            //     } else {
-            //       acc.push(i);
-            //     }
-            //     return acc;
-            //   },
-            //   []
-            // );
-
-            // update attrs
-            const formatted = values.asset.reduce(
-              (acc: OutputAssetProps[], obj: AssetProps) => {
-                const attributes = {};
-
-                if (obj.attrs) {
-                  obj.attrs.forEach((i) => {
-                    Object.assign(attributes, {
-                      [i.key as string]: i.value,
-                    });
-                  });
-                }
-
-                const updated = { ...obj, attrs: { ...attributes } };
-
-                acc.push(updated);
-
-                return acc;
-              },
-              []
-            );
+            const formatted = formatFormikData(values);
             const req = await submitRequest(formatted);
 
             if (req.length && req[0]) {
@@ -223,13 +240,17 @@ const CollectionForm: React.FC = () => {
               setOpenTxDrawer(true);
             }
           } catch (error) {
-            message.error('unable to submit request');
+            if (axios.isAxiosError(error)) {
+              message.error(error.response?.data.detail);
+            } else {
+              message.error('Unable to submit request');
+            }
           }
 
           actions.setSubmitting(false);
         }}
       >
-        {({ submitForm, isSubmitting, isValid, errors }) => (
+        {({ submitForm, isSubmitting, isValid, errors, values, setValues }) => (
           <>
             <div className="p-4">
               <Tabs
@@ -237,8 +258,19 @@ const CollectionForm: React.FC = () => {
                 onChange={onChange}
                 activeKey={activeKey}
                 type="editable-card"
-                onEdit={onEdit}
-                items={TabPanels(isValid, errors)}
+                onEdit={(targetKey, action) => {
+                  onEdit(targetKey, action);
+
+                  const panels = TabPanels(values, {});
+                  const targetIndex = panels.findIndex(
+                    (pane) => pane.key === targetKey
+                  );
+
+                  setValues({
+                    asset: values.asset.filter((i, idx) => idx !== targetIndex),
+                  });
+                }}
+                items={TabPanels(values, errors)}
               />
               <Divider orientation="left"></Divider>
               <div className="flex justify-between max-h-[50px] items-center">
@@ -247,7 +279,13 @@ const CollectionForm: React.FC = () => {
                     <Button
                       type="default"
                       className="flex items-center col-span-2"
-                      onClick={add}
+                      onClick={() => {
+                        // Modify values here with empty asset.
+                        setValues({ asset: [...values.asset, EmptyAsset] });
+
+                        // add tab
+                        add();
+                      }}
                     >
                       <PlusOutlined /> Asset
                     </Button>

@@ -12,6 +12,7 @@ import {
 import useBakClient from 'client/bakrypt';
 import { Rule } from 'antd/es/form';
 import { useFormikContext } from 'formik';
+import axios from 'axios';
 
 const FileUploader: React.FC<{
   name: string | (string | number)[];
@@ -58,8 +59,11 @@ const FileUploader: React.FC<{
 
         message.success(`${filename} uploaded successfully`);
       } catch (error) {
-        message.error('Unable to upload file');
-        console.error(error);
+        if (axios.isAxiosError(error)) {
+          message.error(error.response?.data.detail);
+        } else {
+          message.error('Unable to upload file');
+        }
       }
 
       setLoading(false);
