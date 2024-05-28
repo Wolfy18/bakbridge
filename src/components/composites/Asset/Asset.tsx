@@ -5,10 +5,7 @@ import { Badge } from 'antd';
 import { useFormikContext } from 'formik';
 import { EmptyAsset } from 'context/FormContext';
 
-const Asset: React.FC<{ props: AssetProps; idx: number }> = ({
-  props,
-  idx,
-}) => {
+const Asset: React.FC<{ props: AssetProps; idx: number }> = ({ idx }) => {
   const { values } = useFormikContext<{ asset: AssetProps[] }>();
 
   const [asset, setAsset] = useState<AssetProps>(EmptyAsset);
@@ -29,7 +26,7 @@ const Asset: React.FC<{ props: AssetProps; idx: number }> = ({
         </Badge.Ribbon>
       </div>
       <div className="col-span-1">
-        <AssetForm {...props} index={idx} />
+        <AssetForm {...asset} index={idx} />
       </div>
     </div>
   );

@@ -2,8 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { Divider, Form as FormDS, Space, Button, Input } from 'antd';
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import { FileUploader } from 'components/atoms/Input';
-import { Field, FieldProps } from 'formik';
+import { Field, FieldProps, useFormikContext } from 'formik';
 import { useFormContext } from 'context/FormContext';
+import { useForm } from 'antd/es/form/Form';
 
 const AssetForm: React.FC<AssetProps & { index: number }> = ({
   blockchain,
@@ -17,17 +18,44 @@ const AssetForm: React.FC<AssetProps & { index: number }> = ({
   index,
 }) => {
   const { assetCollection, setAssetCollection, transaction } = useFormContext();
+  const [form] = useForm();
   const [isSubmitted, setSubmitted] = useState<boolean>(false);
-
+  const { values } = useFormikContext<{ asset: AssetProps[] }>();
   useEffect(() => setSubmitted(!!transaction), [transaction]);
 
+  useEffect(() => {
+    const props = {};
+
+    for (const [key, val] of Object.entries(values.asset[index])) {
+      console.log(key, val);
+      Object.assign(props, {
+        [`asset[${index}].${key}`]: val,
+      });
+
+      console.log(form.getFieldValue(`asset[${index}].${key}`));
+    }
+
+    console.log(props, '<-- props');
+
+    const t = setTimeout(() => {
+      form.setFieldsValue(props);
+      console.log(form.getFieldsValue());
+      setAssetCollection(values.asset);
+    }, 500);
+
+    return () => {
+      clearTimeout(t);
+    };
+  }, [values]);
+
   return (
-    <FormDS layout="vertical">
+    <FormDS layout="vertical" form={form}>
       <Field name={`asset[${index}].blockchain`}>
         {({ field, meta }: FieldProps) => (
           <FormDS.Item
             name={field.name}
             initialValue={blockchain}
+            required
             className="hidden"
           >
             <Input
@@ -123,10 +151,6 @@ const AssetForm: React.FC<AssetProps & { index: number }> = ({
           >
             <Input.TextArea
               {...field}
-              // onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) =>
-              //   handleTextAreaChange(event)
-              // }
-              // value={text}
               status={meta.error ? 'error' : undefined}
               disabled={isSubmitted}
             />
