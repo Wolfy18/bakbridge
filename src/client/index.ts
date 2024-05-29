@@ -18,10 +18,13 @@ const createClient = ({
     console.error('[ERROR]: Unable to parse custom headers; ' + error);
   }
 
+  let requestHeaders: { [key: string]: string | number | boolean } = {};
+  if (accessToken) requestHeaders['Authorization'] = `Bearer ${accessToken}`;
+
   return axios.create({
     baseURL: baseUrl ? baseUrl : 'https://bakrypt.io/v1/',
     headers: {
-      Authorization: `Bearer ${accessToken}`,
+      ...requestHeaders,
       ...extraHeaders,
     },
   });
