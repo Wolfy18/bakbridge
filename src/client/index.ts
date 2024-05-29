@@ -18,7 +18,7 @@ const createClient = ({
     console.error('[ERROR]: Unable to parse custom headers; ' + error);
   }
 
-  let requestHeaders: { [key: string]: string | number | boolean } = {};
+  const requestHeaders: { [key: string]: string | number | boolean } = {};
   if (accessToken) requestHeaders['Authorization'] = `Bearer ${accessToken}`;
 
   return axios.create({
