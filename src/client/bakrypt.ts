@@ -43,8 +43,15 @@ const useBakClient = (): useBakClientProps => {
   const uploadIPFSFile = useCallback(
     async (data: File) => {
       client.defaults.headers['Content-Type'] = 'multipart/form-data';
-      const res = (await client.post(`/files/`, { file: data })).data;
-      client.defaults.headers['Content-Type'] = 'application/json';
+      let res: Promise<AttachmentProps>;
+      try {
+        res = (await client.post(`/files/`, { file: data })).data;
+
+        client.defaults.headers['Content-Type'] = 'application/json';
+      } catch (error) {
+        client.defaults.headers['Content-Type'] = 'application/json';
+        throw Error('Unable to upload file.');
+      }
       return res;
     },
     [client]

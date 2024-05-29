@@ -29,8 +29,6 @@ const Config: React.FC = () => {
     setAssetCollection(newCol);
   };
 
-  console.log(royalties);
-
   return (
     <Form
       layout="vertical"
