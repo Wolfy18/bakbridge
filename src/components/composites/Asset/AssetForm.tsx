@@ -232,21 +232,23 @@ const AssetForm: React.FC<AssetProps & { index: number }> = ({
                   )}
                 </Field>
 
-                <MinusCircleOutlined
-                  onClick={() => {
-                    remove(name);
-                    const currentAsset = { ...assetCollection[index] };
+                {!transaction && (
+                  <MinusCircleOutlined
+                    onClick={() => {
+                      remove(name);
+                      const currentAsset = { ...assetCollection[index] };
 
-                    attrs = currentAsset.attrs?.filter(
-                      (obj, idx) => idx !== name
-                    );
-                    currentAsset.attrs = attrs;
+                      attrs = currentAsset.attrs?.filter(
+                        (obj, idx) => idx !== name
+                      );
+                      currentAsset.attrs = attrs;
 
-                    const newcol = [...assetCollection];
-                    newcol[index] = currentAsset;
-                    setAssetCollection(newcol);
-                  }}
-                />
+                      const newcol = [...assetCollection];
+                      newcol[index] = currentAsset;
+                      setAssetCollection(newcol);
+                    }}
+                  />
+                )}
               </Space>
             ))}
             <FormDS.Item hidden={isSubmitted}>
@@ -337,21 +339,24 @@ const AssetForm: React.FC<AssetProps & { index: number }> = ({
                     </FormDS.Item>
                   )}
                 </Field>
-                <MinusCircleOutlined
-                  onClick={() => {
-                    remove(name);
-                    const currentAsset = { ...assetCollection[index] };
 
-                    files = currentAsset.files?.filter(
-                      (obj, idx) => idx !== name
-                    );
-                    currentAsset.files = files;
+                {!transaction && (
+                  <MinusCircleOutlined
+                    onClick={() => {
+                      remove(name);
+                      const currentAsset = { ...assetCollection[index] };
 
-                    const newcol = [...assetCollection];
-                    newcol[index] = currentAsset;
-                    setAssetCollection(newcol);
-                  }}
-                />
+                      files = currentAsset.files?.filter(
+                        (obj, idx) => idx !== name
+                      );
+                      currentAsset.files = files;
+
+                      const newcol = [...assetCollection];
+                      newcol[index] = currentAsset;
+                      setAssetCollection(newcol);
+                    }}
+                  />
+                )}
               </Space>
             ))}
             <FormDS.Item hidden={isSubmitted}>
