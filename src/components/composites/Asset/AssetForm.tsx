@@ -154,6 +154,7 @@ const AssetForm: React.FC<AssetProps & { index: number }> = ({
             initialValue={image}
             error={meta.error}
             label="Cover Image"
+            disabled={isSubmitted}
           />
         )}
       </Field>
@@ -231,21 +232,23 @@ const AssetForm: React.FC<AssetProps & { index: number }> = ({
                   )}
                 </Field>
 
-                <MinusCircleOutlined
-                  onClick={() => {
-                    remove(name);
-                    const currentAsset = { ...assetCollection[index] };
+                {!transaction && (
+                  <MinusCircleOutlined
+                    onClick={() => {
+                      remove(name);
+                      const currentAsset = { ...assetCollection[index] };
 
-                    attrs = currentAsset.attrs?.filter(
-                      (obj, idx) => idx !== name
-                    );
-                    currentAsset.attrs = attrs;
+                      attrs = currentAsset.attrs?.filter(
+                        (obj, idx) => idx !== name
+                      );
+                      currentAsset.attrs = attrs;
 
-                    const newcol = [...assetCollection];
-                    newcol[index] = currentAsset;
-                    setAssetCollection(newcol);
-                  }}
-                />
+                      const newcol = [...assetCollection];
+                      newcol[index] = currentAsset;
+                      setAssetCollection(newcol);
+                    }}
+                  />
+                )}
               </Space>
             ))}
             <FormDS.Item hidden={isSubmitted}>
@@ -308,6 +311,7 @@ const AssetForm: React.FC<AssetProps & { index: number }> = ({
                       error={meta.error}
                       rules={[{ required: true, message: 'Missing source' }]}
                       className="mb-0 col-span-2"
+                      disabled={isSubmitted}
                     />
                   )}
                 </Field>
@@ -335,21 +339,24 @@ const AssetForm: React.FC<AssetProps & { index: number }> = ({
                     </FormDS.Item>
                   )}
                 </Field>
-                <MinusCircleOutlined
-                  onClick={() => {
-                    remove(name);
-                    const currentAsset = { ...assetCollection[index] };
 
-                    files = currentAsset.files?.filter(
-                      (obj, idx) => idx !== name
-                    );
-                    currentAsset.files = files;
+                {!transaction && (
+                  <MinusCircleOutlined
+                    onClick={() => {
+                      remove(name);
+                      const currentAsset = { ...assetCollection[index] };
 
-                    const newcol = [...assetCollection];
-                    newcol[index] = currentAsset;
-                    setAssetCollection(newcol);
-                  }}
-                />
+                      files = currentAsset.files?.filter(
+                        (obj, idx) => idx !== name
+                      );
+                      currentAsset.files = files;
+
+                      const newcol = [...assetCollection];
+                      newcol[index] = currentAsset;
+                      setAssetCollection(newcol);
+                    }}
+                  />
+                )}
               </Space>
             ))}
             <FormDS.Item hidden={isSubmitted}>

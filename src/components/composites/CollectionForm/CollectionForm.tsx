@@ -217,11 +217,9 @@ const CollectionForm: React.FC = () => {
         initialValues={{
           asset: assetCollection,
         }}
-        // validateOnMount
+        validateOnMount
         validationSchema={collectionSchema}
         onSubmit={async (values, actions) => {
-          setActiveKey('asset-0');
-          setAssetCollection(values.asset);
           try {
             const formatted = formatFormikData(values);
             const req = await submitRequest(formatted);
@@ -257,7 +255,7 @@ const CollectionForm: React.FC = () => {
                 hideAdd
                 onChange={onChange}
                 activeKey={activeKey}
-                type="editable-card"
+                type={transaction ? 'card' : 'editable-card'}
                 onEdit={(targetKey, action) => {
                   onEdit(targetKey, action);
 

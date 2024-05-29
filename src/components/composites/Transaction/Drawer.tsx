@@ -53,34 +53,38 @@ const Drawer: React.FC = () => {
         open={openTxDrawer}
         extra={
           <Space>
-            <Popconfirm
-              title="Refund transaction"
-              description="Are you sure to refund this transaction?"
-              onConfirm={handleRefund}
-              // onCancel={}
-              okText="Yes"
-              cancelText="No"
-            >
-              <Button
-                type="default"
-                className="!border-red-400 text-red-500 hover:bg-red-500 hover:!text-white"
-              >
-                Refund
-              </Button>
-            </Popconfirm>
+            {!['confirmed', 'canceled'].includes(transaction.status) && (
+              <>
+                <Popconfirm
+                  title="Refund transaction"
+                  description="Are you sure to refund this transaction?"
+                  onConfirm={handleRefund}
+                  // onCancel={}
+                  okText="Yes"
+                  cancelText="No"
+                >
+                  <Button
+                    type="default"
+                    className="!border-red-400 text-red-500 hover:bg-red-500 hover:!text-white"
+                  >
+                    Refund
+                  </Button>
+                </Popconfirm>
 
-            <Popconfirm
-              title="Mint transaction"
-              description="Are you sure to mint this transaction?"
-              onConfirm={handleMint}
-              // onCancel={}
-              okText="Yes"
-              cancelText="No"
-            >
-              <Button type="primary" className="bg-blue-500 text-white">
-                Retry Mint
-              </Button>
-            </Popconfirm>
+                <Popconfirm
+                  title="Mint transaction"
+                  description="Are you sure to mint this transaction?"
+                  onConfirm={handleMint}
+                  // onCancel={}
+                  okText="Yes"
+                  cancelText="No"
+                >
+                  <Button type="primary" className="bg-blue-500 text-white">
+                    Retry Mint
+                  </Button>
+                </Popconfirm>
+              </>
+            )}
 
             <Button type="default" onClick={onCloseDrawer}>
               OK
