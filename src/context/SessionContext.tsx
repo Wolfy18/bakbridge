@@ -23,8 +23,9 @@ export const SessionProvider: React.FC<
   policyId,
   showTransaction,
   children,
+  headers,
 }) => {
-  const client = createClient({ baseUrl, accessToken });
+  const client = createClient({ baseUrl, accessToken, headers });
 
   return (
     <SessionContext.Provider

@@ -13,6 +13,7 @@ const props: SessionContextProps = {
   baseUrl: rootElement.dataset.baseUrl,
   policyId: rootElement.dataset.policyId,
   initialData: rootElement.dataset.initial,
+  headers: rootElement.dataset.headers,
 };
 
 root.render(
