@@ -239,7 +239,6 @@ const CollectionForm: React.FC = () => {
             }
           } catch (error) {
             if (axios.isAxiosError(error)) {
-              console.log(error.response?.data);
               if (Object.keys(error.response?.data).includes('detail')) {
                 message.error(error.response?.data.detail);
               } else if (Array.isArray(error.response?.data)) {

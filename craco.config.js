@@ -47,17 +47,27 @@ module.exports = {
       webpackConfig.module.rules.push({
         test: /\.css$/,
         use: [
-          //   devMode ? 'style-loader' : MiniCssExtractPlugin.loader,
-          //   {
-          //     loader: 'css-loader',
-          //     options: {
-          //       modules: {
-          //         localIdentName: '[hash:base64:5]', // Hash class names
-          //       },
-          //     },
-          //   },
-          //   'postcss-loader',
+          devMode ? 'style-loader' : MiniCssExtractPlugin.loader,
+          {
+            loader: 'css-loader',
+            options: {
+              modules: {
+                mode: "local",
+                auto: true,
+                exportGlobals: true,
+                localIdentName: "[path][name]__[local]--[hash:base64:5]",
+                localIdentContext: path.resolve(__dirname, "src"),
+                localIdentHashSalt: "my-custom-hash",
+                namedExport: true,
+                exportLocalsConvention: "as-is",
+                exportOnlyLocals: false,
+              },
+            },
+          },
+          'postcss-loader',
         ],
+        include: [path.resolve(__dirname, 'not_exist_path')],
+        // use: ['style-loader', 'css-loader', 'postcss-loader'],
       });
 
       // Set the ignoreWarnings property
