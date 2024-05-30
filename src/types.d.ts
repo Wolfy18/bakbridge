@@ -103,7 +103,7 @@ interface SessionContextProps {
   initialData?: string;
   baseUrl?: string;
   showTransaction?: boolean;
-  headers?: JSONstring;
+  headers?: { [key: string]: string };
 }
 
 type NestedObject = {

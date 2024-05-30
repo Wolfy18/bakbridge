@@ -1,4 +1,6 @@
 const path = require('path');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const devMode = process.env.NODE_ENV !== 'production';
 
 module.exports = {
   paths: {
@@ -39,6 +41,23 @@ module.exports = {
         test: /\.js$/,
         enforce: 'pre',
         use: ['source-map-loader'],
+      });
+
+      // Add a rule for handling CSS files with postcss-loader and css-loader
+      webpackConfig.module.rules.push({
+        test: /\.css$/,
+        use: [
+          //   devMode ? 'style-loader' : MiniCssExtractPlugin.loader,
+          //   {
+          //     loader: 'css-loader',
+          //     options: {
+          //       modules: {
+          //         localIdentName: '[hash:base64:5]', // Hash class names
+          //       },
+          //     },
+          //   },
+          //   'postcss-loader',
+        ],
       });
 
       // Set the ignoreWarnings property

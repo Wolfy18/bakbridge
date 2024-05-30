@@ -7,17 +7,8 @@ const createClient = ({
 }: {
   baseUrl?: string;
   accessToken?: string;
-  headers?: JSONstring;
+  headers?: { [key: string]: string | number | boolean };
 }) => {
-  let extraHeaders: object = {};
-  try {
-    if (headers) {
-      extraHeaders = JSON.parse(headers);
-    }
-  } catch (error) {
-    console.error('[ERROR]: Unable to parse custom headers; ' + error);
-  }
-
   const requestHeaders: { [key: string]: string | number | boolean } = {};
   if (accessToken) requestHeaders['Authorization'] = `Bearer ${accessToken}`;
 
@@ -25,7 +16,7 @@ const createClient = ({
     baseURL: baseUrl ? baseUrl : 'https://bakrypt.io/v1/',
     headers: {
       ...requestHeaders,
-      ...extraHeaders,
+      ...headers,
     },
   });
 };
