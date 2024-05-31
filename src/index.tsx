@@ -106,7 +106,7 @@ declare global {
 }
 
 // Add BakBridge to the window object when the script is loaded
-window.addEventListener('load', () => {
+window.addEventListener('DOMContentLoaded', () => {
   if (!window.BakBridge) {
     window.BakBridge = BakBridge;
   }
@@ -115,10 +115,10 @@ window.addEventListener('load', () => {
 export default BakBridge;
 
 const devMod = process.env.NODE_ENV !== 'production';
-if (devMod && document.querySelector('#BakryptLaunchpad'))
+if (devMod && document.querySelector('#BakBridge'))
   new BakBridge({
     bakToken: 'CqZA_pMTfMbwv8iTi8EFuCD50PkWVxWYZExUQHUksxI',
-    container: document.querySelector('#BakryptLaunchpad')!,
+    container: document.querySelector('#BakBridge')!,
     client: {
       baseUrl: 'https://testnet.bakrypt.io/v1/',
       headers: { 'X-CSRFToken': 'mrhPuGLbgC7tTompVp11' },
