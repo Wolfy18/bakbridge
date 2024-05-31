@@ -117,7 +117,7 @@ export default BakBridge;
 const devMod = process.env.NODE_ENV !== 'production';
 if (devMod && document.querySelector('#BakBridge'))
   new BakBridge({
-    bakToken: 'CqZA_pMTfMbwv8iTi8EFuCD50PkWVxWYZExUQHUksxI',
+    bakToken: 'bx3fpuF3lxguma2cCIhdlQRuZFb8aV2bhOT1FdB7ANQ',
     container: document.querySelector('#BakBridge')!,
     client: {
       baseUrl: 'https://testnet.bakrypt.io/v1/',
