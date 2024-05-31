@@ -239,6 +239,9 @@ const CollectionForm: React.FC = () => {
                 setTransaction(transaction);
               }
 
+              window.scrollTo({
+                top: window.screenTop,
+              });
               setOpenTxDrawer(true);
             }
           } catch (error) {
@@ -312,7 +315,10 @@ const CollectionForm: React.FC = () => {
                   {transaction ? (
                     <Button
                       type="default"
-                      onClick={() => setOpenTxDrawer(true)}
+                      onClick={() => {
+                        window.scrollTo({ top: window.screenTop });
+                        setOpenTxDrawer(true);
+                      }}
                     >
                       <Spin
                         className={`mr-2 ${!isSubmitting ? 'hidden' : null}`}
