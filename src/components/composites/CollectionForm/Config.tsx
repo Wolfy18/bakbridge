@@ -5,7 +5,9 @@ import { SwitchChangeEventHandler } from 'antd/es/switch';
 
 const Config: React.FC = () => {
   const { transaction, assetCollection, setAssetCollection } = useFormContext();
-
+  const [state, setState] = useState<{ royalties: boolean }>({
+    royalties: !!transaction?.has_royalties,
+  });
   const [royalties, setRoyalties] = useState<{
     royalties?: string;
     royalties_rate?: string;
@@ -39,6 +41,7 @@ const Config: React.FC = () => {
           ...royalties,
           [inputE.name]: inputE.value,
         });
+        setState({ ...state, royalties: false });
       }}
     >
       <p>Setup custom configurations for this transaction</p>
@@ -59,7 +62,7 @@ const Config: React.FC = () => {
       </Form.Item>
       <p>On/Off</p>
       <Switch
-        defaultChecked={transaction?.has_royalties}
+        checked={state.royalties}
         checkedChildren="On"
         unCheckedChildren="Off"
         onChange={handleRoyalties}

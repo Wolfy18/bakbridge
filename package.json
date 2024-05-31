@@ -1,7 +1,9 @@
 {
-  "name": "bak-launchpad",
-  "version": "0.1.0",
-  "private": true,
+  "name": "bakbridge",
+  "version": "v0.1.0-alpha",
+  "private": false,
+  "main": "dist/js/main.bundle.js",
+  "types":"dist/js/main.bundle.d.ts",
   "dependencies": {
     "@ant-design/cssinjs": "1.18.0-alpha.5",
     "@ant-design/icons": "^5.2.6",
@@ -27,7 +29,7 @@
   },
   "scripts": {
     "start": "craco start",
-    "build": "craco build",
+    "build": "BUILD_PATH='./dist' craco build",
     "test": "craco test",
     "eject": "craco eject",
     "format": "prettier --write ./**/*.{js,ts,tsx}",
