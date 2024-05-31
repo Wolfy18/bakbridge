@@ -94,6 +94,8 @@ interface OutputAssetProps extends AssetProps {
   attrs?: Attrs;
 }
 
+type JSONstring = string;
+
 interface SessionContextProps {
   transactionUuid?: string;
   policyId?: string;
@@ -101,6 +103,7 @@ interface SessionContextProps {
   initialData?: string;
   baseUrl?: string;
   showTransaction?: boolean;
+  headers?: { [key: string]: string };
 }
 
 type NestedObject = {
