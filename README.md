@@ -8,8 +8,8 @@
 <div align="center">
 
 [![Status](https://img.shields.io/badge/status-active-success.svg)]()
-[![GitHub Issues](https://img.shields.io/github/issues/kylelobo/The-Documentation-Compendium.svg)](https://github.com/kylelobo/The-Documentation-Compendium/issues)
-[![GitHub Pull Requests](https://img.shields.io/github/issues-pr/kylelobo/The-Documentation-Compendium.svg)](https://github.com/kylelobo/The-Documentation-Compendium/pulls)
+[![GitHub Issues](https://img.shields.io/github/issues/kylelobo/The-Documentation-Compendium.svg)](https://github.com/Wolfy18/bak-launchpad/issues)
+[![GitHub Pull Requests](https://img.shields.io/github/issues-pr/kylelobo/The-Documentation-Compendium.svg)](https://github.com/Wolfy18/bak-launchpad/pulls)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE.md)
 
 </div>
@@ -43,8 +43,7 @@ The goal is to create a standardized and efficient method for handling asset val
 Bak Bridge is a drop-in module for your users to preload, create and mint Cardano native tokens. This allows you to access their data using Bakrypt's API. Bak Bridge handles authentication, asset validation, transaction configuration and error handling.
 
 <p align="center">
-  <a href="" rel="noopener">
- <img src="https://gateway.bakrypt.io/ipfs/QmaUrnds8hE81pa5joyzdWaCdd3syVZ69EKf3EW6tw5jxe" alt="BakBridge" width="350px"></a>
+  <img src="https://gateway.bakrypt.io/ipfs/QmaUrnds8hE81pa5joyzdWaCdd3syVZ69EKf3EW6tw5jxe" alt="BakBridge" width="350px">
 </p>
 
 ## ⛓️ Dependencies / Limitations <a name = "limitations"></a>
@@ -168,7 +167,7 @@ Visit our website to learn more on how to start staking and earning rewards. Thi
 
   <a href="" rel="noopener">
 
- <img src="https://gateway.bakrypt.io/ipfs/QmV4RbFcAnP8QyL59TRqZnD7ozKHHbudW35eGn5oe4D1JK" alt="BakBridge" width="200px"></a>
+ <img src="https://gateway.bakrypt.io/ipfs/QmV4RbFcAnP8QyL59TRqZnD7ozKHHbudW35eGn5oe4D1JK" alt="Bakrypt logo" width="200px"></a>
 
 ## Learn More
 
