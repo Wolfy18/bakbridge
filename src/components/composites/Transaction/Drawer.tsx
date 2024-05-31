@@ -43,59 +43,58 @@ const Drawer: React.FC = () => {
   };
 
   return (
-    <div className="">
-      <DSDrawer
-        title="Invoice"
-        placement={'right'}
-        getContainer={false}
-        size="large"
-        onClose={onCloseDrawer}
-        open={openTxDrawer}
-        extra={
-          <Space>
-            {!['confirmed', 'canceled'].includes(transaction.status) && (
-              <>
-                <Popconfirm
-                  title="Refund transaction"
-                  description="Are you sure to refund this transaction?"
-                  onConfirm={handleRefund}
-                  // onCancel={}
-                  okText="Yes"
-                  cancelText="No"
+    <DSDrawer
+      title="Invoice"
+      placement={'right'}
+      getContainer={false}
+      size="large"
+      className="!h-[100vh]"
+      onClose={onCloseDrawer}
+      open={openTxDrawer}
+      extra={
+        <Space>
+          {!['confirmed', 'canceled'].includes(transaction.status) && (
+            <>
+              <Popconfirm
+                title="Refund transaction"
+                description="Are you sure to refund this transaction?"
+                onConfirm={handleRefund}
+                // onCancel={}
+                okText="Yes"
+                cancelText="No"
+              >
+                <Button
+                  type="default"
+                  className="!border-red-400 text-red-500 hover:bg-red-500 hover:!text-white"
                 >
-                  <Button
-                    type="default"
-                    className="!border-red-400 text-red-500 hover:bg-red-500 hover:!text-white"
-                  >
-                    Refund
-                  </Button>
-                </Popconfirm>
+                  Refund
+                </Button>
+              </Popconfirm>
 
-                <Popconfirm
-                  title="Mint transaction"
-                  description="Are you sure to mint this transaction?"
-                  onConfirm={handleMint}
-                  // onCancel={}
-                  okText="Yes"
-                  cancelText="No"
-                >
-                  <Button type="primary" className="bg-blue-500 text-white">
-                    Retry Mint
-                  </Button>
-                </Popconfirm>
-              </>
-            )}
+              <Popconfirm
+                title="Mint transaction"
+                description="Are you sure to mint this transaction?"
+                onConfirm={handleMint}
+                // onCancel={}
+                okText="Yes"
+                cancelText="No"
+              >
+                <Button type="primary" className="bg-blue-500 text-white">
+                  Mint
+                </Button>
+              </Popconfirm>
+            </>
+          )}
 
-            <Button type="default" onClick={onCloseDrawer}>
-              OK
-            </Button>
-          </Space>
-        }
-        style={{ lineHeight: 'normal' }}
-      >
-        <Invoice {...transaction} />
-      </DSDrawer>
-    </div>
+          <Button type="default" onClick={onCloseDrawer}>
+            OK
+          </Button>
+        </Space>
+      }
+      style={{ lineHeight: 'normal' }}
+    >
+      <Invoice {...transaction} />
+    </DSDrawer>
   );
 };
 
