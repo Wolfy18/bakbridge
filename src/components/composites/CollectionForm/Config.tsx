@@ -1,11 +1,12 @@
 import React, { FormEvent, useState } from 'react';
 import { Divider, Form, Input, Switch } from 'antd';
 import { useFormContext } from 'context/FormContext';
-import { SwitchChangeEventHandler } from 'antd/es/switch';
 
 const Config: React.FC = () => {
   const { transaction, assetCollection, setAssetCollection } = useFormContext();
-
+  const [state, setState] = useState<{ royalties: boolean }>({
+    royalties: !!transaction?.has_royalties,
+  });
   const [royalties, setRoyalties] = useState<{
     royalties?: string;
     royalties_rate?: string;
@@ -14,14 +15,18 @@ const Config: React.FC = () => {
     royalties_rate: transaction?.royalties_rate,
   });
 
-  const handleRoyalties: SwitchChangeEventHandler = (checked) => {
+  const handleRoyalties = (checked: boolean) => {
     let first = [...assetCollection].shift();
     if (!first) return;
 
     if (checked) {
       first = { ...first, ...royalties };
+
+      setState({ ...state, royalties: true });
     } else {
       first = { ...first, royalties: undefined, royalties_rate: undefined };
+
+      setState({ ...state, royalties: false });
     }
     const newCol = assetCollection;
     newCol[0] = first;
@@ -35,9 +40,15 @@ const Config: React.FC = () => {
       disabled={!!transaction}
       onChange={(e: FormEvent<HTMLFormElement>) => {
         const inputE = e.target as HTMLInputElement;
-        setRoyalties({
+        const roy = {
           ...royalties,
           [inputE.name]: inputE.value,
+        };
+        setRoyalties(roy);
+        handleRoyalties(false);
+        setState({
+          ...state,
+          royalties: false,
         });
       }}
     >
@@ -59,7 +70,7 @@ const Config: React.FC = () => {
       </Form.Item>
       <p>On/Off</p>
       <Switch
-        defaultChecked={transaction?.has_royalties}
+        checked={state.royalties}
         checkedChildren="On"
         unCheckedChildren="Off"
         onChange={handleRoyalties}

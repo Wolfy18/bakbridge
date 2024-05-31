@@ -3,7 +3,11 @@ import { Formik, FormikErrors, FormikValues } from 'formik';
 import { Divider, Button, Tabs, Drawer, Spin, message, Badge } from 'antd';
 import { Asset } from 'components/composites/Asset';
 import { EmptyAsset, useFormContext } from 'context/FormContext';
-import { PlusOutlined, LoadingOutlined } from '@ant-design/icons';
+import {
+  PlusOutlined,
+  LoadingOutlined,
+  SettingOutlined,
+} from '@ant-design/icons';
 import { useSessionContext } from 'context/SessionContext';
 import useBakClient from 'client/bakrypt';
 import Config from './Config';
@@ -235,10 +239,13 @@ const CollectionForm: React.FC = () => {
                 setTransaction(transaction);
               }
 
+              window.scrollTo({
+                top: window.screenTop,
+              });
               setOpenTxDrawer(true);
             }
           } catch (error) {
-            if (axios.isAxiosError(error)) {
+            if (axios.isAxiosError(error) && error.response?.data) {
               if (Object.keys(error.response?.data).includes('detail')) {
                 message.error(error.response?.data.detail);
               } else if (Array.isArray(error.response?.data)) {
@@ -262,7 +269,7 @@ const CollectionForm: React.FC = () => {
       >
         {({ submitForm, isSubmitting, isValid, errors, values, setValues }) => (
           <>
-            <div className="p-4">
+            <div className="">
               <Tabs
                 hideAdd
                 onChange={onChange}
@@ -303,12 +310,15 @@ const CollectionForm: React.FC = () => {
                 </div>
                 <div>
                   <Button type="link" onClick={() => setOpen(!open)}>
-                    Configuration
+                    <SettingOutlined /> Config
                   </Button>
                   {transaction ? (
                     <Button
                       type="default"
-                      onClick={() => setOpenTxDrawer(true)}
+                      onClick={() => {
+                        window.scrollTo({ top: window.screenTop });
+                        setOpenTxDrawer(true);
+                      }}
                     >
                       <Spin
                         className={`mr-2 ${!isSubmitting ? 'hidden' : null}`}

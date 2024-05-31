@@ -20,7 +20,7 @@ const AssetForm: React.FC<AssetProps & { index: number }> = ({
   const { assetCollection, setAssetCollection, transaction } = useFormContext();
   const [form] = useForm();
   const [isSubmitted, setSubmitted] = useState<boolean>(false);
-  const { values } = useFormikContext<{ asset: AssetProps[] }>();
+  const { values, setValues } = useFormikContext<{ asset: AssetProps[] }>();
   useEffect(() => setSubmitted(!!transaction), [transaction]);
 
   useEffect(() => {
@@ -64,6 +64,28 @@ const AssetForm: React.FC<AssetProps & { index: number }> = ({
       clearTimeout(t);
     };
   }, [values]);
+
+  const handleRemoveAttr = (attrIdx: number, index: number) => {
+    const currentAsset = { ...values.asset[index] };
+
+    attrs = currentAsset.attrs?.filter((obj, idx) => idx !== attrIdx);
+    currentAsset.attrs = attrs;
+
+    const newValues = { ...values };
+    newValues.asset[index] = currentAsset;
+    setValues(newValues);
+  };
+
+  const handleRemoveFile = (fileIdx: number, index: number) => {
+    const currentAsset = { ...assetCollection[index] };
+
+    files = currentAsset.files?.filter((obj, idx) => idx !== fileIdx);
+    currentAsset.files = files;
+
+    const newValues = { ...values };
+    newValues.asset[index] = currentAsset;
+    setValues(newValues);
+  };
 
   return (
     <FormDS layout="vertical" form={form}>
@@ -235,17 +257,8 @@ const AssetForm: React.FC<AssetProps & { index: number }> = ({
                 {!transaction && (
                   <MinusCircleOutlined
                     onClick={() => {
+                      handleRemoveAttr(name, index);
                       remove(name);
-                      const currentAsset = { ...assetCollection[index] };
-
-                      attrs = currentAsset.attrs?.filter(
-                        (obj, idx) => idx !== name
-                      );
-                      currentAsset.attrs = attrs;
-
-                      const newcol = [...assetCollection];
-                      newcol[index] = currentAsset;
-                      setAssetCollection(newcol);
                     }}
                   />
                 )}
@@ -343,17 +356,8 @@ const AssetForm: React.FC<AssetProps & { index: number }> = ({
                 {!transaction && (
                   <MinusCircleOutlined
                     onClick={() => {
+                      handleRemoveFile(name, index);
                       remove(name);
-                      const currentAsset = { ...assetCollection[index] };
-
-                      files = currentAsset.files?.filter(
-                        (obj, idx) => idx !== name
-                      );
-                      currentAsset.files = files;
-
-                      const newcol = [...assetCollection];
-                      newcol[index] = currentAsset;
-                      setAssetCollection(newcol);
                     }}
                   />
                 )}

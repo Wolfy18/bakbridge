@@ -113,15 +113,15 @@ You can load Bak Bridge via IPFS or by installing it locally.
 ### npm installation
 
 ```
-pnpm install @bak/bridge
+npm install @bak/bridge
 ```
 
 ```
-# Component.tsx
+# Component.js
 
-import BakBridge from "@bak/bridge";
+import BakBridge from "@bak/bridge/js/main.bundle.js";
 
-import "@bak/bridge/build/css/main.css";
+import "@bak/bridge/dist/css/main.css";
 
 function Component = () => {
 
