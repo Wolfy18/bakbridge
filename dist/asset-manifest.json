@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/css/main.css",
+    "main.js": "/js/main.bundle.js",
+    "index.html": "/index.html",
+    "main.css.map": "/css/main.css.map",
+    "main.bundle.js.map": "/js/main.bundle.js.map"
+  },
+  "entrypoints": [
+    "css/main.css",
+    "js/main.bundle.js"
+  ]
+}

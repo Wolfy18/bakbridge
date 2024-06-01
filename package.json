@@ -1,9 +1,22 @@
 {
   "name": "bakbridge",
-  "version": "v0.1.0-alpha",
+  "description": "Bak Bridge is a drop-in module for your users to preload, create and mint native tokens.",
+  "author": "Bakrypt.io",
+  "version": "0.1.0",
   "private": false,
   "main": "dist/js/main.bundle.js",
-  "types":"dist/js/main.bundle.d.ts",
+  "types": "dist/js/main.bundle.d.ts",
+  "license": "MIT",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Wolfy18/bakbridge"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "package.json"
+  ],
   "dependencies": {
     "@ant-design/cssinjs": "1.18.0-alpha.5",
     "@ant-design/icons": "^5.2.6",
