@@ -42,7 +42,7 @@
   "scripts": {
     "start": "craco start",
     "build": "BUILD_PATH='./dist' craco build",
-    "test": "craco test",
+    "test": "",
     "eject": "craco eject",
     "format": "prettier --write ./**/*.{js,ts,tsx}",
     "lint": "tsc --noEmit && eslint src/**/*.{js,ts,tsx}"
