@@ -7,7 +7,6 @@
   "main": "dist/js/main.bundle.js",
   "types": "dist/js/main.bundle.d.ts",
   "license": "MIT",
-  "type": "module",
   "repository": {
     "type": "git",
     "url": "https://github.com/Wolfy18/bakbridge"
