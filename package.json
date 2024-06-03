@@ -9,7 +9,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Wolfy18/bakbridge"
+    "url": "git+https://github.com/Wolfy18/bakbridge.git"
   },
   "files": [
     "dist",
