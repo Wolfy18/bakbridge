@@ -4,7 +4,7 @@ import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import { FileUploader } from 'components/atoms/Input';
 import { Field, FieldProps, useFormikContext } from 'formik';
 import { useFormContext } from 'context/FormContext';
-import { useForm } from 'antd/es/form/Form';
+import { useForm } from 'antd/lib/form/Form';
 
 const AssetForm: React.FC<AssetProps & { index: number }> = ({
   blockchain,

@@ -3,7 +3,7 @@ import { Carousel, Divider, Skeleton, Button } from 'antd';
 import { Card as DSCard } from 'antd';
 import File from '../../atoms/File';
 import { LeftOutlined, RightOutlined } from '@ant-design/icons';
-import { CarouselRef } from 'antd/es/carousel';
+import { CarouselRef } from 'antd/lib/carousel';
 
 const { Meta } = DSCard;
 
