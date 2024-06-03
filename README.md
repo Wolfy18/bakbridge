@@ -24,8 +24,8 @@ Integrate Bakrypt.io into your existing platform, this powerful tool empowers yo
 - [Problem statement](#problem_statement)
 - [Idea / Solution](#idea)
 - [Dependencies / Limitations](#limitations)
-- [Future Scope](#future_scope)
-- [Setting up a local environment](#getting_started)
+- [Getting Started](#getting_started)
+- [Setting up a local environment](#local_dev)
 - [Technology Stack](#tech_stack)
 - [Authors](#authors)
 - [Stake and support](#support)
@@ -46,15 +46,74 @@ Bak Bridge is a drop-in module for your users to preload, create and mint Cardan
 
 ## ⛓️ Dependencies / Limitations <a name = "limitations"></a>
 
-- What are the dependencies of your project?
+- What are the dependencies to run the app?
 - The App requires a `Bearer Access Token` to communicate with Bakrypt's API. Follow the documentation to learn more about our authentication schema. 
 
 [Authorization and Access Tokens](https://bakrypt.readme.io/reference/authorization-and-access-tokens)
 
-## 🏁 Getting Started <a name = "getting_started"></a>
 
+## 🏁 Getting Started <a name = "getting_started"></a>
+You can load Bak Bridge via IPFS or by installing it locally.
+
+### CDN installation
+```
+# [index].html
+
+<div id="BakBridgeContainer"></div>
+
+<link rel="stylesheet" href="bakbridge/css/main.css" type="text/css" media="all" />
+<script src="bakbridge/js/main.bundle.js"></script>
+
+<script type="text/javascript">
+    // Your code here, ensuring BakBridge is defined and ready to use
+    window.onload = () => new BakBridge({
+        bakToken: '<Bearer Access Token>',
+        container: document.querySelector('#BakBridgeContainer'),
+        client: {
+            baseUrl: "https://testnet.bakrypt.io", # Defaults to https://bakrypt.io
+            headers: { 'X-CSRFToken': "<additional headers>" }, # Optional: Add additional headers to the axios client.
+        },
+    });
+</script>
+```
+
+### npm installation
+
+```
+npm install bakbridge
+```
+
+```
+# Component.js
+
+import BakBridge from "bakbridge/js/main.bundle.js";
+
+import "bakbridge/dist/css/main.css";
+
+function Component = () => {
+
+  const bridgeRef = useRef()
+
+  useEffect(() => {
+    bridge = new BakBridge({
+        bakToken: '<Bearer Access Token>',
+        container: bridgeRef,
+        client: {
+            baseUrl: "https://testnet.bakrypt.io", # Defaults to https://bakrypt.io
+            headers: { 'X-CSRFToken': "<additional headers>" }, # Optional: Add additional headers to the axios client.
+        },
+    });
+  }, [])
+
+  return (<div ref={bridgeRef}></div>)
+
+}
+
+```
+
+## 🚀 Deployment <a name = "local_dev"></a>
 These instructions will get you a copy of the project up and running on your local machine for development
-and testing purposes. See [deployment](#deployment) for notes on how to deploy the project on a live system.
+and testing purposes. See [getting started](#getting_started) for notes on how to deploy the project on a live system.
 
 ### Prerequisites
 
@@ -84,65 +143,6 @@ The build is minified and the filenames include the hashes.\
 Your app is ready to be deployed!
 
 See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-## 🚀 Deployment <a name = "deployment"></a>
-You can load Bak Bridge via IPFS or by installing it locally.
-
-### CDN installation
-```
-# [index].html
-
-<div id="BakBridgeContainer"></div>
-
-<link rel="stylesheet" href="BakBridge/css/main.css" type="text/css" media="all" />
-<script src="BakBridge/js/main.bundle.js"></script>
-
-<script type="text/javascript">
-    // Your code here, ensuring BakBridge is defined and ready to use
-    window.onload = () => new BakBridge({
-        bakToken: '<Bearer Access Token>',
-        container: document.querySelector('#BakBridgeContainer'),
-        client: {
-            baseUrl: "https://testnet.bakrypt.io", # Defaults to https://bakrypt.io
-            headers: { 'X-CSRFToken': "<additional headers>" }, # Optional: Add additional headers to the axios client.
-        },
-    });
-</script>
-```
-
-### npm installation
-
-```
-npm install @bak/bridge
-```
-
-```
-# Component.js
-
-import BakBridge from "@bak/bridge/js/main.bundle.js";
-
-import "@bak/bridge/dist/css/main.css";
-
-function Component = () => {
-
-  const bridgeRef = useRef()
-
-  useEffect(() => {
-    bridge = new BakBridge({
-        bakToken: '<Bearer Access Token>',
-        container: bridgeRef,
-        client: {
-            baseUrl: "https://testnet.bakrypt.io", # Defaults to https://bakrypt.io
-            headers: { 'X-CSRFToken': "<additional headers>" }, # Optional: Add additional headers to the axios client.
-        },
-    });
-  }, [])
-
-  return (<div ref={bridgeRef}></div>)
-
-}
-
-```
 
 ## ⛏️ Built With <a name = "tech_stack"></a>
 
