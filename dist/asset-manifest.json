@@ -2,6 +2,7 @@
   "files": {
     "main.css": "/css/main.css",
     "main.js": "/js/main.bundle.js",
+    "static/media/index.cjs": "/static/media/index.42119833dddefe38a9fa.cjs",
     "index.html": "/index.html",
     "main.css.map": "/css/main.css.map",
     "main.bundle.js.map": "/js/main.bundle.js.map"

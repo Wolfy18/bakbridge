@@ -4,9 +4,15 @@ const devMode = process.env.NODE_ENV !== 'production';
 
 module.exports = {
   paths: {
-    // Set the source directory to 'atomic'
     appSrc: path.resolve(__dirname, './src'),
     appIndexJs: path.resolve(__dirname, './src/index.tsx'),
+  },
+  babel: {
+    presets: [
+      ['@babel/preset-env', { targets: { node: 'current' } }],
+      '@babel/preset-typescript',
+    ],
+    plugins: [],
   },
   webpack: {
     configure: (webpackConfig, { env, paths }) => {
@@ -43,6 +49,9 @@ module.exports = {
         use: ['source-map-loader'],
       });
 
+      // // Set the ignoreWarnings property
+      webpackConfig.ignoreWarnings = [/Failed to parse source map/];
+
       // Add a rule for handling CSS files with postcss-loader and css-loader
       webpackConfig.module.rules.push({
         test: /\.css$/,
@@ -52,14 +61,14 @@ module.exports = {
             loader: 'css-loader',
             options: {
               modules: {
-                mode: "local",
+                mode: 'local',
                 auto: true,
                 exportGlobals: true,
-                localIdentName: "[path][name]__[local]--[hash:base64:5]",
-                localIdentContext: path.resolve(__dirname, "src"),
-                localIdentHashSalt: "my-custom-hash",
+                localIdentName: '[path][name]__[local]--[hash:base64:5]',
+                localIdentContext: path.resolve(__dirname, 'src'),
+                localIdentHashSalt: 'bakrypt',
                 namedExport: true,
-                exportLocalsConvention: "as-is",
+                exportLocalsConvention: 'as-is',
                 exportOnlyLocals: false,
               },
             },
@@ -67,11 +76,7 @@ module.exports = {
           'postcss-loader',
         ],
         include: [path.resolve(__dirname, 'not_exist_path')],
-        // use: ['style-loader', 'css-loader', 'postcss-loader'],
       });
-
-      // Set the ignoreWarnings property
-      webpackConfig.ignoreWarnings = [/Failed to parse source map/];
 
       return webpackConfig;
     },
@@ -80,7 +85,19 @@ module.exports = {
     verbose: true,
     configure: (jestConfig, { env, paths, resolve, rootDir }) => {
       /* ... */
-      // jestConfig.rootDir = path.resolve(__dirname, "atomic");
+      jestConfig.preset = 'ts-jest';
+      jestConfig.transform = {
+        '^.+\\.(ts|tsx)?$': 'ts-jest',
+        '^.+\\.(js|jsx)$': 'babel-jest',
+      };
+      jestConfig.transformIgnorePatterns = [
+        './node_modules/',
+        '/node_modules/',
+      ];
+      jestConfig.moduleNameMapper = {
+        '^axios$': 'axios/dist/node/axios.cjs',
+        '\\.(css|less)$': `${rootDir}/src/jest/__mocks__/styleMock.js`,
+      };
 
       return jestConfig;
     },

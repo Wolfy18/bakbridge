@@ -10,7 +10,7 @@ import {
   InputRef,
 } from 'antd';
 import useBakClient from 'client/bakrypt';
-import { Rule } from 'antd/es/form';
+import { Rule } from 'antd/lib/form';
 import { useFormikContext } from 'formik';
 import axios from 'axios';
 

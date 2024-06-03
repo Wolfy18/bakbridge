@@ -1,7 +1,7 @@
 import React, { PropsWithChildren } from 'react';
 
 import { Layout } from 'antd';
-import Link from 'antd/es/typography/Link';
+import Link from 'antd/lib/typography/Link';
 
 const { Header, Footer, Content } = Layout;
 
