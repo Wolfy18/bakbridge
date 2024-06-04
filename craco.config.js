@@ -17,8 +17,8 @@ module.exports = {
   webpack: {
     configure: (webpackConfig, { env, paths }) => {
       // Modify the output filename for JavaScript bundles
-      webpackConfig.output.filename = 'js/[name].bundle.js';
-      webpackConfig.output.chunkFilename = 'js/[name].[contenthash:8].chunk.js';
+      webpackConfig.output.filename = '[name].bundle.js';
+      webpackConfig.output.chunkFilename = '[name].[contenthash:8].chunk.js';
 
       // Modify the output filename for CSS bundles (assuming you're using MiniCssExtractPlugin)
       const miniCssPluginIndex = webpackConfig.plugins.findIndex(
@@ -26,7 +26,7 @@ module.exports = {
       );
       if (miniCssPluginIndex !== -1) {
         webpackConfig.plugins[miniCssPluginIndex].options.filename =
-          'css/[name].css';
+          '[name].css';
       }
 
       // Add a rule for handling image files

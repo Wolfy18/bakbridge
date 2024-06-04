@@ -4,8 +4,8 @@
   "author": "Bakrypt.io",
   "version": "0.0.2",
   "private": false,
-  "main": "dist/js/main.bundle.js",
-  "types": "dist/js/main.bundle.d.ts",
+  "main": "dist/main.bundle.js",
+  "types": "dist/index.d.ts",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -40,7 +40,7 @@
   },
   "scripts": {
     "start": "craco start",
-    "build": "BUILD_PATH='./dist' craco build",
+    "build": "BUILD_PATH='./dist' craco build && tsc --emitDeclarationOnly",
     "test": "craco test",
     "eject": "craco eject",
     "format": "prettier --write ./**/*.{js,ts,tsx}",
