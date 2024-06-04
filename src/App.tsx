@@ -17,6 +17,7 @@ const App: React.FC<PropsWithChildren & SessionContextProps> = (props) => {
           <FormProvider
             initialData={props.initialData}
             showTransaction={props.showTransaction}
+            onSuccess={props.onSuccess}
           >
             <CollectionForm />
             <TransactionDrawer />

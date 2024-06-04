@@ -86,7 +86,7 @@ npm install bakbridge
 ```
 # Component.js
 
-import BakBridge from "bakbridge/js/main.bundle.js";
+import BakBridge from "bakbridge";
 
 import "bakbridge/dist/css/main.css";
 
@@ -95,11 +95,15 @@ function Component = () => {
   const bridgeRef = useRef()
 
   useEffect(() => {
+
+    const bridgeDOM = bridgeRef.current
+    if(!bridgeDOM) return;
+
     bridge = new BakBridge({
-        bakToken: '<Bearer Access Token>',
-        container: bridgeRef,
+        bakToken: '<Bearer Access Token>', # Required
+        container: bridgeDOM, # Required
         client: {
-            baseUrl: "https://testnet.bakrypt.io", # Defaults to https://bakrypt.io
+            baseUrl: "https://testnet.bakrypt.io", # Optional: Defaults to https://bakrypt.io
             headers: { 'X-CSRFToken': "<additional headers>" }, # Optional: Add additional headers to the axios client.
         },
     });
@@ -110,6 +114,31 @@ function Component = () => {
 }
 
 ```
+
+## API 
+Common Props Ref
+
+```
+type clientOpts  = {
+  client?: {
+    baseUrl?: string;
+    headers?: { [key: string]: string };
+  };
+}
+```
+
+Property | Description | Type | Default
+--- | --- | --- | --- 
+**bakToken** | Bearer access token for the session. | *string*  - *required* | undefined
+**container** | DOM container where the app will be loaded. | *HTMLElement* - *required* | undefined
+**initial** | Valid JSON string representing a collection of one or more assets. | *string* | undefined
+**showTransaction** | Open invoice drawer on load. | *boolean* | false
+**onLoad** | Trigger after the application is initiated. | *function ()* | -
+**onSuccess** | Trigger after `successfully` submitting the request. | *function ({ transaction: [TransactionProps](https://github.com/Wolfy18/bakbridge/blob/main/src/types.d.ts#L13), collection: [OutputAssetProps[]](https://github.com/Wolfy18/bakbridge/blob/main/src/types.d.ts#L93) })* | -
+**onCLose** | Trigger after the application is closed. | *function ({ assetCollection: [AssetProps[]](https://github.com/Wolfy18/bakbridge/blob/main/src/types.d.ts#L72) })* | -
+**client** | Axios client custom configurations. | *clientOpts* | {}
+
+
 
 ## 🚀 Deployment <a name = "local_dev"></a>
 These instructions will get you a copy of the project up and running on your local machine for development

@@ -47,6 +47,7 @@ const CollectionForm: React.FC = () => {
     setOpenTxDrawer,
     setTransaction,
     transaction,
+    onSuccess,
   } = useFormContext();
   const { getTransaction, submitRequest } = useBakClient();
   const { transactionUuid } = useSessionContext();
@@ -233,10 +234,13 @@ const CollectionForm: React.FC = () => {
 
               if (tx && typeof tx === 'object') {
                 setTransaction(tx);
+                if (onSuccess) onSuccess();
               } else if (tx) {
                 // get transaction
                 const transaction = await getTransaction(tx);
                 setTransaction(transaction);
+
+                if (onSuccess) onSuccess();
               }
 
               window.scrollTo({
