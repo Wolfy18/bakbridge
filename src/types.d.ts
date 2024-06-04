@@ -104,6 +104,7 @@ interface SessionContextProps {
   baseUrl?: string;
   showTransaction?: boolean;
   headers?: { [key: string]: string };
+  onSuccess?: () => void;
 }
 
 type NestedObject = {

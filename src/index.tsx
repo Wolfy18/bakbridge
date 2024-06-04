@@ -114,6 +114,8 @@ window.addEventListener('DOMContentLoaded', () => {
 
 export default BakBridge;
 
+export type { BakBridgeOptions };
+
 const devMod = process.env.NODE_ENV !== 'production';
 if (devMod && document.querySelector('#BakBridge'))
   new BakBridge({
