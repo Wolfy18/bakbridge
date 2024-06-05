@@ -84,7 +84,7 @@ npm install bakbridge
 ```
 
 ```
-# Component.js
+# Component.tsx
 
 import BakBridge from "bakbridge";
 import "bakbridge/dist/main.css";
@@ -94,16 +94,16 @@ function Component = () => {
   const bridgeRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!ref.current) return;
+    if (!bridgeRef.current) return;
     new BakBridge({
         bakToken: '<Bearer Access Token>', # Required
-        container: bridgeDOM, # Required
+        container: bridgeRef.current, # Required
         client: {
             baseUrl: "https://testnet.bakrypt.io", # Optional: Defaults to https://bakrypt.io
             headers: { 'X-CSRFToken': "<additional headers>" }, # Optional: Add additional headers to the axios client.
         },
     });
-  }, [ref]);
+  }, [bridgeRef]);
 
   return (<div ref={bridgeRef}></div>)
 
