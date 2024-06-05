@@ -10,7 +10,7 @@ const createClient = ({
   headers?: { [key: string]: string | number | boolean };
 }) => {
   const requestHeaders: { [key: string]: string | number | boolean } = {};
-  if (accessToken) requestHeaders['Authorization'] = `Bearer ${accessToken}`;
+  if (accessToken) requestHeaders['authorization'] = `Bearer ${accessToken}`;
 
   return axios.create({
     baseURL: baseUrl ? baseUrl : 'https://bakrypt.io/v1/',

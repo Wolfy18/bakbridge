@@ -9,11 +9,23 @@ class BakBridge {
   headers?: { [key: string]: string };
   initial?: JSONstring;
   showTransaction?: boolean;
+  transactionUuid?: string;
+  policyId?: string;
   onLoad: () => void;
-  onSuccess: (metadata?: { [key: string]: string | number | [] }) => void;
+  onSuccess: (
+    transaction: TransactionProps,
+    collection: OutputAssetProps[]
+  ) => void;
   onEvent: (
     event_type: string,
-    payload?: { [key: string]: string | number | [] }
+    payload?: {
+      [key: string]:
+        | string
+        | number
+        | []
+        | TransactionProps
+        | OutputAssetProps[];
+    }
   ) => void;
   onClose: () => void;
 
@@ -24,6 +36,8 @@ class BakBridge {
     this.headers = options.client?.headers;
     this.initial = options.initial;
     this.showTransaction = options.showTransaction || false;
+    this.transactionUuid = options.transactionUuid || undefined;
+    this.policyId = options.policyId || undefined;
     this.onLoad = options.onLoad || function () {};
     this.onSuccess = options.onSuccess || function () {};
     this.onEvent = options.onEvent || function () {};
@@ -42,8 +56,9 @@ class BakBridge {
       baseUrl: this.baseUrl,
       initialData: this.initial,
       headers: this.headers,
-      // transactionUuid: this.container.dataset.transactionUuid,
-      // policyId: this.container.dataset.policyId,
+      transactionUuid: this.transactionUuid,
+      policyId: this.policyId,
+      onSuccess: this.onSuccess,
     };
 
     root.render(
@@ -54,30 +69,6 @@ class BakBridge {
 
     // Trigger onLoad callback
     this.onLoad();
-  }
-
-  handleBridgeEvent(
-    eventType: string,
-    payload?: { [key: string]: string | number | [] }
-  ) {
-    console.log(payload);
-    // Simulate handling bridge events
-    switch (eventType) {
-      case 'success':
-        // Trigger onSuccess callback
-        this.onSuccess(payload);
-        break;
-      case 'event':
-        // Trigger onEvent callback
-        this.onEvent('some_event_type', payload);
-        break;
-      case 'close':
-        // Trigger onClose callback
-        this.onClose();
-        break;
-      default:
-        break;
-    }
   }
 }
 
@@ -104,5 +95,14 @@ if (devMod && document.querySelector('#BakBridge'))
     client: {
       baseUrl: 'https://testnet.bakrypt.io/v1/',
       headers: { 'X-CSRFToken': 'mrhPuGLbgC7tTompVp11' },
+    },
+    onSuccess: (
+      transaction: TransactionProps,
+      collection: OutputAssetProps[]
+    ) => {
+      console.log(transaction, collection);
+    },
+    onLoad: () => {
+      console.log('The application is loaded!');
     },
   });
