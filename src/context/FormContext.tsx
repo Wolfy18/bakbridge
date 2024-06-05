@@ -13,7 +13,6 @@ interface FormContextProps {
   setOpenTxDrawer: (state: boolean) => void;
   transaction?: TransactionProps;
   setTransaction: (obj: TransactionProps) => void;
-  onSuccess?: () => void;
 }
 
 export const EmptyAsset = {
@@ -32,14 +31,13 @@ export const useFormContext = () => {
   }
   return context;
 };
-//{transaction: TransactionProps, collection: OutputAssetProps[]}
+
 export const FormProvider: React.FC<
   PropsWithChildren & {
     initialData?: string;
     showTransaction?: boolean;
-    onSuccess?: () => void;
   }
-> = ({ initialData, showTransaction, onSuccess, children }) => {
+> = ({ initialData, showTransaction, children }) => {
   const initCollection = useMemo(() => {
     let data: IntakeAssetProps[] | undefined;
     if (initialData && initialData.length) data = JSON.parse(initialData);
@@ -105,7 +103,6 @@ export const FormProvider: React.FC<
         setOpenTxDrawer,
         transaction,
         setTransaction,
-        onSuccess,
       }}
     >
       {children}

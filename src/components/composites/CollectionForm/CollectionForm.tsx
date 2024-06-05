@@ -47,10 +47,9 @@ const CollectionForm: React.FC = () => {
     setOpenTxDrawer,
     setTransaction,
     transaction,
-    onSuccess,
   } = useFormContext();
   const { getTransaction, submitRequest } = useBakClient();
-  const { transactionUuid } = useSessionContext();
+  const { transactionUuid, onSuccess } = useSessionContext();
 
   // Set panels from the assetCollection.
   const TabPanels = useCallback(
@@ -234,13 +233,13 @@ const CollectionForm: React.FC = () => {
 
               if (tx && typeof tx === 'object') {
                 setTransaction(tx);
-                if (onSuccess) onSuccess();
+                if (onSuccess) onSuccess(tx, formatted);
               } else if (tx) {
                 // get transaction
                 const transaction = await getTransaction(tx);
                 setTransaction(transaction);
 
-                if (onSuccess) onSuccess();
+                if (onSuccess) onSuccess(transaction, formatted);
               }
 
               window.scrollTo({

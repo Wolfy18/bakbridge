@@ -24,6 +24,7 @@ export const SessionProvider: React.FC<
   showTransaction,
   children,
   headers,
+  onSuccess,
 }) => {
   const client = createClient({ baseUrl, accessToken, headers });
 
@@ -36,6 +37,7 @@ export const SessionProvider: React.FC<
         showTransaction,
         policyId,
         client,
+        onSuccess,
       }}
     >
       {children}

@@ -10,10 +10,20 @@ class BakBridge {
   initial?: JSONstring;
   showTransaction?: boolean;
   onLoad: () => void;
-  onSuccess: (metadata?: { [key: string]: string | number | [] }) => void;
+  onSuccess: (
+    transaction: TransactionProps,
+    collection: OutputAssetProps[]
+  ) => void;
   onEvent: (
     event_type: string,
-    payload?: { [key: string]: string | number | [] }
+    payload?: {
+      [key: string]:
+        | string
+        | number
+        | []
+        | TransactionProps
+        | OutputAssetProps[];
+    }
   ) => void;
   onClose: () => void;
 
@@ -42,6 +52,7 @@ class BakBridge {
       baseUrl: this.baseUrl,
       initialData: this.initial,
       headers: this.headers,
+      onSuccess: this.onSuccess,
       // transactionUuid: this.container.dataset.transactionUuid,
       // policyId: this.container.dataset.policyId,
     };
@@ -56,29 +67,42 @@ class BakBridge {
     this.onLoad();
   }
 
-  handleBridgeEvent(
-    eventType: string,
-    payload?: { [key: string]: string | number | [] }
-  ) {
-    console.log(payload);
-    // Simulate handling bridge events
-    switch (eventType) {
-      case 'success':
-        // Trigger onSuccess callback
-        this.onSuccess(payload);
-        break;
-      case 'event':
-        // Trigger onEvent callback
-        this.onEvent('some_event_type', payload);
-        break;
-      case 'close':
-        // Trigger onClose callback
-        this.onClose();
-        break;
-      default:
-        break;
-    }
-  }
+  // TODO
+  // handleBridgeEvent(
+  //   eventType: string,
+  //   payload?: {
+  //     [key: string]:
+  //       | string
+  //       | number
+  //       | []
+  //       | TransactionProps
+  //       | OutputAssetProps[];
+  //   }
+  // ) {
+  //   console.log(payload);
+  //   // Simulate handling bridge events
+  //   switch (eventType) {
+  //     case 'success':
+  //       // Trigger onSuccess callback
+  //       console.log(payload, '<--- this is the payload');
+  //       if (payload && 'transaction' in payload && 'collection' in payload)
+  //         this.onSuccess(
+  //           payload['transaction'] as TransactionProps,
+  //           payload['collection'] as OutputAssetProps[]
+  //         );
+  //       break;
+  //     case 'event':
+  //       // Trigger onEvent callback
+  //       this.onEvent('some_event_type', payload);
+  //       break;
+  //     case 'close':
+  //       // Trigger onClose callback
+  //       this.onClose();
+  //       break;
+  //     default:
+  //       break;
+  //   }
+  // }
 }
 
 declare global {
@@ -104,5 +128,12 @@ if (devMod && document.querySelector('#BakBridge'))
     client: {
       baseUrl: 'https://testnet.bakrypt.io/v1/',
       headers: { 'X-CSRFToken': 'mrhPuGLbgC7tTompVp11' },
+    },
+    onSuccess: (
+      transaction: TransactionProps,
+      collection: OutputAssetProps[]
+    ) => {
+      console.log('this ran outside after successfully submitted the form');
+      console.log(transaction, collection);
     },
   });

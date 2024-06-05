@@ -38,7 +38,7 @@ The goal is to create a standardized and efficient method for handling asset val
 
 ## 💡 Idea / Solution <a name = "idea"></a>
 
-Bak Bridge is a drop-in module for your users to preload, create and mint Cardano native tokens. This allows you to access their data using Bakrypt's API. Bak Bridge handles authentication, asset validation, transaction configuration and error handling.
+Bak Bridge is a drop-in module for your users to preload, create and mint Cardano native tokens using Bakrypt's API. Bak Bridge handles authentication, asset validation, transaction configuration and error handling.
 
 <p align="center">
   <img src="https://gateway.bakrypt.io/ipfs/QmaUrnds8hE81pa5joyzdWaCdd3syVZ69EKf3EW6tw5jxe" alt="BakBridge" width="350px">
@@ -70,7 +70,7 @@ You can load Bak Bridge via IPFS or by installing it locally.
         bakToken: '<Bearer Access Token>',
         container: document.querySelector('#BakBridgeContainer'),
         client: {
-            baseUrl: "https://testnet.bakrypt.io", # Defaults to https://bakrypt.io
+            baseUrl: "https://testnet.bakrypt.io/v1/", # Defaults to https://bakrypt.io/v1/ for mainnet
             headers: { 'X-CSRFToken': "<additional headers>" }, # Optional: Add additional headers to the axios client.
         },
     });
@@ -99,7 +99,7 @@ function Component = () => {
         bakToken: '<Bearer Access Token>', # Required
         container: bridgeRef.current, # Required
         client: {
-            baseUrl: "https://testnet.bakrypt.io/v1/", # Optional: Defaults to https://bakrypt.io/v1/
+            baseUrl: "https://testnet.bakrypt.io/v1/", # Optional: Defaults to https://bakrypt.io/v1/ for mainnet
             headers: { 'X-CSRFToken': "<additional headers>" }, # Optional: Add additional headers to the axios client.
         },
     });
@@ -121,12 +121,14 @@ Property | Description | Type | Default
 **initial** | Valid JSON string representing a collection of one or more assets. | *string* | undefined
 **showTransaction** | Open invoice drawer on load. | *boolean* | false
 **onLoad** | Trigger after the application is initiated. | *function ()* | -
-**onSuccess** | Trigger after `successfully` submitting the request. | *function ({ transaction: [TransactionProps](https://github.com/Wolfy18/bakbridge/blob/main/src/types.d.ts#L13), collection: [OutputAssetProps[]](https://github.com/Wolfy18/bakbridge/blob/main/src/types.d.ts#L93) })* | -
-**onCLose** | Trigger after the application is closed. | *function ({ collection: [AssetProps[]](https://github.com/Wolfy18/bakbridge/blob/main/src/types.d.ts#L72) })* | -
+**onSuccess** | Trigger after `successfully` submitting the request. | *function ( transaction: [TransactionProps](https://github.com/Wolfy18/bakbridge/blob/main/src/types.d.ts#L13), collection: [OutputAssetProps[]](https://github.com/Wolfy18/bakbridge/blob/main/src/types.d.ts#L93) )* | -
+**onCLose** | Trigger after the application is closed. | *function ( collection: [AssetProps[]](https://github.com/Wolfy18/bakbridge/blob/main/src/types.d.ts#L72) )* | -
 **client** | Axios client custom configurations. | *{
     baseUrl?: string;
     headers?: { [key: string]: string };
-  };* | {}
+  };* | {
+    baseUrl: "https://bakrypt.io/v1/" # Cardano PreProd use https://testnet.bakrypt.io/v1/
+  }
 
 
 ## 🚀 Deployment <a name = "local_dev"></a>

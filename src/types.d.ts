@@ -104,7 +104,10 @@ interface SessionContextProps {
   baseUrl?: string;
   showTransaction?: boolean;
   headers?: { [key: string]: string };
-  onSuccess?: () => void;
+  onSuccess?: (
+    transaction: TransactionProps,
+    collection: OutputAssetProps[]
+  ) => void;
 }
 
 type NestedObject = {
@@ -123,10 +126,20 @@ type BakBridgeOptions = {
   initial?: JSONstring;
   showTransaction?: boolean;
   onLoad?: () => void;
-  onSuccess?: (metadata?: { [key: string]: string | number | [] }) => void;
+  onSuccess?: (
+    transaction: TransactionProps,
+    collection: OutputAssetProps[]
+  ) => void;
   onEvent?: (
     event_type: string,
-    payload?: { [key: string]: string | number | [] }
+    payload?: {
+      [key: string]:
+        | string
+        | number
+        | []
+        | TransactionProps
+        | OutputAssetProps[];
+    }
   ) => void;
   onClose?: () => void;
 };
