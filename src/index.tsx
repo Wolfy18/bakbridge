@@ -133,7 +133,6 @@ if (devMod && document.querySelector('#BakBridge'))
       transaction: TransactionProps,
       collection: OutputAssetProps[]
     ) => {
-      console.log('this ran outside after successfully submitted the form');
       console.log(transaction, collection);
     },
   });
