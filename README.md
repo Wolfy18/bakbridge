@@ -32,9 +32,9 @@ Integrate Bakrypt.io into your existing platform, this powerful tool empowers yo
 
 ## 🧐 Problem statement <a name = "problem_statement"></a>
 
-The ideal scenario envisions a streamlined integration process with Bakrypt.io API for transforming digital assets into NFTs. The goal is to encapsulate common use cases with a React application, providing other integrations and applications with a preloaded solution that accelerates the integration with Bakrypt.io API. The desired outcome is an intuitive and efficient interface that simplifies minting tokens and enhances the overall user experience.
+The ideal scenario envisions a streamlined integration process with Bakrypt.io API for transforming digital assets into NFTs. The goal is to encapsulate common use cases with a React application, providing other integrations and applications with a preloaded solution that accelerates the integration with Bakrypt.io API.
 
-The goal is to create a standardized and efficient method for handling asset validation and file uploads across various widgets and endpoints. This approach will significantly reduce the time and effort required to upload files, ensuring a seamless and user-friendly experience for integrating platforms. By implementing a standardized mechanism, developers can focus on enhancing other aspects of the integration, leading to faster deployment and improved user satisfaction.
+The goal is to create a standardized and efficient method for handling asset validation and file uploads across various widgets and endpoints. This approach will significantly reduce the time and effort required to upload files, ensuring a seamless and user-friendly experience for integrating platforms.
 
 ## 💡 Idea / Solution <a name = "idea"></a>
 
@@ -99,7 +99,7 @@ function Component = () => {
         bakToken: '<Bearer Access Token>', # Required
         container: bridgeRef.current, # Required
         client: {
-            baseUrl: "https://testnet.bakrypt.io", # Optional: Defaults to https://bakrypt.io
+            baseUrl: "https://testnet.bakrypt.io/v1/", # Optional: Defaults to https://bakrypt.io/v1/
             headers: { 'X-CSRFToken': "<additional headers>" }, # Optional: Add additional headers to the axios client.
         },
     });
@@ -114,15 +114,6 @@ function Component = () => {
 ## API 
 Common Props Ref
 
-```
-type clientOpts  = {
-  client?: {
-    baseUrl?: string;
-    headers?: { [key: string]: string };
-  };
-}
-```
-
 Property | Description | Type | Default
 --- | --- | --- | --- 
 **bakToken** | Bearer access token for the session. | *string*  - *required* | undefined
@@ -131,9 +122,11 @@ Property | Description | Type | Default
 **showTransaction** | Open invoice drawer on load. | *boolean* | false
 **onLoad** | Trigger after the application is initiated. | *function ()* | -
 **onSuccess** | Trigger after `successfully` submitting the request. | *function ({ transaction: [TransactionProps](https://github.com/Wolfy18/bakbridge/blob/main/src/types.d.ts#L13), collection: [OutputAssetProps[]](https://github.com/Wolfy18/bakbridge/blob/main/src/types.d.ts#L93) })* | -
-**onCLose** | Trigger after the application is closed. | *function ({ assetCollection: [AssetProps[]](https://github.com/Wolfy18/bakbridge/blob/main/src/types.d.ts#L72) })* | -
-**client** | Axios client custom configurations. | *clientOpts* | {}
-
+**onCLose** | Trigger after the application is closed. | *function ({ collection: [AssetProps[]](https://github.com/Wolfy18/bakbridge/blob/main/src/types.d.ts#L72) })* | -
+**client** | Axios client custom configurations. | *{
+    baseUrl?: string;
+    headers?: { [key: string]: string };
+  };* | {}
 
 
 ## 🚀 Deployment <a name = "local_dev"></a>

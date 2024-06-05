@@ -17,23 +17,23 @@ import axios from 'axios';
 const collectionSchema = Yup.object().shape({
   asset: Yup.array().of(
     Yup.object().shape({
-      blockchain: Yup.string().required().default('ada'),
-      name: Yup.string().trim().required().default(null),
-      asset_name: Yup.string(),
-      image: Yup.string().trim().required().default(null),
+      blockchain: Yup.string().required().default('ada').max(64),
+      name: Yup.string().trim().required().default(null).max(64),
+      asset_name: Yup.string().max(32),
+      image: Yup.string().trim().required().default(null).max(64),
       description: Yup.string(),
       amount: Yup.number().required().default(1),
       attrs: Yup.array().of(
         Yup.object().shape({
-          key: Yup.string().required(),
-          value: Yup.string().required(),
+          key: Yup.string().required().max(64),
+          value: Yup.string().required().max(64),
         })
       ),
       files: Yup.array().of(
         Yup.object().shape({
-          name: Yup.string().required(),
-          src: Yup.string().required(),
-          mediaType: Yup.string().nullable(),
+          name: Yup.string().required().max(64),
+          src: Yup.string().required().max(64),
+          mediaType: Yup.string().nullable().max(64),
         })
       ),
     })
