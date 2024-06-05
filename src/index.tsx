@@ -2,24 +2,6 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
 
-type BakBridgeOptions = {
-  bakToken: string;
-  container: HTMLElement;
-  client?: {
-    baseUrl?: string;
-    headers?: { [key: string]: string };
-  };
-  initial?: JSONstring;
-  showTransaction?: boolean;
-  onLoad?: () => void;
-  onSuccess?: (metadata?: { [key: string]: string | number | [] }) => void;
-  onEvent?: (
-    event_type: string,
-    payload?: { [key: string]: string | number | [] }
-  ) => void;
-  onClose?: () => void;
-};
-
 class BakBridge {
   bakToken: string;
   container: HTMLElement;
@@ -113,8 +95,6 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 
 export default BakBridge;
-
-export type { BakBridgeOptions };
 
 const devMod = process.env.NODE_ENV !== 'production';
 if (devMod && document.querySelector('#BakBridge'))

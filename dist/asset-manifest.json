@@ -1,14 +1,14 @@
 {
   "files": {
     "main.css": "/main.css",
-    "main.js": "/main.bundle.js",
+    "main.js": "/index.js",
     "static/media/index.cjs": "/static/media/index.42119833dddefe38a9fa.cjs",
     "index.html": "/index.html",
     "main.css.map": "/main.css.map",
-    "main.bundle.js.map": "/main.bundle.js.map"
+    "index.js.map": "/index.js.map"
   },
   "entrypoints": [
     "main.css",
-    "main.bundle.js"
+    "index.js"
   ]
 }
