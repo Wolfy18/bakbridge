@@ -17,8 +17,10 @@ module.exports = {
   webpack: {
     configure: (webpackConfig, { env, paths }) => {
       // Modify the output filename for JavaScript bundles
-      webpackConfig.output.filename = '[name].bundle.js';
+      webpackConfig.output.filename = 'index.js';
       webpackConfig.output.chunkFilename = '[name].[contenthash:8].chunk.js';
+      webpackConfig.output.libraryTarget = 'umd';
+      webpackConfig.output.globalObject = 'this';
 
       // Modify the output filename for CSS bundles (assuming you're using MiniCssExtractPlugin)
       const miniCssPluginIndex = webpackConfig.plugins.findIndex(
