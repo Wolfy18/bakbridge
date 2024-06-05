@@ -9,6 +9,8 @@ class BakBridge {
   headers?: { [key: string]: string };
   initial?: JSONstring;
   showTransaction?: boolean;
+  transactionUuid?: string;
+  policyId?: string;
   onLoad: () => void;
   onSuccess: (
     transaction: TransactionProps,
@@ -34,6 +36,8 @@ class BakBridge {
     this.headers = options.client?.headers;
     this.initial = options.initial;
     this.showTransaction = options.showTransaction || false;
+    this.transactionUuid = options.transactionUuid || undefined;
+    this.policyId = options.policyId || undefined;
     this.onLoad = options.onLoad || function () {};
     this.onSuccess = options.onSuccess || function () {};
     this.onEvent = options.onEvent || function () {};
@@ -52,9 +56,9 @@ class BakBridge {
       baseUrl: this.baseUrl,
       initialData: this.initial,
       headers: this.headers,
+      transactionUuid: this.transactionUuid,
+      policyId: this.policyId,
       onSuccess: this.onSuccess,
-      // transactionUuid: this.container.dataset.transactionUuid,
-      // policyId: this.container.dataset.policyId,
     };
 
     root.render(
@@ -66,43 +70,6 @@ class BakBridge {
     // Trigger onLoad callback
     this.onLoad();
   }
-
-  // TODO
-  // handleBridgeEvent(
-  //   eventType: string,
-  //   payload?: {
-  //     [key: string]:
-  //       | string
-  //       | number
-  //       | []
-  //       | TransactionProps
-  //       | OutputAssetProps[];
-  //   }
-  // ) {
-  //   console.log(payload);
-  //   // Simulate handling bridge events
-  //   switch (eventType) {
-  //     case 'success':
-  //       // Trigger onSuccess callback
-  //       console.log(payload, '<--- this is the payload');
-  //       if (payload && 'transaction' in payload && 'collection' in payload)
-  //         this.onSuccess(
-  //           payload['transaction'] as TransactionProps,
-  //           payload['collection'] as OutputAssetProps[]
-  //         );
-  //       break;
-  //     case 'event':
-  //       // Trigger onEvent callback
-  //       this.onEvent('some_event_type', payload);
-  //       break;
-  //     case 'close':
-  //       // Trigger onClose callback
-  //       this.onClose();
-  //       break;
-  //     default:
-  //       break;
-  //   }
-  // }
 }
 
 declare global {
@@ -134,5 +101,8 @@ if (devMod && document.querySelector('#BakBridge'))
       collection: OutputAssetProps[]
     ) => {
       console.log(transaction, collection);
+    },
+    onLoad: () => {
+      console.log('The application is loaded!');
     },
   });

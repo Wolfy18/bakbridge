@@ -125,6 +125,8 @@ type BakBridgeOptions = {
   };
   initial?: JSONstring;
   showTransaction?: boolean;
+  transactionUuid?: string;
+  policyId?: string;
   onLoad?: () => void;
   onSuccess?: (
     transaction: TransactionProps,
