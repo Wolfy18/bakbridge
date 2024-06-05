@@ -61,8 +61,8 @@ You can load Bak Bridge via IPFS or by installing it locally.
 
 <div id="BakBridgeContainer"></div>
 
-<link rel="stylesheet" href="bakbridge/css/main.css" type="text/css" media="all" />
-<script src="bakbridge/js/main.bundle.js"></script>
+<link rel="stylesheet" href="bakbridge/dist/main.css" type="text/css" media="all" />
+<script src="bakbridge/dist/index.js"></script>
 
 <script type="text/javascript">
     // Your code here, ensuring BakBridge is defined and ready to use
@@ -87,19 +87,15 @@ npm install bakbridge
 # Component.js
 
 import BakBridge from "bakbridge";
-
-import "bakbridge/dist/css/main.css";
+import "bakbridge/dist/main.css";
 
 function Component = () => {
 
-  const bridgeRef = useRef()
+  const bridgeRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-
-    const bridgeDOM = bridgeRef.current
-    if(!bridgeDOM) return;
-
-    bridge = new BakBridge({
+    if (!ref.current) return;
+    new BakBridge({
         bakToken: '<Bearer Access Token>', # Required
         container: bridgeDOM, # Required
         client: {
@@ -107,7 +103,7 @@ function Component = () => {
             headers: { 'X-CSRFToken': "<additional headers>" }, # Optional: Add additional headers to the axios client.
         },
     });
-  }, [])
+  }, [ref]);
 
   return (<div ref={bridgeRef}></div>)
 
