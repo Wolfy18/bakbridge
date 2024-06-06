@@ -7,19 +7,16 @@ declare class BakBridge {
     };
     initial?: JSONstring;
     showTransaction?: boolean;
+    transactionUuid?: string;
+    policyId?: string;
     onLoad: () => void;
-    onSuccess: (metadata?: {
-        [key: string]: string | number | [];
-    }) => void;
+    onSuccess: (transaction: TransactionProps, collection: OutputAssetProps[]) => void;
     onEvent: (event_type: string, payload?: {
-        [key: string]: string | number | [];
+        [key: string]: string | number | [] | TransactionProps | OutputAssetProps[];
     }) => void;
     onClose: () => void;
     constructor(options: BakBridgeOptions);
     init(): void;
-    handleBridgeEvent(eventType: string, payload?: {
-        [key: string]: string | number | [];
-    }): void;
 }
 declare global {
     interface Window {

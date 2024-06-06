@@ -1,3 +1,4 @@
 declare const insertLineBreaks: (inputText: string) => string;
 declare const recursiveProperties: (props: string[], value: string, obj?: NestedObject) => NestedObject | undefined;
-export { insertLineBreaks, recursiveProperties };
+declare const transformIntakeIntoAssetProps: (collection?: IntakeAssetProps[]) => AssetProps[] | undefined;
+export { insertLineBreaks, recursiveProperties, transformIntakeIntoAssetProps };

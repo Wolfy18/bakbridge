@@ -6,7 +6,6 @@ interface FormContextProps {
     setOpenTxDrawer: (state: boolean) => void;
     transaction?: TransactionProps;
     setTransaction: (obj: TransactionProps) => void;
-    onSuccess?: () => void;
 }
 export declare const EmptyAsset: {
     blockchain: string;
@@ -18,6 +17,5 @@ export declare const useFormContext: () => FormContextProps;
 export declare const FormProvider: React.FC<PropsWithChildren & {
     initialData?: string;
     showTransaction?: boolean;
-    onSuccess?: () => void;
 }>;
 export {};
