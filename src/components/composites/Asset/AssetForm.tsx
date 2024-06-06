@@ -199,7 +199,7 @@ const AssetForm: React.FC<AssetProps & { index: number }> = ({
       </Field>
 
       {isSubmitted ? (
-        attrs ? (
+        attrs && Object.keys(attrs).length ? (
           <Divider orientation="left">Attributes</Divider>
         ) : null
       ) : (
@@ -279,7 +279,7 @@ const AssetForm: React.FC<AssetProps & { index: number }> = ({
       </FormDS.List>
 
       {isSubmitted ? (
-        files ? (
+        files && files.length ? (
           <Divider orientation="left">Files</Divider>
         ) : null
       ) : (

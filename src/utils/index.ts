@@ -61,4 +61,62 @@ const recursiveProperties: (
   return obj;
 };
 
-export { insertLineBreaks, recursiveProperties };
+const transformIntakeIntoAssetProps = (collection?: IntakeAssetProps[]) => {
+  const formatted: AssetProps[] | undefined = collection?.map((obj) => {
+    //attrs
+    if (obj.attrs) {
+      if (typeof obj.attrs === 'object' && !Array.isArray(obj.attrs)) {
+        const attrs = Object.keys(obj.attrs).reduce(
+          (acc: Attrs[], attr: keyof Attrs) => {
+            acc.push({
+              key: attr,
+
+              // @ts-expect-error wip: working on this type error
+              value: obj.attrs ? obj.attrs[attr] : null,
+            });
+            return acc;
+          },
+          []
+        );
+
+        obj.attrs = attrs;
+      } else if (Array.isArray(obj.attrs)) {
+        const attrs = obj.attrs?.reduce((acc: Attrs[], obj: Attrs) => {
+          Object.keys(obj).map((i) => {
+            acc.push({
+              key: i,
+              value: obj[i],
+            });
+          });
+          return acc;
+        }, []);
+
+        obj.attrs = attrs;
+      }
+    }
+    const {
+      blockchain,
+      name,
+      asset_name,
+      image,
+      amount,
+      description,
+      attrs,
+      files,
+    } = obj as AssetProps;
+    return {
+      blockchain,
+      name,
+      asset_name,
+      image,
+      amount,
+      description,
+      attrs,
+      files,
+    };
+  });
+
+  return formatted;
+};
+
+export { insertLineBreaks, recursiveProperties, transformIntakeIntoAssetProps };
