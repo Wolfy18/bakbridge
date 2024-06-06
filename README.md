@@ -55,6 +55,7 @@ Bak Bridge is a drop-in module for your users to preload, create and mint Cardan
 ## 🏁 Getting Started <a name = "getting_started"></a>
 You can load Bak Bridge via IPFS or by installing it locally.
 
+
 ### CDN installation
 ```
 # [index].html
@@ -118,17 +119,53 @@ Property | Description | Type | Default
 --- | --- | --- | --- 
 **bakToken** | Bearer access token for the session. | *string*  - *required* | undefined
 **container** | DOM container where the app will be loaded. | *HTMLElement* - *required* | undefined
-**initial** | Valid JSON string representing a collection of one or more assets. | *string* | undefined
+**initial** | Valid JSON string representing a collection of one or more assets. | *IntakeAssetProps as string* | undefined
 **showTransaction** | Open invoice drawer on load. | *boolean* | false
 **onLoad** | Trigger after the application is initiated. | *function ()* | -
 **onSuccess** | Trigger after `successfully` submitting the request. | *function ( transaction: [TransactionProps](https://github.com/Wolfy18/bakbridge/blob/main/src/types.d.ts#L13), collection: [OutputAssetProps[]](https://github.com/Wolfy18/bakbridge/blob/main/src/types.d.ts#L93) )* | -
 **onCLose** | Trigger after the application is closed. | *function ( collection: [AssetProps[]](https://github.com/Wolfy18/bakbridge/blob/main/src/types.d.ts#L72) )* | -
-**client** | Axios client custom configurations. | *{
-    baseUrl?: string;
-    headers?: { [key: string]: string };
-  };* | {
-    baseUrl: "https://bakrypt.io/v1/" # Cardano PreProd use https://testnet.bakrypt.io/v1/
-  }
+**client** | Axios client custom configurations. | *{baseUrl?: string;headers?: { [key: string]: string };};* | {baseUrl: "https://bakrypt.io/v1/" }
+
+```
+```
+### Simple Bridge 
+
+```
+  new BakBridge({
+    bakToken: "<the token>",
+    container: document.createElement('div')
+  })
+```
+
+### Extended Bridge
+
+```
+  new BakBridge({
+    bakToken: 'DozHXHQj2QBXuYGJa0WSc97SdJR4o6CZfHkql9JFV3A',
+    container: document.createElement('div'),
+    client: {
+      baseUrl: 'https://testnet.bakrypt.io/v1/',
+      headers: { 'X-CSRFToken': 'mrhPuGLbgC7tTompVp11' },
+    },
+    // transactionUuid: '1d60d7d8-0294-4488-a534-fd27c2ed7ad7', # Existing transaction uuid will overwrite any 'initial' values 
+    // showTransaction: true, # This will open the invoice drawer if the transaction exists.
+    initial: `[{"blockchain":"ADA","name":"aaaaaa","asset_name":"aaaaaa","image":"ipfs://Qmb8ytDTFfsT7LrkpHBaMpohtAL9kK4pnxWJBMTDx1pbJG","amount":1,"description":null,"attrs":{"111":"11111","2222":"2222"},"files":[{"name":"fdsgfsd","src":"ipfs://QmYf6ZyefsJdieM6sX9knbtYhTkjsTMZ9booBPvmigpnMu"}]`,
+    onSuccess: (
+      transaction: TransactionProps,
+      collection: OutputAssetProps[]
+    ) => {
+      console.log('The form was successfully submitted')
+      console.log(transaction, collection);
+    },
+    onLoad: () => {
+      console.log('The application is loaded!');
+    },
+  });
+```
+
+### PreProd Network
+Set `client: { baseUrl: "https://testnet.bakrypt.io" }`
+
 
 
 ## 🚀 Deployment <a name = "local_dev"></a>

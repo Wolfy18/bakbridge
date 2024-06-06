@@ -6,6 +6,7 @@ interface useBakClientProps {
   mintTransaction: (uuid: string) => Promise<TransactionProps>;
   refundTransaction: (uuid: string) => Promise<TransactionProps>;
   submitRequest: (data: OutputAssetProps[]) => Promise<OutputAssetProps[]>;
+  getCollectionByTxUuid: (uuid: string) => Promise<{ results: AssetProps[] }>;
   uploadIPFSFile: (data: File) => Promise<AttachmentProps>;
 }
 
@@ -15,6 +16,13 @@ const useBakClient = (): useBakClientProps => {
   const getTransaction = useCallback(
     async (uuid: string) => {
       return (await client.get(`/transactions/${uuid}/`)).data;
+    },
+    [client]
+  );
+
+  const getCollectionByTxUuid = useCallback(
+    async (uuid: string) => {
+      return (await client.get(`/assets/?search=${uuid}`)).data;
     },
     [client]
   );
@@ -63,6 +71,7 @@ const useBakClient = (): useBakClientProps => {
     refundTransaction,
     submitRequest,
     uploadIPFSFile,
+    getCollectionByTxUuid,
   };
 };
 

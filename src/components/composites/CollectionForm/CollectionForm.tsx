@@ -13,6 +13,7 @@ import useBakClient from 'client/bakrypt';
 import Config from './Config';
 import * as Yup from 'yup';
 import axios from 'axios';
+import { transformIntakeIntoAssetProps } from 'utils';
 
 const collectionSchema = Yup.object().shape({
   asset: Yup.array().of(
@@ -21,7 +22,7 @@ const collectionSchema = Yup.object().shape({
       name: Yup.string().trim().required().default(null).max(64),
       asset_name: Yup.string().max(32),
       image: Yup.string().trim().required().default(null).max(64),
-      description: Yup.string(),
+      description: Yup.string().nullable(),
       amount: Yup.number().required().default(1),
       attrs: Yup.array().of(
         Yup.object().shape({
@@ -48,7 +49,8 @@ const CollectionForm: React.FC = () => {
     setTransaction,
     transaction,
   } = useFormContext();
-  const { getTransaction, submitRequest } = useBakClient();
+  const { getTransaction, submitRequest, getCollectionByTxUuid } =
+    useBakClient();
   const { transactionUuid, onSuccess } = useSessionContext();
 
   // Set panels from the assetCollection.
@@ -274,6 +276,27 @@ const CollectionForm: React.FC = () => {
           <>
             <div className="">
               <Tabs
+                onLoad={async () => {
+                  if (transactionUuid) {
+                    try {
+                      // set Asset collection
+                      const col = await getCollectionByTxUuid(transactionUuid);
+
+                      // console.log(col.results);
+                      const formatted = transformIntakeIntoAssetProps(
+                        col.results
+                      );
+                      // const formatted = col.results;
+                      if (formatted) setValues({ asset: formatted });
+                    } catch (error) {
+                      if (axios.isAxiosError(error)) {
+                        message.error(error.response?.data.detail);
+                      } else {
+                        message.error('unable to load collection');
+                      }
+                    }
+                  }
+                }}
                 hideAdd
                 onChange={onChange}
                 activeKey={activeKey}

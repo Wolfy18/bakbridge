@@ -5,6 +5,7 @@ import React, {
   PropsWithChildren,
   useMemo,
 } from 'react';
+import { transformIntakeIntoAssetProps } from 'utils';
 
 interface FormContextProps {
   assetCollection: AssetProps[];
@@ -43,41 +44,7 @@ export const FormProvider: React.FC<
     if (initialData && initialData.length) data = JSON.parse(initialData);
 
     // Format intake into form schema
-    const formatted: AssetProps[] | undefined = data?.map((obj) => {
-      //attrs
-      if (obj.attrs) {
-        if (typeof obj.attrs === 'object' && !Array.isArray(obj.attrs)) {
-          const attrs = Object.keys(obj.attrs).reduce(
-            (acc: Attrs[], attr: keyof Attrs) => {
-              acc.push({
-                key: attr,
-
-                // @ts-expect-error wip: working on this type error
-                value: obj.attrs ? obj.attrs[attr] : null,
-              });
-              return acc;
-            },
-            []
-          );
-
-          obj.attrs = attrs;
-        } else if (Array.isArray(obj.attrs)) {
-          const attrs = obj.attrs?.reduce((acc: Attrs[], obj: Attrs) => {
-            Object.keys(obj).map((i) => {
-              acc.push({
-                key: i,
-                value: obj[i],
-              });
-            });
-            return acc;
-          }, []);
-
-          obj.attrs = attrs;
-        }
-      }
-
-      return obj as AssetProps;
-    });
+    const formatted = transformIntakeIntoAssetProps(data);
 
     return formatted;
   }, [initialData]);
