@@ -46,7 +46,9 @@ Bak Bridge is a drop-in module for your users to preload, create and mint Cardan
 
 ## ⛓️ Dependencies / Limitations <a name = "limitations"></a>
 
-- What are the dependencies to run the app?
+What are the dependencies to run the app?
+- [Register](https://bakrypt.io/account/login/) to obtain your account token.
+
 - The App requires a `Bearer Access Token` to communicate with Bakrypt's API. Follow the documentation to learn more about our authentication schema. 
 
 [Authorization and Access Tokens](https://bakrypt.readme.io/reference/authorization-and-access-tokens)
@@ -164,8 +166,7 @@ Property | Description | Type | Default
 ```
 
 ### PreProd Network
-Set `client: { baseUrl: "https://testnet.bakrypt.io" }`
-
+To access PreProd network set the Axios `client: { baseUrl: "https://testnet.bakrypt.io" }`
 
 
 ## 🚀 Deployment <a name = "local_dev"></a>
@@ -198,8 +199,6 @@ It correctly bundles React in production mode and optimizes the build for the be
 
 The build is minified and the filenames include the hashes.\
 Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
 ## ⛏️ Built With <a name = "tech_stack"></a>
 
