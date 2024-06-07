@@ -48,7 +48,7 @@ const Drawer: React.FC = () => {
       placement={'right'}
       getContainer={false}
       size="large"
-      className="!h-[100vh]"
+      className="!min-h-[100vh]"
       onClose={onCloseDrawer}
       open={openTxDrawer}
       extra={

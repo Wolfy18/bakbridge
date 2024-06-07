@@ -235,13 +235,13 @@ const CollectionForm: React.FC = () => {
 
               if (tx && typeof tx === 'object') {
                 setTransaction(tx);
-                if (onSuccess) onSuccess(tx, formatted);
+                if (onSuccess) onSuccess(tx, req);
               } else if (tx) {
                 // get transaction
                 const transaction = await getTransaction(tx);
                 setTransaction(transaction);
 
-                if (onSuccess) onSuccess(transaction, formatted);
+                if (onSuccess) onSuccess(transaction, req);
               }
 
               window.scrollTo({
@@ -385,6 +385,8 @@ const CollectionForm: React.FC = () => {
       <Drawer
         title="Transaction Configuration"
         placement={'right'}
+        getContainer={false}
+        className="!min-h-[100vh]"
         onClose={onCloseConfigDrawer}
         open={open}
         size={'large'}
