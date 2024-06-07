@@ -29,7 +29,7 @@ const AssetForm: React.FC<AssetProps & { index: number }> = ({
     for (const [key, val] of Object.entries(values.asset[index])) {
       let value = val;
       if (key === 'attrs') {
-        value = val.map((obj: { key: string; value: string }, idx: string) => {
+        value = val?.map((obj: { key: string; value: string }, idx: string) => {
           return {
             [`asset[${index}].${key}[${idx}].key`]: obj.key,
             [`asset[${index}].${key}[${idx}].value`]: obj.value,
@@ -37,7 +37,7 @@ const AssetForm: React.FC<AssetProps & { index: number }> = ({
         });
       }
       if (key === 'files') {
-        value = val.map(
+        value = val?.map(
           (
             obj: { src: string; name: string; mediaType: string },
             idx: string
