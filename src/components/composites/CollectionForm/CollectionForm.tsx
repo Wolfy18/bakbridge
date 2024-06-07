@@ -14,6 +14,7 @@ import Config from './Config';
 import * as Yup from 'yup';
 import axios from 'axios';
 import { transformIntakeIntoAssetProps } from 'utils';
+import ErrorDisplay from './ErrorDisplay';
 
 const collectionSchema = Yup.object().shape({
   asset: Yup.array().of(
@@ -223,7 +224,7 @@ const CollectionForm: React.FC = () => {
         initialValues={{
           asset: assetCollection,
         }}
-        validateOnMount
+        // validateOnMount
         validationSchema={collectionSchema}
         onSubmit={async (values, actions) => {
           try {
@@ -315,6 +316,8 @@ const CollectionForm: React.FC = () => {
                 }}
                 items={TabPanels(values, errors)}
               />
+              {errors && <ErrorDisplay errors={errors} />}
+
               <Divider orientation="left"></Divider>
               <div className="flex justify-between max-h-[50px] items-center">
                 <div className="grid grid-cols-2 gap-4">
@@ -361,7 +364,7 @@ const CollectionForm: React.FC = () => {
                     <Button
                       type="default"
                       onClick={submitForm}
-                      disabled={!isValid}
+                      disabled={!isValid || isSubmitting}
                     >
                       <Spin
                         className={`mr-2 ${!isSubmitting ? 'hidden' : null}`}
@@ -385,7 +388,6 @@ const CollectionForm: React.FC = () => {
       <Drawer
         title="Transaction Configuration"
         placement={'right'}
-        getContainer={false}
         className="!min-h-[100vh]"
         onClose={onCloseConfigDrawer}
         open={open}
