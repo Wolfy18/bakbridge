@@ -316,6 +316,8 @@ const CollectionForm: React.FC = () => {
                 }}
                 items={TabPanels(values, errors)}
               />
+
+              <div className="mt-4"></div>
               {errors && <ErrorDisplay errors={errors} />}
 
               <Divider orientation="left"></Divider>
