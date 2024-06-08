@@ -7,7 +7,11 @@ const ErrorLine: React.FC<{ title: string; error: string }> = ({
   title,
   error,
 }) => {
-  return <p>{`${title}:${error.replace(/[asset]+[[0-9]+]\./, ' ')}`}</p>;
+  return (
+    <p>{`${title}:${
+      error ? error.replace(/[asset|attrs|files]+[[0-9]+]\./, ' ') : ''
+    }`}</p>
+  );
 };
 
 const ErrorDisplay: React.FC<{
@@ -22,10 +26,27 @@ const ErrorDisplay: React.FC<{
     const errors = [];
     let i = 0;
     for (const [title, error] of Object.entries(obj)) {
+      const children = Array.isArray(error)
+        ? error.reduce((chd, child, jx) => {
+            if (!child) return chd;
+            for (const [gf, cherr] of Object.entries(child)) {
+              chd.push({
+                title: <ErrorLine title={gf} error={cherr as string} />,
+                child,
+                key: `${idx}-error-0-${i}-${jx}`,
+              });
+            }
+            return chd;
+          }, [])
+        : [];
+
       errors.push({
-        title: <ErrorLine title={title} error={error} />,
+        title: (
+          <ErrorLine title={title} error={Array.isArray(error) ? '' : error} />
+        ),
         error,
         key: `${idx}-error-0-${i}`,
+        children: children,
       });
       i++;
     }
