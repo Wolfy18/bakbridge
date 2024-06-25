@@ -88,7 +88,7 @@ function Component = () => {
 
 }
 
-``
+```
 
 ### Local installation.
 
