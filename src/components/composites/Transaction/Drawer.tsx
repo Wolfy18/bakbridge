@@ -46,7 +46,6 @@ const Drawer: React.FC = () => {
     <DSDrawer
       title="Invoice"
       placement={'right'}
-      getContainer={false}
       size="large"
       className="!min-h-[100vh]"
       onClose={onCloseDrawer}

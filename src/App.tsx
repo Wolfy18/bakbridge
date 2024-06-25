@@ -4,7 +4,6 @@ import { Layout } from 'components/composites/Layout';
 import { CollectionForm } from 'components/composites/CollectionForm';
 import { FormProvider } from 'context/FormContext';
 import { SessionProvider } from 'context/SessionContext';
-import { Drawer as TransactionDrawer } from 'components/composites/Transaction';
 
 import './App.css';
 import { ConfigProvider } from 'antd';
@@ -19,7 +18,6 @@ const App: React.FC<PropsWithChildren & SessionContextProps> = (props) => {
             showTransaction={props.showTransaction}
           >
             <CollectionForm />
-            <TransactionDrawer />
           </FormProvider>
         </Layout>
       </SessionProvider>

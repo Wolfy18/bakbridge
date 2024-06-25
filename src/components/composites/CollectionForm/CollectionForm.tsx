@@ -15,6 +15,7 @@ import * as Yup from 'yup';
 import axios from 'axios';
 import { transformIntakeIntoAssetProps } from 'utils';
 import ErrorDisplay from './ErrorDisplay';
+import { Drawer as TransactionDrawer } from 'components/composites/Transaction';
 
 const collectionSchema = Yup.object().shape({
   asset: Yup.array().of(
@@ -398,6 +399,8 @@ const CollectionForm: React.FC = () => {
       >
         <Config />
       </Drawer>
+
+      <TransactionDrawer />
     </div>
   );
 };
