@@ -77,7 +77,7 @@ const CollectionForm: React.FC = () => {
         return {
           key: `asset-${idx}`,
           children: <Asset props={i} idx={idx} />,
-          label: `${tabName}` || `Asset #${idx + 1}`,
+          label: tabName ? `#${idx + 1} - ${tabName}` : `Asset #${idx + 1}`,
           icon:
             assetErrors && !!assetErrors[idx] ? <Badge color="red" /> : null,
         };
@@ -129,6 +129,7 @@ const CollectionForm: React.FC = () => {
     let formatted: OutputAssetProps[] = [];
 
     try {
+      // TODO
       // Update collection with assets withe shame name
       // const reducedCollection = values.asset.reduce(
       //   (acc: AssetProps[], i) => {
