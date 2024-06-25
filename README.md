@@ -53,32 +53,8 @@ What are the dependencies to run the app?
 
 [Authorization and Access Tokens](https://bakrypt.readme.io/reference/authorization-and-access-tokens)
 
-
 ## 🏁 Getting Started <a name = "getting_started"></a>
-You can load Bak Bridge via IPFS or by installing it locally.
-
-
-### CDN installation
-```
-# [index].html
-
-<div id="BakBridgeContainer"></div>
-
-<link rel="stylesheet" href="bakbridge/dist/main.css" type="text/css" media="all" />
-<script src="bakbridge/dist/index.js"></script>
-
-<script type="text/javascript">
-    // Your code here, ensuring BakBridge is defined and ready to use
-    window.onload = () => new BakBridge({
-        bakToken: '<Bearer Access Token>',
-        container: document.querySelector('#BakBridgeContainer'),
-        client: {
-            baseUrl: "https://testnet.bakrypt.io/v1/", # Defaults to https://bakrypt.io/v1/ for mainnet
-            headers: { 'X-CSRFToken': "<additional headers>" }, # Optional: Add additional headers to the axios client.
-        },
-    });
-</script>
-```
+You can install the Bak Bridge module via npmjs.com or by installing it locally.
 
 ### npm installation
 
@@ -112,6 +88,33 @@ function Component = () => {
 
 }
 
+``
+
+### Local installation.
+
+```
+Download the latest release, and unzip the package into your local directory.
+```
+
+```
+# [index].html
+
+<div id="BakBridgeContainer"></div>
+
+<link rel="stylesheet" href="bakbridge/dist/main.css" type="text/css" media="all" />
+<script src="bakbridge/dist/index.js"></script>
+
+<script type="text/javascript">
+    // Your code here, ensuring BakBridge is defined and ready to use
+    window.onload = () => new BakBridge({
+        bakToken: '<Bearer Access Token>',
+        container: document.querySelector('#BakBridgeContainer'),
+        client: {
+            baseUrl: "https://testnet.bakrypt.io/v1/", # Defaults to https://bakrypt.io/v1/ for mainnet
+            headers: { 'X-CSRFToken': "<additional headers>" }, # Optional: Add additional headers to the axios client.
+        },
+    });
+</script>
 ```
 
 ## API 
@@ -122,6 +125,7 @@ Property | Description | Type | Default
 **bakToken** | Bearer access token for the session. | *string*  - *required* | undefined
 **container** | DOM container where the app will be loaded. | *HTMLElement* - *required* | undefined
 **initial** | Valid JSON string representing a collection of one or more assets. | *IntakeAssetProps as string* | undefined
+**transactionUuid** | Bakrypt Transaction UUID. Used to preload an existing transaction and it's assets | *string* | undefined
 **showTransaction** | Open invoice drawer on load. | *boolean* | false
 **onLoad** | Trigger after the application is initiated. | *function ()* | -
 **onSuccess** | Trigger after `successfully` submitting the request. | *function ( transaction: [TransactionProps](https://github.com/Wolfy18/bakbridge/blob/main/src/types.d.ts#L13), collection: [OutputAssetProps[]](https://github.com/Wolfy18/bakbridge/blob/main/src/types.d.ts#L93) )* | -
