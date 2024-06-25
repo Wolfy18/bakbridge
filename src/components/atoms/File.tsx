@@ -1,8 +1,9 @@
 import { Image, Spin, message } from 'antd';
 import React, { useEffect, useState } from 'react';
+import { getContentType } from 'utils';
 
 const File: React.FC<{ url?: string; alt?: string }> = ({ url, alt }) => {
-  const [type, setType] = useState<string | undefined | null>();
+  const [fileType, setType] = useState<string | undefined | null>();
   const fileUrl = (
     url || 'ipfs://QmbuisJxUnYNbkYjSGLEbvHPzrwLLRNMep5YPRfuMZaWeD'
   ).replace('ipfs://', 'https://gateway.bakrypt.io/ipfs/');
@@ -13,32 +14,40 @@ const File: React.FC<{ url?: string; alt?: string }> = ({ url, alt }) => {
     (async () => {
       try {
         if (!fileUrl) return;
+        const type = await getContentType(fileUrl);
 
-        const fileBytesRes = await fetch(fileUrl);
-
-        if (!fileBytesRes.ok) throw Error;
-
-        setType(fileBytesRes.headers.get('content-type'));
+        if (type) {
+          setType(type);
+        }
       } catch (error) {
         message.error('Unable to download file');
       }
     })();
   }, [url]);
 
+  useEffect(() => {}, [fileType]);
+
   const renderFile = () => {
-    if (type?.toLowerCase().trim().includes('image'))
+    if (fileType?.toLowerCase().trim().includes('image'))
       return <Image src={fileUrl} alt={alt} />;
 
-    if (type?.toLowerCase().trim().includes('video'))
+    if (fileType?.toLowerCase().trim().includes('video'))
       return <video src={fileUrl} controls></video>;
 
-    if (type?.toLowerCase().trim().includes('audio'))
+    if (fileType?.toLowerCase().trim().includes('audio'))
       return <audio src={fileUrl} controls></audio>;
+
+    // TODO
+    // if (fileType?.toLowerCase().trim().includes('pdf')) {
+    //   return (
+    //     <Viewer fileUrl={fileUrl} />
+    //   );
+    // }
 
     return 'Unable to view file';
   };
 
-  if (!type)
+  if (!fileType)
     return (
       <Spin tip="Loading" size="large" className="h-full flex items-center">
         <div className="content min-h-[250px]" />

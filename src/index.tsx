@@ -86,26 +86,3 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 
 export default BakBridge;
-
-const devMod = process.env.NODE_ENV !== 'production';
-if (devMod && document.querySelector('#BakBridge'))
-  new BakBridge({
-    bakToken: 'ecZHguCoGfvwkCz_zmvrRsRDyywNbUp9kqUgXuIDLgE',
-    container: document.querySelector('#BakBridge')!,
-    client: {
-      baseUrl: 'https://testnet.bakrypt.io/v1/',
-      headers: { 'X-CSRFToken': 'mrhPuGLbgC7tTompVp11' },
-    },
-    // transactionUuid: '1d60d7d8-0294-4488-a534-fd27c2ed7ad7',
-    // showTransaction: true,
-    // initial: `[{"blockchain":"ADA","name":"aaaaaa","asset_name":"aaaaaa","image":"ipfs://Qmb8ytDTFfsT7LrkpHBaMpohtAL9kK4pnxWJBMTDx1pbJG","amount":1,"description":null,"attrs":{"111":"11111","2222":"2222"},"files":[{"name":"fdsgfsd","src":"ipfs://QmYf6ZyefsJdieM6sX9knbtYhTkjsTMZ9booBPvmigpnMu"}]},{"blockchain":"ADA","name":"bbbbb","asset_name":"bbbbb","image":"ipfs://QmYf6ZyefsJdieM6sX9knbtYhTkjsTMZ9booBPvmigpnMu","amount":1,"description":"description","attrs":{"1":"1","2":"2"},"files":[{"name":"fdsfsd","src":"ipfs://Qmb8ytDTFfsT7LrkpHBaMpohtAL9kK4pnxWJBMTDx1pbJG"}]},{"blockchain":"ADA","name":"333","asset_name":"333","image":"ipfs://Qmb8ytDTFfsT7LrkpHBaMpohtAL9kK4pnxWJBMTDx1pbJG","amount":1,"description":null,"attrs":{},"files":[]}]`,
-    onSuccess: (
-      transaction: TransactionProps,
-      collection: OutputAssetProps[]
-    ) => {
-      console.log(transaction, collection);
-    },
-    onLoad: () => {
-      console.log('The application is loaded!');
-    },
-  });

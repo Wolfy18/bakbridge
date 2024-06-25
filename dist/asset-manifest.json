@@ -2,8 +2,8 @@
   "files": {
     "main.css": "/main.css",
     "main.js": "/index.js",
-    "static/media/index.cjs": "/static/media/index.42119833dddefe38a9fa.cjs",
     "index.html": "/index.html",
+    "static/media/index.cjs": "/static/media/index.42119833dddefe38a9fa.cjs",
     "main.css.map": "/main.css.map",
     "index.js.map": "/index.js.map"
   },
