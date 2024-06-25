@@ -1,3 +1,5 @@
+import Mime from 'mime';
+
 const insertLineBreaks = (inputText: string) => {
   const maxLineLength = 64;
   const words = inputText.split(/\s+/); // Split the input into words
@@ -119,4 +121,48 @@ const transformIntakeIntoAssetProps = (collection?: IntakeAssetProps[]) => {
   return formatted;
 };
 
-export { insertLineBreaks, recursiveProperties, transformIntakeIntoAssetProps };
+function arrayBufferToBase64(buffer: ArrayBuffer) {
+  const binary = [];
+  const bytes = new Uint8Array(buffer);
+  const len = bytes.byteLength;
+
+  for (let i = 0; i < len; i++) {
+    binary.push(String.fromCharCode(bytes[i]));
+  }
+
+  return btoa(binary.join(''));
+}
+
+async function getContentType(input: string): Promise<string | null> {
+  if (input.startsWith('http://') || input.startsWith('https://')) {
+    // setPdfViewerConfig({ url: input });
+
+    // Fetch the data from the URL
+    const response = await fetch(input);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch the URL: ${response.statusText}`);
+    }
+    const contentType = response.headers.get('Content-Type');
+    if (contentType) {
+      return contentType;
+    } else {
+      const url = new URL(input);
+      return Mime.getType(url.pathname);
+    }
+  } else if (input.startsWith('data:')) {
+    // Extract MIME type part from the data URL
+    // setPdfViewerConfig({ base64: input });
+    return input.substring(5, input.indexOf(';'));
+  } else {
+    // Assume it's a raw base64 string with no extension
+    return null; // MIME type cannot be determined from raw base64 without context
+  }
+}
+
+export {
+  insertLineBreaks,
+  recursiveProperties,
+  transformIntakeIntoAssetProps,
+  getContentType,
+  arrayBufferToBase64,
+};

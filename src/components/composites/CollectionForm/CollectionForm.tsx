@@ -23,7 +23,7 @@ const collectionSchema = Yup.object().shape({
       blockchain: Yup.string().required().default('ada').max(64),
       name: Yup.string().trim().required().default(null).max(64),
       asset_name: Yup.string().max(32),
-      image: Yup.string().trim().required().default(null).max(64),
+      image: Yup.string().trim().required().default(null),
       description: Yup.string().nullable(),
       amount: Yup.number().required().default(1),
       attrs: Yup.array().of(
@@ -35,7 +35,7 @@ const collectionSchema = Yup.object().shape({
       files: Yup.array().of(
         Yup.object().shape({
           name: Yup.string().required().max(64),
-          src: Yup.string().required().max(64),
+          src: Yup.string().required(),
           mediaType: Yup.string().nullable().max(64),
         })
       ),
