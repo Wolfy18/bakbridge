@@ -8,6 +8,15 @@ interface useBakClientProps {
   submitRequest: (data: OutputAssetProps[]) => Promise<OutputAssetProps[]>;
   getCollectionByTxUuid: (uuid: string) => Promise<{ results: AssetProps[] }>;
   uploadIPFSFile: (data: File) => Promise<AttachmentProps>;
+  authenticateWallet: ({
+    address,
+    signature,
+    key,
+  }: {
+    address: string;
+    signature: string;
+    key: string;
+  }) => Promise<AccessToken>;
 }
 
 const useBakClient = (): useBakClientProps => {
@@ -65,6 +74,23 @@ const useBakClient = (): useBakClientProps => {
     [client]
   );
 
+  const authenticateWallet = useCallback(
+    async ({
+      address,
+      signature,
+      key,
+    }: {
+      address: string;
+      signature: string;
+      key: string;
+    }) => {
+      return (
+        await client.post(`/addresses/${address}/verify/`, { signature, key })
+      ).data;
+    },
+    [client]
+  );
+
   return {
     getTransaction,
     mintTransaction,
@@ -72,6 +98,7 @@ const useBakClient = (): useBakClientProps => {
     submitRequest,
     uploadIPFSFile,
     getCollectionByTxUuid,
+    authenticateWallet,
   };
 };
 

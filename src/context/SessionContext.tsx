@@ -1,6 +1,12 @@
 import { AxiosInstance } from 'axios';
 import { createClient } from 'client';
-import React, { createContext, useContext, PropsWithChildren } from 'react';
+import React, {
+  createContext,
+  useContext,
+  PropsWithChildren,
+  useState,
+  useEffect,
+} from 'react';
 
 const SessionContext = createContext<
   (SessionContextProps & { client: AxiosInstance }) | undefined
@@ -26,7 +32,13 @@ export const SessionProvider: React.FC<
   headers,
   onSuccess,
 }) => {
-  const client = createClient({ baseUrl, accessToken, headers });
+  const [userToken, setUserToken] = useState<string | undefined>(accessToken);
+
+  const client = createClient({ baseUrl, userToken, headers });
+
+  useEffect(() => {
+    console.log('reload...');
+  }, [userToken]);
 
   return (
     <SessionContext.Provider
@@ -38,6 +50,7 @@ export const SessionProvider: React.FC<
         policyId,
         client,
         onSuccess,
+        setUserToken,
       }}
     >
       {children}

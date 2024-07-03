@@ -2,15 +2,15 @@ import axios from 'axios';
 
 const createClient = ({
   baseUrl,
-  accessToken,
+  userToken,
   headers,
 }: {
   baseUrl?: string;
-  accessToken?: string;
+  userToken?: string;
   headers?: { [key: string]: string | number | boolean };
 }) => {
   const requestHeaders: { [key: string]: string | number | boolean } = {};
-  if (accessToken) requestHeaders['authorization'] = `Bearer ${accessToken}`;
+  if (userToken) requestHeaders['authorization'] = `Bearer ${userToken}`;
 
   return axios.create({
     baseURL: baseUrl ? baseUrl : 'https://bakrypt.io/v1/',

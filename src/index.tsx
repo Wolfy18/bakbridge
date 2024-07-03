@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client';
 import App from './App';
 
 class BakBridge {
-  bakToken: string;
+  bakToken?: string;
   container: HTMLElement;
   baseUrl: string;
   headers?: { [key: string]: string };
@@ -30,7 +30,7 @@ class BakBridge {
   onClose: () => void;
 
   constructor(options: BakBridgeOptions) {
-    this.bakToken = options.bakToken;
+    this.bakToken = options.bakToken || undefined;
     this.container = options.container;
     this.baseUrl = options.client?.baseUrl || 'https://bakrypt.io/v1/';
     this.headers = options.client?.headers;
@@ -59,6 +59,7 @@ class BakBridge {
       transactionUuid: this.transactionUuid,
       policyId: this.policyId,
       onSuccess: this.onSuccess,
+      setUserToken: function () {},
     };
 
     root.render(
