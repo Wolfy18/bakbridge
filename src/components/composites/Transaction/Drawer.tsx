@@ -84,10 +84,6 @@ const Drawer: React.FC = () => {
               </Popconfirm>
             </>
           )}
-
-          <Button type="default" onClick={onCloseDrawer}>
-            OK
-          </Button>
         </Space>
       }
       style={{ lineHeight: 'normal' }}

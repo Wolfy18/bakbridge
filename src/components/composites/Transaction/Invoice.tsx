@@ -9,7 +9,6 @@ import {
   SyncOutlined,
 } from '@ant-design/icons';
 import { ShowPassword } from 'components/atoms/Input';
-import dayjs from 'dayjs';
 
 const icons: { [key: string]: [React.ReactNode, string] } = {
   confirmed: [<CheckCircleOutlined key={null} />, 'success'],
@@ -34,16 +33,16 @@ const Invoice: React.FC<TransactionProps> = ({
   convenience_fee,
   deposit_address,
   status_description,
+  expires_on,
   created_on,
   updated_on,
 }) => {
-  const expires_on = dayjs(created_on).add(1, 'day');
-
   const [form] = Form.useForm();
 
   useEffect(() => {
     const processing_cost = status !== 'confirmed' ? estimated_cost : cost;
     form.setFieldsValue({
+      policy_id,
       status,
       status_description,
       processing_cost,
@@ -57,6 +56,8 @@ const Invoice: React.FC<TransactionProps> = ({
     cost,
     estimated_cost,
     convenience_fee,
+    expires_on,
+    policy_id,
   ]);
 
   return (
@@ -67,6 +68,7 @@ const Invoice: React.FC<TransactionProps> = ({
         ...{
           uuid,
           policy_id,
+          expires_on,
           status,
           processing_cost: status !== 'confirmed' ? estimated_cost : cost,
           convenience_fee,
@@ -78,14 +80,10 @@ const Invoice: React.FC<TransactionProps> = ({
       }}
     >
       <Form.Item label="Policy Id" name="policy_id">
-        <Input readOnly />
+        <Input readOnly name="policy_id" />
       </Form.Item>
       <Form.Item label="Expires on" name="expires_on">
-        <Input
-          readOnly
-          name="expires_on"
-          defaultValue={expires_on.toISOString()}
-        />
+        <Input readOnly name="expires_on" />
       </Form.Item>
       <Form.Item
         label={`${
@@ -98,7 +96,7 @@ const Invoice: React.FC<TransactionProps> = ({
         <Input readOnly />
       </Form.Item>
 
-      {/* Start */}
+      {/* Start Pay now */}
 
       {/* End */}
 
@@ -113,17 +111,22 @@ const Invoice: React.FC<TransactionProps> = ({
             {status}
           </Tag>
         </div>
-
-        <Form.Item
-          label=""
-          name="status_description"
-          className="col-span-2 mb-0"
-        >
-          <Input readOnly />
-        </Form.Item>
+        {status === 'preauth' ? (
+          <div className="flex justify-content-start">
+            <Alert message="Loading mint estimate" type="info" showIcon />
+          </div>
+        ) : (
+          <Form.Item
+            label=""
+            name="status_description"
+            className="col-span-2 mb-0"
+          >
+            <Input readOnly />
+          </Form.Item>
+        )}
       </div>
 
-      {!['confirmed', 'canceled'].includes(status) && (
+      {!['confirmed', 'canceled', 'preauth'].includes(status) && (
         <>
           <label>Deposit Address</label>
 
