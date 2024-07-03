@@ -108,6 +108,7 @@ interface SessionContextProps {
     transaction: TransactionProps,
     collection: OutputAssetProps[]
   ) => void;
+  setUserToken: (string) => void
 }
 
 type NestedObject = {
@@ -117,7 +118,7 @@ type NestedObject = {
 type TargetKey = React.MouseEvent | React.KeyboardEvent | string;
 
 type BakBridgeOptions = {
-  bakToken: string;
+  bakToken?: string;
   container: HTMLElement;
   client?: {
     baseUrl?: string;
@@ -145,3 +146,12 @@ type BakBridgeOptions = {
   ) => void;
   onClose?: () => void;
 };
+
+
+interface AccessToken {
+  access_token: string;
+  expires_in: number;
+  token_type: string;
+  scope: string;
+  refresh_token: string;
+}

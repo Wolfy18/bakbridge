@@ -16,6 +16,7 @@ import axios from 'axios';
 import { transformIntakeIntoAssetProps } from 'utils';
 import ErrorDisplay from './ErrorDisplay';
 import { Drawer as TransactionDrawer } from 'components/composites/Transaction';
+import WalletConnector from '../WalletConnector';
 
 const collectionSchema = Yup.object().shape({
   asset: Yup.array().of(
@@ -53,7 +54,7 @@ const CollectionForm: React.FC = () => {
   } = useFormContext();
   const { getTransaction, submitRequest, getCollectionByTxUuid } =
     useBakClient();
-  const { transactionUuid, onSuccess } = useSessionContext();
+  const { transactionUuid, onSuccess, accessToken } = useSessionContext();
 
   // Set panels from the assetCollection.
   const TabPanels = useCallback(
@@ -222,6 +223,7 @@ const CollectionForm: React.FC = () => {
 
   return (
     <div className="relative">
+      {!accessToken ? <WalletConnector /> : null}
       <Formik
         initialValues={{
           asset: assetCollection,

@@ -1,5 +1,5 @@
 declare class BakBridge {
-    bakToken: string;
+    bakToken?: string;
     container: HTMLElement;
     baseUrl: string;
     headers?: {

@@ -7,6 +7,11 @@ interface useBakClientProps {
         results: AssetProps[];
     }>;
     uploadIPFSFile: (data: File) => Promise<AttachmentProps>;
+    authenticateWallet: ({ address, signature, key, }: {
+        address: string;
+        signature: string;
+        key: string;
+    }) => Promise<AccessToken>;
 }
 declare const useBakClient: () => useBakClientProps;
 export default useBakClient;
