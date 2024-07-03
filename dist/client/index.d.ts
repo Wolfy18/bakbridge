@@ -1,6 +1,6 @@
-declare const createClient: ({ baseUrl, accessToken, headers, }: {
+declare const createClient: ({ baseUrl, userToken, headers, }: {
     baseUrl?: string | undefined;
-    accessToken?: string | undefined;
+    userToken?: string | undefined;
     headers?: {
         [key: string]: string | number | boolean;
     } | undefined;
