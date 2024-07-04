@@ -7,6 +7,7 @@ declare class BakBridge {
     };
     initial?: JSONstring;
     showTransaction?: boolean;
+    disableForm?: boolean;
     transactionUuid?: string;
     policyId?: string;
     onLoad: () => void;
