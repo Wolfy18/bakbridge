@@ -26,33 +26,37 @@ const AssetForm: React.FC<AssetProps & { index: number }> = ({
   useEffect(() => {
     const props = {};
 
-    for (const [key, val] of Object.entries(values.asset[index])) {
-      let value = val;
-      if (key === 'attrs') {
-        value = val?.map((obj: { key: string; value: string }, idx: string) => {
-          return {
-            [`asset[${index}].${key}[${idx}].key`]: obj.key,
-            [`asset[${index}].${key}[${idx}].value`]: obj.value,
-          };
+    if (values.asset && values.asset[index]) {
+      for (const [key, val] of Object.entries(values.asset[index])) {
+        let value = val;
+        if (key === 'attrs') {
+          value = val?.map(
+            (obj: { key: string; value: string }, idx: string) => {
+              return {
+                [`asset[${index}].${key}[${idx}].key`]: obj.key,
+                [`asset[${index}].${key}[${idx}].value`]: obj.value,
+              };
+            }
+          );
+        }
+        if (key === 'files') {
+          value = val?.map(
+            (
+              obj: { src: string; name: string; mediaType: string },
+              idx: string
+            ) => {
+              return {
+                [`asset[${index}].${key}[${idx}].src`]: obj.src,
+                [`asset[${index}].${key}[${idx}].name`]: obj.name,
+                [`asset[${index}].${key}[${idx}].mediaType`]: obj.mediaType,
+              };
+            }
+          );
+        }
+        Object.assign(props, {
+          [`asset[${index}].${key}`]: value,
         });
       }
-      if (key === 'files') {
-        value = val?.map(
-          (
-            obj: { src: string; name: string; mediaType: string },
-            idx: string
-          ) => {
-            return {
-              [`asset[${index}].${key}[${idx}].src`]: obj.src,
-              [`asset[${index}].${key}[${idx}].name`]: obj.name,
-              [`asset[${index}].${key}[${idx}].mediaType`]: obj.mediaType,
-            };
-          }
-        );
-      }
-      Object.assign(props, {
-        [`asset[${index}].${key}`]: value,
-      });
     }
 
     const t = setTimeout(() => {

@@ -103,6 +103,7 @@ interface SessionContextProps {
   initialData?: string;
   baseUrl?: string;
   showTransaction?: boolean;
+  disableForm?: boolean;
   headers?: { [key: string]: string };
   onSuccess?: (
     transaction: TransactionProps,
@@ -126,6 +127,7 @@ type BakBridgeOptions = {
   };
   initial?: JSONstring;
   showTransaction?: boolean;
+  disableForm?: boolean;
   transactionUuid?: string;
   policyId?: string;
   onLoad?: () => void;

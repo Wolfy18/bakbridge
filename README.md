@@ -51,6 +51,8 @@ What are the dependencies to run the app?
 
 - The App requires a `Bearer Access Token` to communicate with Bakrypt's API. Follow the documentation to learn more about our authentication schema. 
 
+- Since version 0.5.0 the module includes Stake Address authentication. The authentication handshake is done after signing and validating the CIP-8 message. You can disable the wallet authentication ("Connect Wallet") by setting the `bakToken` in the BakBridgeOptions.
+
 [Authorization and Access Tokens](https://bakrypt.readme.io/reference/authorization-and-access-tokens)
 
 ## 🏁 Getting Started <a name = "getting_started"></a>
@@ -75,7 +77,6 @@ function Component = () => {
   useEffect(() => {
     if (!bridgeRef.current) return;
     new BakBridge({
-        bakToken: '<Bearer Access Token>', # Required
         container: bridgeRef.current, # Required
         client: {
             baseUrl: "https://testnet.bakrypt.io/v1/", # Optional: Defaults to https://bakrypt.io/v1/ for mainnet
@@ -122,11 +123,12 @@ Common Props Ref
 
 Property | Description | Type | Default
 --- | --- | --- | --- 
-**bakToken** | Bearer access token for the session. | *string*  - *required* | undefined
 **container** | DOM container where the app will be loaded. | *HTMLElement* - *required* | undefined
+**bakToken** | Bearer access token for the session. | *string*  | undefined
 **initial** | Valid JSON string representing a collection of one or more assets. | *IntakeAssetProps as string* | undefined
 **transactionUuid** | Bakrypt Transaction UUID. Used to preload an existing transaction and it's assets | *string* | undefined
 **showTransaction** | Open invoice drawer on load. | *boolean* | false
+**disableForm** | Converts the form into a Read-Only collection. | *boolean* | false
 **onLoad** | Trigger after the application is initiated. | *function ()* | -
 **onSuccess** | Trigger after `successfully` submitting the request. | *function ( transaction: [TransactionProps](https://github.com/Wolfy18/bakbridge/blob/main/src/types.d.ts#L13), collection: [OutputAssetProps[]](https://github.com/Wolfy18/bakbridge/blob/main/src/types.d.ts#L93) )* | -
 **onCLose** | Trigger after the application is closed. | *function ( collection: [AssetProps[]](https://github.com/Wolfy18/bakbridge/blob/main/src/types.d.ts#L72) )* | -
@@ -138,7 +140,6 @@ Property | Description | Type | Default
 
 ```
   new BakBridge({
-    bakToken: "<the token>",
     container: document.createElement('div')
   })
 ```

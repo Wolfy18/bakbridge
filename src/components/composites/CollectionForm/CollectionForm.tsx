@@ -54,7 +54,8 @@ const CollectionForm: React.FC = () => {
   } = useFormContext();
   const { getTransaction, submitRequest, getCollectionByTxUuid } =
     useBakClient();
-  const { transactionUuid, onSuccess, accessToken } = useSessionContext();
+  const { transactionUuid, onSuccess, accessToken, disableForm } =
+    useSessionContext();
 
   // Set panels from the assetCollection.
   const TabPanels = useCallback(
@@ -78,9 +79,12 @@ const CollectionForm: React.FC = () => {
         return {
           key: `asset-${idx}`,
           children: <Asset props={i} idx={idx} />,
+
           label: tabName ? `#${idx + 1} - ${tabName}` : `Asset #${idx + 1}`,
           icon:
-            assetErrors && !!assetErrors[idx] ? <Badge color="red" /> : null,
+            !disableForm && assetErrors && !!assetErrors[idx] ? (
+              <Badge color="red" />
+            ) : null,
         };
       });
     },
@@ -322,12 +326,12 @@ const CollectionForm: React.FC = () => {
               />
 
               <div className="mt-4"></div>
-              {errors && <ErrorDisplay errors={errors} />}
+              {errors && !disableForm && <ErrorDisplay errors={errors} />}
 
               <Divider orientation="left"></Divider>
               <div className="flex justify-between max-h-[50px] items-center">
                 <div className="grid grid-cols-2 gap-4">
-                  {!transaction && (
+                  {!transaction && !disableForm && (
                     <Button
                       type="default"
                       className="flex items-center col-span-2"

@@ -9,6 +9,7 @@ class BakBridge {
   headers?: { [key: string]: string };
   initial?: JSONstring;
   showTransaction?: boolean;
+  disableForm?: boolean;
   transactionUuid?: string;
   policyId?: string;
   onLoad: () => void;
@@ -37,6 +38,7 @@ class BakBridge {
     this.initial = options.initial;
     this.showTransaction = options.showTransaction || false;
     this.transactionUuid = options.transactionUuid || undefined;
+    this.disableForm = options.disableForm || false;
     this.policyId = options.policyId || undefined;
     this.onLoad = options.onLoad || function () {};
     this.onSuccess = options.onSuccess || function () {};
@@ -57,6 +59,7 @@ class BakBridge {
       initialData: this.initial,
       headers: this.headers,
       transactionUuid: this.transactionUuid,
+      disableForm: this.disableForm,
       policyId: this.policyId,
       onSuccess: this.onSuccess,
       setUserToken: function () {},

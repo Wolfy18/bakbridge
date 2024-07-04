@@ -112,7 +112,7 @@ const WalletConnector: React.FC = () => {
           />
           {!isLogged && isConnected ? (
             <p>
-              Bakrypt.io requires an account to enable mint scripts, and IPFS
+              Bakrypt.io requires an account to enable native scripts, and IPFS
               features. By signing the message, you agree to the{' '}
               <a
                 href="https://bakrypt.io/terms/"
