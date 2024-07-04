@@ -4,6 +4,7 @@ import Invoice from './Invoice';
 import useBakClient from 'client/bakrypt';
 import { useFormContext } from 'context/FormContext';
 import * as axios from 'axios';
+import { QuestionCircleOutlined } from '@ant-design/icons';
 
 const Drawer: React.FC = () => {
   const { refundTransaction, mintTransaction } = useBakClient();
@@ -55,7 +56,8 @@ const Drawer: React.FC = () => {
           {!['confirmed', 'canceled'].includes(transaction.status) && (
             <>
               <Popconfirm
-                title="Refund transaction"
+                icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
+                title="Withdrawal Payment Address"
                 description="Are you sure to refund this transaction?"
                 onConfirm={handleRefund}
                 // onCancel={}
@@ -66,7 +68,7 @@ const Drawer: React.FC = () => {
                   type="default"
                   className="!border-red-400 text-red-500 hover:bg-red-500 hover:!text-white"
                 >
-                  Refund
+                  Withdrawal
                 </Button>
               </Popconfirm>
 

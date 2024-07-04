@@ -9,6 +9,7 @@ import {
   SyncOutlined,
 } from '@ant-design/icons';
 import { ShowPassword } from 'components/atoms/Input';
+import Link from 'antd/es/typography/Link';
 
 const icons: { [key: string]: [React.ReactNode, string] } = {
   confirmed: [<CheckCircleOutlined key={null} />, 'success'],
@@ -112,8 +113,13 @@ const Invoice: React.FC<TransactionProps> = ({
           </Tag>
         </div>
         {status === 'preauth' ? (
-          <div className="flex justify-content-start">
-            <Alert message="Loading mint estimate" type="info" showIcon />
+          <div className="col-span-2">
+            <Alert
+              message="Loading mint estimate"
+              type="info"
+              icon={<SyncOutlined spin />}
+              showIcon
+            />
           </div>
         ) : (
           <Form.Item
@@ -128,7 +134,7 @@ const Invoice: React.FC<TransactionProps> = ({
 
       {!['confirmed', 'canceled', 'preauth'].includes(status) && (
         <>
-          <label>Deposit Address</label>
+          <label>Payment Address</label>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-center py-4">
             <QRCode
@@ -149,10 +155,15 @@ const Invoice: React.FC<TransactionProps> = ({
             value={deposit_address}
             copytoclipboard
           />
-
-          <Divider />
         </>
       )}
+      <Divider />
+
+      <div className="mb-4">
+        <Link href="https://bakrypt.io" target="_blank" rel="noreferrer">
+          Barypt.io
+        </Link>
+      </div>
 
       <Form.Item label="Transaction identifier" name="uuid">
         <Input readOnly name="uuid" />
