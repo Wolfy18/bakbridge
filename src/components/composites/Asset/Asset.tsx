@@ -28,11 +28,9 @@ const Asset: React.FC<{ props: AssetProps; idx: number }> = ({ idx }) => {
           <Card {...asset}></Card>
         </Badge.Ribbon>
       </div>
-      {showForm ? (
-        <div className="col-span-1">
-          <AssetForm {...asset} index={idx} />
-        </div>
-      ) : null}
+      <div className={`col-span-1 ${showForm ? '' : 'hidden'}`}>
+        <AssetForm {...asset} index={idx} />
+      </div>
     </div>
   );
 };

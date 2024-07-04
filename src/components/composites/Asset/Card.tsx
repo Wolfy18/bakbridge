@@ -37,7 +37,7 @@ const Card: React.FC<AssetProps> = ({
       .split('\n')
       .map((line, index) => (
         <React.Fragment key={index}>
-          {line}
+          <span className="">{line}</span>
           {'\n'}
         </React.Fragment>
       ));
@@ -60,7 +60,7 @@ const Card: React.FC<AssetProps> = ({
         {attrs && attrs.length > 0 && (
           <>
             <Divider orientation="left">Attributes</Divider>
-            <pre>{renderAttrs()}</pre>
+            <pre className="overflow-x-auto">{renderAttrs()}</pre>
           </>
         )}
 
