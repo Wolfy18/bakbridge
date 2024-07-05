@@ -52,11 +52,15 @@ const CollectionForm: React.FC = () => {
     setTransaction,
     transaction,
   } = useFormContext();
-  const { getTransaction, submitRequest, getCollectionByTxUuid } =
-    useBakClient();
-  const { transactionUuid, onSuccess, accessToken, disableForm } =
+  const {
+    getTransaction,
+    submitRequest,
+    getCollectionByTxUuid,
+    authenticateWallet,
+  } = useBakClient();
+  const { transactionUuid, onSuccess, accessToken, disableForm, setUserToken } =
     useSessionContext();
-
+  const [messageApi, contextHolder] = message.useMessage();
   // Set panels from the assetCollection.
   const TabPanels = useCallback(
     (
@@ -227,7 +231,36 @@ const CollectionForm: React.FC = () => {
 
   return (
     <div className="relative">
-      {!accessToken ? <WalletConnector /> : null}
+      {contextHolder}
+      {!accessToken ? (
+        <WalletConnector
+          authenticate={async ({ address, signature, key }) => {
+            try {
+              const access = await authenticateWallet({
+                address,
+                signature,
+                key,
+              });
+
+              if (access && access.access_token) {
+                setUserToken(access.access_token);
+              }
+            } catch (error) {
+              messageApi.open({
+                type: 'error',
+                content: 'Failed to verify wallet',
+              });
+              console.error(error);
+              return false;
+            }
+
+            return true;
+          }}
+          onDisconnect={() => {
+            setUserToken(undefined);
+          }}
+        />
+      ) : null}
       <Formik
         initialValues={{
           asset: assetCollection,
