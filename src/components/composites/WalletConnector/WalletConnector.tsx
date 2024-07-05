@@ -1,21 +1,28 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
-  ConnectWalletButton,
   ConnectWalletButtonProps,
+  ConnectWalletButton,
   useCardano,
 } from '@cardano-foundation/cardano-connect-with-wallet';
+
 import { Alert, message } from 'antd';
 import Link from 'antd/es/typography/Link';
-import useBakClient from 'client/bakrypt';
-import { useSessionContext } from 'context/SessionContext';
 
-const WalletConnector: React.FC = () => {
+const WalletConnector: React.FC<{
+  authenticate: ({
+    address,
+    signature,
+    key,
+  }: {
+    address: string;
+    signature: string;
+    key: string;
+  }) => Promise<boolean>;
+  onDisconnect?: () => void;
+}> = ({ authenticate, onDisconnect }) => {
   const { isConnected, stakeAddress, installedExtensions, isConnecting } =
     useCardano();
   const [messageApi, contextHolder] = message.useMessage();
-
-  const { authenticateWallet } = useBakClient();
-  const { setUserToken } = useSessionContext();
 
   const verifyWallet = useCallback(
     async (signature: string, key: string) => {
@@ -27,25 +34,12 @@ const WalletConnector: React.FC = () => {
         content: 'Fetching user profile',
       });
 
-      try {
-        const access = await authenticateWallet({
-          address: stakeAddress,
-          signature,
-          key,
-        });
-
-        if (access && access.access_token) {
-          setUserToken(access.access_token);
-          setIsLogged(true);
-        }
-      } catch (error) {
-        messageApi.open({
-          type: 'error',
-          content: 'Failed to verify wallet',
-        });
-        console.error(error);
-      }
-
+      const isLogged = await authenticate({
+        address: stakeAddress,
+        signature,
+        key,
+      });
+      setIsLogged(isLogged);
       setTimeout(messageApi.destroy, 3000);
     },
     [stakeAddress, messageApi]
@@ -83,6 +77,10 @@ const WalletConnector: React.FC = () => {
     if (isConnected) messageApi.destroy();
   }, [isConnecting, isConnected, messageApi]);
 
+  const handleDisconnect = () => {
+    if (onDisconnect) onDisconnect();
+  };
+
   return (
     <>
       {contextHolder}
@@ -108,7 +106,7 @@ const WalletConnector: React.FC = () => {
             {...buttonConfig}
             borderRadius={6}
             onConnectError={handleConnectError}
-            onDisconnect={() => setUserToken(undefined)}
+            onDisconnect={handleDisconnect}
           />
           {!isLogged && isConnected ? (
             <p>

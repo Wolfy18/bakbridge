@@ -1,3 +1,4 @@
+import WalletConnector from 'components/composites/WalletConnector';
 declare class BakBridge {
     bakToken?: string;
     container: HTMLElement;
@@ -25,3 +26,4 @@ declare global {
     }
 }
 export default BakBridge;
+export { WalletConnector };
