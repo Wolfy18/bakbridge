@@ -283,6 +283,7 @@ const ConnectWalletButton = ({
           icon={beforeComponent}
           onClick={clickStakeAddress}
           disabled={disabled}
+          className="flex justify-content-start self-center"
         >
           {buttonTitle}
         </Button>
