@@ -109,10 +109,11 @@ const CollectionForm: React.FC = () => {
   };
 
   const remove = (targetKey: TargetKey) => {
+    if (assetCollection.length <= 1) return;
+
     const panels = TabPanels({ asset: assetCollection }, {});
     const targetIndex = panels.findIndex((pane) => pane.key === targetKey);
 
-    if (assetCollection.length <= 1) return;
     const newcol = assetCollection.filter(
       (i: AssetProps, idx: number) => idx !== targetIndex
     );

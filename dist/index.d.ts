@@ -1,4 +1,4 @@
-import WalletConnector from 'components/composites/WalletConnector';
+import React from 'react';
 declare class BakBridge {
     bakToken?: string;
     container: HTMLElement;
@@ -17,6 +17,14 @@ declare class BakBridge {
         [key: string]: string | number | [] | TransactionProps | OutputAssetProps[];
     }) => void;
     onClose: () => void;
+    walletConnector: React.FC<{
+        authenticate: ({ address, signature, key, }: {
+            address: string;
+            signature: string;
+            key: string;
+        }) => Promise<boolean>;
+        onDisconnect?: () => void;
+    }>;
     constructor(options: BakBridgeOptions);
     init(): void;
 }
@@ -26,4 +34,3 @@ declare global {
     }
 }
 export default BakBridge;
-export { WalletConnector };

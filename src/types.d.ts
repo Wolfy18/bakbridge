@@ -157,3 +157,41 @@ interface AccessToken {
   scope: string;
   refresh_token: string;
 }
+
+type ConnectWalletButtonProps = {
+  label?: string | JSX.Element;
+  disabled?: boolean;
+  message?: string;
+  supportedWallets?: Array<string>;
+  showUnavailableWallets?: UnavailableWalletVisibility;
+  alwaysVisibleWallets?: Array<string>;
+  primaryColor?: string;
+  borderRadius?: number;
+  showAccountBalance?: boolean;
+  customCSS?: string;
+  customActions?: Array<Action>;
+  beforeComponent?: JSX.Element;
+  afterComponent?: JSX.Element;
+  hideActionMenu?: boolean;
+  limitNetwork?: NetworkType;
+  peerConnectEnabled?: boolean;
+  dAppUrl?: string;
+  dAppName?: string;
+  peerConnectSubtitle?: string;
+  peerConnectCustomCSS?: string;
+  additionalPeerConnectTrackerUrls?: Array<string>;
+  onConnect?: (walletName: string) => void;
+  onDisconnect?: () => void;
+  onSignMessage?: (signature: string, key: string | undefined) => void;
+  onStakeAddressClick?: (stakeAddress: string) => void;
+  onConnectError?: (walletName: string, error: Error) => void;
+};
+
+interface IWalletInfo {
+  address?: string;
+  name: string;
+  version: string;
+  icon: string;
+  requestAutoconnect?: boolean;
+  osInfo?: osInfo
+}

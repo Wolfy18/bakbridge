@@ -19,7 +19,7 @@
   "dependencies": {
     "@ant-design/cssinjs": "1.18.0-alpha.5",
     "@ant-design/icons": "^5.2.6",
-    "@cardano-foundation/cardano-connect-with-wallet": "^0.2.9",
+    "@cardano-foundation/cardano-connect-with-wallet-core": "^0.2.5",
     "@headlessui/react": "^1.7.17",
     "@heroicons/react": "^2.0.18",
     "@testing-library/react": "^13.4.0",
@@ -29,7 +29,6 @@
     "@types/react-dom": "^18.2.17",
     "antd": "^5.12",
     "axios": "^1.6.2",
-    "cardano-connect-with-wallet": "link:@types/@cardano-foundation/cardano-connect-with-wallet",
     "dayjs": "^1.11.11",
     "formik": "^2.4.5",
     "html-react-parser": "^5.0.7",
