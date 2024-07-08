@@ -30,6 +30,18 @@ class BakBridge {
     }
   ) => void;
   onClose: () => void;
+  walletConnector: React.FC<{
+    authenticate: ({
+      address,
+      signature,
+      key,
+    }: {
+      address: string;
+      signature: string;
+      key: string;
+    }) => Promise<boolean>;
+    onDisconnect?: () => void;
+  }>;
 
   constructor(options: BakBridgeOptions) {
     this.bakToken = options.bakToken || undefined;
@@ -46,6 +58,7 @@ class BakBridge {
     this.onEvent = options.onEvent || function () {};
     this.onClose = options.onClose || function () {};
 
+    this.walletConnector = WalletConnector;
     // Initialize BakBridge
     this.init();
   }
@@ -91,5 +104,3 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 
 export default BakBridge;
-
-export { WalletConnector };

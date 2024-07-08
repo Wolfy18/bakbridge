@@ -1,12 +1,8 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import {
-  ConnectWalletButtonProps,
-  ConnectWalletButton,
-  useCardano,
-} from '@cardano-foundation/cardano-connect-with-wallet';
-
 import { Alert, message } from 'antd';
 import Link from 'antd/es/typography/Link';
+import useCardano from 'hooks/useCardano';
+import ConnectWalletButton from './WalletConnectorButton';
 
 const WalletConnector: React.FC<{
   authenticate: ({
@@ -78,6 +74,7 @@ const WalletConnector: React.FC<{
   }, [isConnecting, isConnected, messageApi]);
 
   const handleDisconnect = () => {
+    setIsLogged(false);
     if (onDisconnect) onDisconnect();
   };
 
