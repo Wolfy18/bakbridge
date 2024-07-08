@@ -16,7 +16,6 @@ declare const useCardano: (props?: {
     installedExtensions: string[];
     accountBalance: number;
     dAppConnect: import("react").MutableRefObject<null>;
-    initDappConnect: (dAppName: string, dAppUrl: string, verifyConnection: (walletInfo: IWalletInfo, callback: (granted: boolean, allowAutoConnect: boolean) => void) => void, onApiInject: (name: string, address: string) => void, onApiEject: (name: string, address: string) => void, additionalPeerConnectTrackerUrls: Array<string>, onConnect: (address: string, walletInfo?: IWalletInfo) => void) => void;
     meerkatAddress: string;
     cip45Connected: import("react").MutableRefObject<boolean>;
     cip45Address: import("react").MutableRefObject<string | null>;
