@@ -2,7 +2,7 @@
   "name": "bakbridge",
   "description": "Bak Bridge is a drop-in module for your users to preload, create and mint native tokens.",
   "author": "Bakrypt.io",
-  "version": "0.5.3",
+  "version": "0.5.4",
   "private": false,
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
